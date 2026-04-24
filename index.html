@@ -1,0 +1,3615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Agent World</title>
+    <style>
+        /* ========== CSS Variables & Reset ========== */
+        :root {
+            --bg-dark: #0d0d0d;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #252542;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --border-color: #333355;
+            
+            /* 职业颜色 */
+            --job-tank: #4a9eff;
+            --job-heal: #50c878;
+            --job-dps: #ff4a4a;
+            
+            /* 装备品质颜色 */
+            --quality-white: #d0d0d0;
+            --quality-green: #50fa7b;
+            --quality-blue: #8be9fd;
+            --quality-purple: #bd93f9;
+            
+            /* 阶段主题色 */
+            --stage-1: #ffcc00;
+            --stage-2: #ff9933;
+            --stage-3: #66ccff;
+            --stage-4: #ff6699;
+            --stage-5: #cc66ff;
+            --stage-6: #ff6666;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ========== 像素风装饰 ========== */
+        .pixel-border {
+            border: 4px solid var(--border-color);
+            box-shadow: 
+                inset -4px -4px 0px 0px #222244,
+                inset 4px 4px 0px 0px #444466;
+        }
+        
+        .pixel-btn {
+            background: var(--bg-card);
+            border: 3px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            image-rendering: pixelated;
+            position: relative;
+        }
+        
+        .pixel-btn:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+        
+        .pixel-btn:active {
+            transform: translateY(0);
+        }
+        
+        .pixel-btn.primary {
+            border-color: var(--job-heal);
+            box-shadow: 0 0 10px rgba(80, 200, 120, 0.3);
+        }
+        
+        .pixel-btn.tank { border-color: var(--job-tank); }
+        .pixel-btn.heal { border-color: var(--job-heal); }
+        .pixel-btn.dps { border-color: var(--job-dps); }
+        
+        /* ========== 顶部状态栏 ========== */
+        .top-bar {
+            background: linear-gradient(180deg, #1a1a2e 0%, #0d0d0d 100%);
+            border-bottom: 2px solid var(--border-color);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        .level-display {
+            color: var(--stage-1);
+        }
+        
+        .gold-display {
+            color: #ffd700;
+        }
+        
+        .stage-name {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* ========== 主容器 ========== */
+        .game-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+        
+        /* ========== 屏幕管理 ========== */
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ========== 欢迎/标题页 ========== */
+        .title-screen {
+            text-align: center;
+            padding-top: 60px;
+        }
+        
+        .game-title {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--job-tank), var(--job-heal), var(--job-dps));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            margin-bottom: 8px;
+            letter-spacing: 4px;
+        }
+        
+        .game-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+
+        .game-guide {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 0 auto 30px;
+            max-width: 340px;
+            text-align: left;
+        }
+
+        .guide-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .guide-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .guide-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--job-tank), var(--job-heal));
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .character-preview {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            background: var(--bg-card);
+            border: 4px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .character-preview::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255,255,255,0.03) 2px,
+                rgba(255,255,255,0.03) 4px
+            );
+        }
+        
+        .character-icon {
+            font-size: 80px;
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+        
+        /* ========== MTI测试页 ========== */
+        .quiz-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .quiz-progress {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border-color);
+            transition: all 0.3s;
+        }
+        
+        .progress-dot.active {
+            background: var(--job-heal);
+            box-shadow: 0 0 10px var(--job-heal);
+        }
+        
+        .progress-dot.completed {
+            background: var(--job-heal);
+        }
+        
+        .quiz-question {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .quiz-option {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .quiz-option:hover {
+            border-color: var(--job-heal);
+            background: var(--bg-card-hover);
+        }
+        
+        .quiz-option.selected {
+            border-color: var(--job-heal);
+            background: rgba(80, 200, 120, 0.1);
+        }
+        
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .option-text {
+            flex: 1;
+        }
+        
+        /* ========== 外观选择页 ========== */
+        .appearance-container {
+            padding: 16px 0;
+        }
+        
+        .appearance-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .appearance-title {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .appearance-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+        
+        .appearance-subtitle span {
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        
+        .appearance-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .appearance-card {
+            background: var(--bg-card);
+            border: 3px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .appearance-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-secondary);
+            transform: translateY(-2px);
+        }
+        
+        .appearance-card.selected {
+            border-color: var(--job-heal);
+            background: rgba(80, 200, 120, 0.1);
+            box-shadow: 0 0 15px rgba(80, 200, 120, 0.3);
+        }
+        
+        .appearance-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            background: var(--job-heal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .appearance-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .appearance-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .appearance-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        .appearance-confirm {
+            text-align: center;
+        }
+        
+        .appearance-confirm .pixel-btn {
+            min-width: 200px;
+        }
+        
+        /* ========== 角色创建完成页 ========== */
+        .result-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .result-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .result-job {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px currentColor;
+        }
+        
+        .result-level {
+            font-size: 24px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        .result-character {
+            width: 240px;
+            height: 240px;
+            margin: 0 auto 30px;
+            background: var(--bg-card);
+            border: 4px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-character::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.5));
+        }
+
+        .result-char-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .job-badge {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .job-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        /* ========== 挂机页面 ========== */
+        .idle-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .idle-character {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 20px;
+            background: var(--bg-card);
+            border: 4px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .idle-character .job-icon {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .idle-status {
+            margin-bottom: 20px;
+        }
+        
+        .idle-level {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .idle-stage {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .idle-exp-bar {
+            width: 100%;
+            max-width: 300px;
+            height: 20px;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .idle-exp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--job-heal), #80ffaa);
+            transition: width 0.3s ease;
+            position: relative;
+        }
+        
+        .idle-exp-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.3), transparent);
+        }
+        
+        .idle-exp-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        
+        .idle-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .wait-options {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .wait-hint {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .reward-preview {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .reward-item {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg-dark);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+        
+        .wait-btn {
+            padding: 16px 24px;
+            font-size: 14px;
+        }
+        
+        .wait-btn span {
+            display: block;
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* ========== 换装/改名弹窗 ========== */
+        .customize-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .customize-modal.show { display: flex; }
+        .customize-content {
+            background: var(--bg-card);
+            border: 4px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 380px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .customize-title {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .customize-section { display: flex; flex-direction: column; gap: 8px; }
+        .customize-label { font-size: 14px; color: var(--text-secondary); }
+        .pixel-input {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 10px 12px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .pixel-input:focus { outline: none; border-color: var(--job-dps); }
+        .customize-skins {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .skin-card {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .skin-card:hover { border-color: var(--job-dps); transform: translateY(-2px); }
+        .skin-card.selected { border-color: var(--job-heal); background: var(--bg-card-hover); }
+        .skin-card-img {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            border-radius: 6px;
+            display: block;
+        }
+        .skin-card-name { font-size: 11px; margin-top: 4px; color: var(--text-secondary); }
+        .customize-preview {
+            display: flex;
+            justify-content: center;
+        }
+        .preview-img {
+            height: 160px;
+            width: auto;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            object-fit: cover;
+        }
+        .customize-actions { display: flex; gap: 10px; justify-content: center; }
+
+        /* ========== 副本界面 ========== */
+        .dungeon-btn {
+            margin-top: 8px;
+            background: var(--job-dps);
+            border-color: var(--job-dps);
+        }
+        .dungeon-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .dungeon-title {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        .dungeon-power {
+            font-size: 14px;
+            color: var(--job-dps);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .dungeon-list {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .dungeon-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 150ms;
+        }
+        .dungeon-card:hover:not(.locked) {
+            border-color: var(--job-heal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+        }
+        .dungeon-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .dungeon-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .dungeon-card-icon { font-size: 32px; }
+        .dungeon-card-name { font-size: 18px; font-weight: bold; }
+        .dungeon-card-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .dungeon-card-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .dungeon-card-meta .locked-tag { color: #ff4d4f; }
+
+        /* ========== 副本战斗界面 ========== */
+        .dungeon-battle-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .battle-info { display: flex; flex-direction: column; }
+        .battle-dungeon-name { font-size: 16px; font-weight: bold; }
+        .battle-floor-tag { font-size: 12px; color: var(--text-secondary); }
+        .battle-arena {
+            padding: 24px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .battle-player, .battle-enemy {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        .player-hp-bar, .enemy-hp-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--bg-dark);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .hp-fill { height: 100%; background: #10B981; transition: width 0.3s; }
+        .hp-fill.enemy-fill { background: #EF4444; }
+        .player-hp-text, .enemy-hp-text { font-size: 12px; color: var(--text-secondary); }
+        .enemy-name { font-size: 16px; font-weight: bold; color: #EF4444; }
+        .battle-waves {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding: 8px;
+        }
+        .battle-log {
+            padding: 12px 16px;
+            min-height: 100px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .battle-log p { margin: 4px 0; font-size: 12px; color: var(--text-secondary); }
+        .battle-log .log-damage { color: #EF4444; }
+        .battle-log .log-heal { color: #10B981; }
+        .battle-actions {
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        /* ========== 副本结算界面 ========== */
+        .result-container {
+            padding: 24px 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .result-title { font-size: 24px; margin: 0; }
+        .result-rewards {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            font-size: 16px;
+        }
+        .result-reward-item { display: flex; align-items: center; gap: 4px; }
+        .result-detail { font-size: 12px; color: var(--text-secondary); }
+
+        /* ========== 倒计时界面 ========== */
+        .countdown-container {
+            padding: 40px 20px;
+        }
+        
+        .countdown-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+        
+        .countdown-ring {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--job-heal) 0deg,
+                var(--border-color) 0deg
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: none;
+        }
+        
+        .countdown-ring.active {
+            animation: countdownRotate var(--wait-time)s linear forwards;
+        }
+        
+        @keyframes countdownRotate {
+            from { background: conic-gradient(var(--job-heal) 360deg, var(--border-color) 360deg); }
+            to { background: conic-gradient(var(--job-heal) 0deg, var(--border-color) 0deg); }
+        }
+        
+        .countdown-inner {
+            width: 170px;
+            height: 170px;
+            background: var(--bg-dark);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .countdown-time {
+            font-size: 48px;
+            font-weight: bold;
+            font-family: monospace;
+        }
+        
+        .countdown-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .countdown-tip {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        /* ========== 收获弹窗 ========== */
+        .reward-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .reward-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .reward-content {
+            background: var(--bg-card);
+            border: 4px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .reward-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+        
+        .reward-items {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .reward-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .reward-icon {
+            font-size: 36px;
+        }
+        
+        .reward-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .reward-equipment {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .equipment-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .equipment-stats {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .reward-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        /* ========== 升级弹窗 ========== */
+        .levelup-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 250;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .levelup-modal.show {
+            display: flex;
+        }
+        
+        .levelup-content {
+            text-align: center;
+            position: relative;
+        }
+        
+        .levelup-text {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 30px #ffd700;
+            animation: levelUp 0.5s ease-out;
+        }
+        
+        @keyframes levelUp {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .levelup-detail {
+            font-size: 24px;
+            color: var(--text-primary);
+            margin-top: 10px;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: particleExplode 1s ease-out forwards;
+        }
+        
+        @keyframes particleExplode {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+        
+        /* ========== 装备面板 ========== */
+        .equipment-panel {
+            margin-top: 30px;
+        }
+        
+        .panel-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .equipment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .equipment-item {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+        
+        .equipment-item:hover {
+            background: var(--bg-card-hover);
+        }
+        
+        .equipment-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+        
+        .equipment-info {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .equipment-name {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .equipment-props {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .quality-white { color: var(--quality-white); }
+        .quality-green { color: var(--quality-green); }
+        .quality-blue { color: var(--quality-blue); }
+        .quality-purple { color: var(--quality-purple); }
+
+        /* ========== 角色详情面板 ========== */
+        .character-screen {
+            padding: 16px 0;
+            position: relative;
+        }
+
+        .character-card {
+            background: var(--bg-card);
+            border: 4px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(180deg, rgba(74, 158, 255, 0.1), transparent);
+            pointer-events: none;
+        }
+
+        .character-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .character-portrait {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border: 3px solid var(--border-color);
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .character-info {
+            flex: 1;
+        }
+
+        .character-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .character-job {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .character-level {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .character-visual {
+            position: relative;
+            width: 100%;
+            height: 160px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 10px 0;
+            background: var(--bg-dark);
+        }
+        .equip-overlay {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .char-full-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .equip-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        .equip-badge {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+        }
+        .stat-chart-wrap {
+            background: var(--bg-dark);
+            border-radius: 8px;
+            padding: 8px;
+            margin: 8px 0;
+        }
+        .stat-chart-title {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        #statChart {
+            display: block;
+            width: 100%;
+            height: 80px;
+        }
+
+        /* 装备槽位区域 */
+        .equipment-section {
+            margin-bottom: 20px;
+        }
+
+        .equipment-section-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .equipment-slot {
+            aspect-ratio: 1;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            min-height: 70px;
+        }
+
+        .equipment-slot:hover {
+            border-color: var(--job-heal);
+            background: var(--bg-card-hover);
+        }
+
+        .equipment-slot.filled {
+            border-color: var(--quality-green);
+        }
+
+        .equipment-slot.filled:hover {
+            border-color: var(--job-dps);
+        }
+
+        .slot-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .slot-empty-icon {
+            font-size: 20px;
+            opacity: 0.3;
+        }
+
+        .slot-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .slot-item-name {
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            padding: 0 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+
+        .slot-quality-white { color: var(--quality-white); }
+        .slot-quality-green { color: var(--quality-green); }
+        .slot-quality-blue { color: var(--quality-blue); }
+        .slot-quality-purple { color: var(--quality-purple); }
+
+        .equipment-slot.equipped {
+            border-color: var(--quality-green);
+            background: rgba(80, 250, 123, 0.05);
+        }
+
+        .equipment-slot.equipped .slot-label {
+            display: none;
+        }
+
+        /* ========== 装备穿戴动效 ========== */
+        @keyframes equip-flash {
+            0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.9); }
+            30%  { box-shadow: 0 0 20px 8px rgba(255,255,255,0.6); }
+            60%  { box-shadow: 0 0 35px 15px rgba(255,255,100,0.4); }
+            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+        }
+        @keyframes equip-particle {
+            0%   { opacity: 1; transform: translate(0,0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); }
+        }
+        @keyframes stat-bump {
+            0%   { opacity: 1; transform: translateY(0) scale(1); }
+            40%  { transform: translateY(-18px) scale(1.35); }
+            100% { opacity: 0; transform: translateY(-32px) scale(1); }
+        }
+        .equipment-slot.flash {
+            animation: equip-flash 0.6s ease-out forwards;
+        }
+        .equip-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            pointer-events: none;
+            animation: equip-particle 0.7s ease-out forwards;
+        }
+        .stat-bump {
+            position: absolute;
+            font-size: 12px;
+            font-weight: bold;
+            pointer-events: none;
+            animation: stat-bump 0.9s ease-out forwards;
+            white-space: nowrap;
+        }
+
+        .equip-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+
+        .equip-option:hover {
+            border-color: var(--job-heal);
+            background: var(--bg-card-hover);
+        }
+
+        .eq-stats {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+
+        /* 属性面板 */
+        .stats-section {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .stats-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .stat-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-icon {
+            width: 24px;
+            font-size: 14px;
+            text-align: center;
+            margin-right: 8px;
+        }
+
+        .stat-name {
+            width: 50px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stat-bar-container {
+            flex: 1;
+            height: 16px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            margin-right: 8px;
+        }
+
+        .stat-bar {
+            height: 100%;
+            border-radius: 8px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .stat-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
+        }
+
+        .stat-bar.hp { background: linear-gradient(90deg, #ff4a4a, #ff8080); }
+        .stat-bar.atk { background: linear-gradient(90deg, #ff9933, #ffcc66); }
+        .stat-bar.def { background: linear-gradient(90deg, #4a9eff, #80ccff); }
+        .stat-bar.str { background: linear-gradient(90deg, #ff6666, #ff9999); }
+        .stat-bar.agi { background: linear-gradient(90deg, #66ff66, #99ff99); }
+        .stat-bar.int { background: linear-gradient(90deg, #6666ff, #9999ff); }
+        .stat-bar.sta { background: linear-gradient(90deg, #ffcc00, #ffdd55); }
+
+        .stat-value {
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        /* 背包选中态 */
+        .equipment-item.equipped {
+            opacity: 0.5;
+            position: relative;
+        }
+
+        .equipment-item.equipped::after {
+            content: '已装备';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--job-heal);
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .equipment-item.clickable:hover {
+            border-color: var(--job-heal);
+            cursor: pointer;
+        }
+
+        /* 装备选择弹窗 */
+        .equip-select-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .equip-select-modal.show {
+            display: flex;
+        }
+
+        .equip-select-content {
+            background: var(--bg-card);
+            border: 4px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 360px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .equip-select-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .equip-select-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .equip-select-item {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .equip-select-item:hover {
+            border-color: var(--job-heal);
+            background: var(--bg-card-hover);
+        }
+
+        .equip-select-item-icon {
+            font-size: 24px;
+        }
+
+        .equip-select-item-info {
+            flex: 1;
+        }
+
+        .equip-select-item-name {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .equip-select-item-stats {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* 套装提示 */
+        .set-bonus {
+            background: linear-gradient(135deg, rgba(189, 147, 249, 0.1), rgba(80, 200, 120, 0.1));
+            border: 2px solid var(--quality-purple);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+            text-align: left;
+        }
+        
+        .set-bonus-title {
+            font-weight: bold;
+            color: var(--quality-purple);
+            margin-bottom: 8px;
+        }
+        
+        .set-bonus-item {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .set-bonus-item.active {
+            color: var(--quality-green);
+        }
+        
+        /* ========== 底部导航 ========== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            font-size: 12px;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: var(--job-heal);
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+        }
+        
+        /* ========== 分享卡 ========== */
+        .share-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        #shareCanvas {
+            display: none;
+        }
+        
+        .share-preview {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        
+        .share-preview canvas {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        
+        /* ========== 响应式 ========== */
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 36px;
+            }
+            
+            .character-preview, .result-character {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .idle-character {
+                width: 150px;
+                height: 150px;
+            }
+        }
+        
+        /* ========== 工具类 ========== */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mt-20 { margin-top: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <!-- ========== 顶部状态栏 ========== -->
+    <div class="top-bar" id="topBar" style="display: none;">
+        <div class="stat-item">
+            <span class="stat-label">等级</span>
+            <span class="stat-value level-display" id="topLevel">1</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">阶段</span>
+            <span class="stat-value stage-name" id="topStage">幼儿园</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">金币</span>
+            <span class="stat-value gold-display" id="topGold">0</span>
+        </div>
+    </div>
+
+    <!-- ========== 主容器 ========== -->
+    <div class="game-container">
+        
+        <!-- 标题页 -->
+        <div class="screen active" id="titleScreen">
+            <div class="title-screen">
+                <h1 class="game-title">AGENT WORLD</h1>
+                <p class="game-subtitle">25岁人生模拟器</p>
+
+                <div class="game-guide">
+                    <div class="guide-step">
+                        <span class="guide-num">1</span>
+                        <span class="guide-text">完成MTI性格测试，找到你的职业</span>
+                    </div>
+                    <div class="guide-step">
+                        <span class="guide-num">2</span>
+                        <span class="guide-text">挂机等待，获得经验、金币、装备</span>
+                    </div>
+                    <div class="guide-step">
+                        <span class="guide-num">3</span>
+                        <span class="guide-text">升级成长，从幼儿园一路玩到25岁</span>
+                    </div>
+                    <div class="guide-step">
+                        <span class="guide-num">4</span>
+                        <span class="guide-text">收集装备，组队副本，分享炫耀</span>
+                    </div>
+                </div>
+
+                <div class="character-preview">
+                    <span class="character-icon" style="color: var(--job-tank);">🛡️</span>
+                </div>
+
+                <button class="pixel-btn primary" onclick="startQuiz()">开始测试</button>
+                <button class="pixel-btn" style="margin-left: 12px;" onclick="loadGame()">继续游戏</button>
+            </div>
+        </div>
+        
+        <!-- MTI测试页 -->
+        <div class="screen" id="quizScreen">
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <div class="quiz-progress">
+                        <div class="progress-dot active" id="dot1"></div>
+                        <div class="progress-dot" id="dot2"></div>
+                        <div class="progress-dot" id="dot3"></div>
+                        <div class="progress-dot" id="dot4"></div>
+                    </div>
+                    <span id="quizNum">1/4</span>
+                </div>
+                
+                <div class="quiz-question" id="quizQuestion"></div>
+                
+                <div class="quiz-options" id="quizOptions"></div>
+            </div>
+            
+            <button class="pixel-btn" onclick="goBack('titleScreen')">返回</button>
+        </div>
+        
+        <!-- 职业确认引导页 -->
+        <div class="screen" id="confirmScreen">
+            <div class="confirm-container">
+                <div class="confirm-header">
+                    <p class="confirm-subtitle">你的性格类型是</p>
+                    <h2 class="confirm-mbti" id="confirmMbti">INTJ</h2>
+                    <p class="confirm-trait" id="confirmTrait">战略型思想家</p>
+                </div>
+
+                <div class="confirm-divider">↓ 根据你的性格，最适合你的职业是 ↓</div>
+
+                <div class="confirm-result">
+                    <div class="confirm-job-icon" id="confirmIcon">🛡️</div>
+                    <div class="confirm-job-name" id="confirmJob">坦克</div>
+                    <div class="confirm-job-badge" id="confirmBadge">坦克系</div>
+                </div>
+
+                <p class="confirm-desc" id="confirmDesc">
+                    你是坚实的守护者，擅长保护队友免受伤害。
+                </p>
+
+                <div class="confirm-tips">
+                    <div class="tip-box">
+                        <p class="tip-title">🎮 坦克职业特点</p>
+                        <p class="tip-text" id="confirmJobTips">• HP极高，防御最强<br>• 优先承受伤害保护队友<br>• 装备以板甲+盾牌为主</p>
+                    </div>
+                </div>
+
+                <div class="confirm-buttons">
+                    <button class="pixel-btn primary" onclick="confirmJob()">✅ 确认职业，进入游戏</button>
+                    <button class="pixel-btn" onclick="restartQuiz()">🔄 重新测试</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果页 -->
+        <div class="screen" id="resultScreen">
+            <div class="result-container">
+                <p class="result-title">你的职业是</p>
+                <h2 class="result-job" id="resultJob">坦克</h2>
+                <p class="result-level" id="resultLevel">Lv.1 启蒙阶段</p>
+
+                <div class="result-character">
+                    <img class="result-char-img" id="resultIcon" src="job_tank.png" alt="character" />
+                    <div class="job-badge" id="resultBadge">坦克系</div>
+                </div>
+
+                <p class="job-desc" id="jobDesc">
+                    你是坚实的守护者，擅长保护队友免受伤害。
+                </p>
+
+                <button class="pixel-btn primary" onclick="startGame()">进入游戏</button>
+
+                <div class="share-section">
+                    <button class="pixel-btn" onclick="generateShareCard()">📤 生成分享卡</button>
+                    <div class="share-preview" id="sharePreview" style="display: none;">
+                        <canvas id="shareCanvas" width="1200" height="630"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 外观选择页 -->
+        <div class="screen" id="appearanceScreen">
+            <div class="appearance-container">
+                <div class="appearance-header">
+                    <button class="pixel-btn" onclick="goBack('resultScreen')">← 返回</button>
+                    <h2 class="appearance-title">选择你的外观</h2>
+                    <div style="width: 80px;"></div>
+                </div>
+                
+                <p class="appearance-subtitle">为你的 <span id="appearJobName">坦克</span> 选择一个造型</p>
+                
+                <div class="appearance-cards" id="appearanceCards">
+                    <!-- 动态生成 -->
+                </div>
+                
+                <div class="appearance-confirm">
+                    <button class="pixel-btn primary" id="confirmAppearanceBtn" onclick="confirmAppearance()" disabled>✅ 确认外观</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 挂机主页 -->
+        <div class="screen" id="idleScreen">
+            <div class="idle-container">
+                <div class="idle-character">
+                    <img class="job-icon" id="idleIcon" src="job_tank.png" alt="character" />
+                </div>
+                
+                <div class="idle-status">
+                    <div class="idle-level" id="idleLevel">Lv.1</div>
+                    <div class="idle-stage" id="idleStage">幼儿园 · 启蒙阶段</div>
+                    <div class="idle-exp-bar">
+                        <div class="idle-exp-fill" id="expFill" style="width: 0%"></div>
+                    </div>
+                    <p class="idle-exp-text" id="expText">0 / 100 经验</p>
+                </div>
+                
+                <div class="wait-options">
+                    <button class="pixel-btn wait-btn tank" onclick="startWait(30)">
+                        ⏱️ 短等待
+                        <span>30秒</span>
+                    </button>
+                    <button class="pixel-btn wait-btn heal" onclick="startWait(120)">
+                        ⏱️ 长等待
+                        <span>120秒</span>
+                    </button>
+                </div>
+
+                <div class="wait-hint">
+                    <span>⏳ 挂机期间可切换到其他应用，时间到回来收菜</span>
+                </div>
+                <div class="reward-preview">
+                    <span class="reward-item">✨ 经验+<span id="previewExp">?</span></span>
+                    <span class="reward-item">💰 金币+<span id="previewGold">?</span></span>
+                    <span class="reward-item">📦 装备概率掉落</span>
+                </div>
+                
+                <button class="pixel-btn" onclick="showPanel('equipment')">🎒 背包</button>
+                <button class="pixel-btn dungeon-btn" onclick="showScreen('dungeonSelectScreen')">🏰 进入副本</button>
+            </div>
+        </div>
+
+        <!-- 副本选择界面 -->
+        <div class="screen" id="dungeonSelectScreen">
+            <div class="dungeon-header">
+                <button class="pixel-btn" onclick="showScreen('idleScreen')">← 返回</button>
+                <h2 class="dungeon-title">🏰 选择副本</h2>
+                <div class="dungeon-power">
+                    <span>⚔️ 战力</span>
+                    <span id="dungeonPower">0</span>
+                </div>
+            </div>
+            <div class="dungeon-list" id="dungeonList"></div>
+        </div>
+
+        <!-- 副本战斗界面 -->
+        <div class="screen" id="dungeonBattleScreen">
+            <div class="dungeon-battle-header">
+                <div class="battle-info">
+                    <span class="battle-dungeon-name" id="battleDungeonName">幽影森林</span>
+                    <span class="battle-floor-tag" id="battleFloorTag">第 1 层</span>
+                </div>
+                <button class="pixel-btn" onclick="showScreen('idleScreen')">× 退出</button>
+            </div>
+            <div class="battle-arena" id="battleArena">
+                <div class="battle-player" id="battlePlayer">
+                    <div class="player-hp-bar">
+                        <div class="hp-fill" id="playerHpFill" style="width:100%"></div>
+                    </div>
+                    <div class="player-hp-text" id="playerHpText">❤️ 100 / 100</div>
+                </div>
+                <div class="battle-enemy" id="battleEnemy">
+                    <div class="enemy-name" id="enemyName">怪物</div>
+                    <div class="enemy-hp-bar">
+                        <div class="hp-fill enemy-fill" id="enemyHpFill" style="width:100%"></div>
+                    </div>
+                    <div class="enemy-hp-text" id="enemyHpText">❤️ 50 / 50</div>
+                </div>
+            </div>
+            <div class="battle-waves" id="battleWaves">
+                <span>波次 <span id="currentWave">1</span> / <span id="totalWaves">3</span></span>
+            </div>
+            <div class="battle-log" id="battleLog">
+                <p class="log-tip">⚔️ 自动战斗中...</p>
+            </div>
+            <div class="battle-actions" id="battleActions">
+                <button class="pixel-btn heal-btn" id="healBtn" onclick="dungeonHeal()" style="display:none">💚 治疗 (30金币)</button>
+            </div>
+        </div>
+
+        <!-- 副本结算界面 -->
+        <div class="screen" id="dungeonResultScreen">
+            <div class="result-container">
+                <h2 class="result-title" id="resultTitle">🎉 副本通关！</h2>
+                <div class="result-rewards" id="resultRewards"></div>
+                <div class="result-detail" id="resultDetail"></div>
+                <button class="pixel-btn" onclick="showScreen('idleScreen'); updateIdleUI();">返回挂机</button>
+                <button class="pixel-btn heal-btn" id="nextFloorBtn" onclick="dungeonNextFloor()">→ 下一层</button>
+            </div>
+        </div>
+
+        <!-- 倒计时页 -->
+        <div class="screen" id="countdownScreen">
+            <div class="countdown-container">
+                <p class="countdown-tip">挂机中...请稍候</p>
+                
+                <div class="countdown-circle">
+                    <div class="countdown-ring" id="countdownRing">
+                        <div class="countdown-inner">
+                            <span class="countdown-time" id="countdownTime">30</span>
+                            <span class="countdown-label">剩余秒数</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="pixel-btn" onclick="cancelWait()">取消挂机</button>
+            </div>
+        </div>
+        
+        <!-- 角色详情面板 -->
+        <div class="screen" id="characterScreen">
+            <div class="character-screen">
+                <div class="character-card">
+                    <div class="character-header">
+                        <img class="character-portrait" id="charPortrait" src="job_tank.png" alt="character" />
+                        <div class="character-info">
+                            <div class="character-name" id="charName">坦克</div>
+                            <div class="character-job" id="charJob">坦克系</div>
+                            <div class="character-level" id="charLevel">Lv.1 幼儿园</div>
+                        </div>
+                        <button class="pixel-btn small" onclick="openCustomize()" style="margin-left: auto; font-size: 11px; padding: 4px 10px;">✏️ 换装/改名</button>
+                    </div>
+
+                    <div class="character-visual" id="charVisual">
+                        <!-- 装备图标叠加层（动态渲染）-->
+                    </div>
+
+                    <div class="stat-chart-wrap">
+                        <div class="stat-chart-title">📊 属性成长曲线</div>
+                        <canvas id="statChart" width="320" height="80"></canvas>
+                    </div>
+
+                    <div class="equipment-section">
+                        <div class="equipment-section-title">💼 装备栏</div>
+                        <div class="equipment-grid">
+                            <div class="equipment-slot" id="slot-weapon1" onclick="clickSlot('weapon1')">
+                                <span class="slot-empty-icon">⚔️</span>
+                                <span class="slot-label">武器</span>
+                            </div>
+                            <div class="equipment-slot" id="slot-weapon2" onclick="clickSlot('weapon2')">
+                                <span class="slot-empty-icon">⚔️</span>
+                                <span class="slot-label">武器2</span>
+                            </div>
+                            <div class="equipment-slot" id="slot-armor1" onclick="clickSlot('armor1')">
+                                <span class="slot-empty-icon">🦺</span>
+                                <span class="slot-label">防具</span>
+                            </div>
+                            <div class="equipment-slot" id="slot-armor2" onclick="clickSlot('armor2')">
+                                <span class="slot-empty-icon">🦺</span>
+                                <span class="slot-label">防具2</span>
+                            </div>
+                            <div class="equipment-slot" id="slot-accessory1" onclick="clickSlot('accessory1')">
+                                <span class="slot-empty-icon">💍</span>
+                                <span class="slot-label">饰品</span>
+                            </div>
+                            <div class="equipment-slot" id="slot-accessory2" onclick="clickSlot('accessory2')">
+                                <span class="slot-empty-icon">💍</span>
+                                <span class="slot-label">饰品2</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-section">
+                        <div class="stats-title">📊 属性面板</div>
+                        <div class="stat-row">
+                            <span class="stat-icon">❤️</span>
+                            <span class="stat-name">HP</span>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar hp" id="barHP" style="width: 100%"></div>
+                            </div>
+                            <span class="stat-value" id="statHP">150</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-icon">⚔️</span>
+                            <span class="stat-name">攻击</span>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar atk" id="barATK" style="width: 40%"></div>
+                            </div>
+                            <span class="stat-value" id="statATK">60</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-icon">🛡️</span>
+                            <span class="stat-name">防御</span>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar def" id="barDEF" style="width: 100%"></div>
+                            </div>
+                            <span class="stat-value" id="statDEF">180</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-icon">💪</span>
+                            <span class="stat-name">力量</span>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar str" id="barSTR" style="width: 30%"></div>
+                            </div>
+                            <span class="stat-value" id="statSTR">12</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-icon">🏃</span>
+                            <span class="stat-name">敏捷</span>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar agi" id="barAGI" style="width: 30%"></div>
+                            </div>
+                            <span class="stat-value" id="statAGI">12</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-icon">🧠</span>
+                            <span class="stat-name">智力</span>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar int" id="barINT" style="width: 30%"></div>
+                            </div>
+                            <span class="stat-value" id="statINT">12</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-icon">💚</span>
+                            <span class="stat-name">耐力</span>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar sta" id="barSTA" style="width: 30%"></div>
+                            </div>
+                            <span class="stat-value" id="statSTA">12</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="pixel-btn mt-20" onclick="showPanel('idle')">返回</button>
+            </div>
+        </div>
+
+        <!-- 装备面板 -->
+        <div class="screen" id="equipmentScreen">
+            <div class="equipment-panel">
+                <div class="panel-title">
+                    <span>🎒 背包</span>
+                    <span id="equipCount">0/10 件装备</span>
+                </div>
+
+                <div class="equipment-list" id="equipmentList">
+                    <p style="color: var(--text-secondary); text-align: center; padding: 40px;">
+                        暂无装备<br>挂机即可获得装备
+                    </p>
+                </div>
+
+                <div class="set-bonus" id="setBonus" style="display: none;">
+                    <div class="set-bonus-title">套装效果</div>
+                    <div id="setBonusContent"></div>
+                </div>
+
+                <button class="pixel-btn mt-20" onclick="showPanel('idle')">返回</button>
+            </div>
+        </div>
+
+    </div>
+    
+    <!-- ========== 收获弹窗 ========== -->
+    <div class="reward-modal" id="rewardModal">
+        <div class="reward-content">
+            <h3 class="reward-title">✨ 收菜成功!</h3>
+            
+            <div class="reward-items">
+                <div class="reward-item">
+                    <span class="reward-icon">⭐</span>
+                    <span class="reward-value" id="rewardExp">+50</span>
+                    <span style="font-size: 12px; color: var(--text-secondary);">经验</span>
+                </div>
+                <div class="reward-item">
+                    <span class="reward-icon">💰</span>
+                    <span class="reward-value" id="rewardGold">+20</span>
+                    <span style="font-size: 12px; color: var(--text-secondary);">金币</span>
+                </div>
+            </div>
+            
+            <div class="reward-equipment" id="rewardEquipment">
+                <div class="equipment-name" id="rewardEquipName">木剑</div>
+                <div class="equipment-stats" id="rewardEquipStats">ATK +5</div>
+            </div>
+            
+            <div class="reward-buttons">
+                <button class="pixel-btn primary" onclick="closeReward()">收下</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ========== 升级弹窗 ========== -->
+    <div class="levelup-modal" id="levelupModal">
+        <div class="levelup-content">
+            <div class="levelup-text">等级提升!</div>
+            <div class="levelup-detail" id="levelupDetail">Lv.2</div>
+        </div>
+    </div>
+
+    <!-- ========== 底部导航 ========== -->
+    <nav class="bottom-nav" id="bottomNav" style="display: none;">
+        <button class="nav-item active" onclick="showPanel('idle')">
+            <span class="nav-icon">🏠</span>
+            <span>主页</span>
+        </button>
+        <button class="nav-item" onclick="showPanel('character')">
+            <span class="nav-icon">👤</span>
+            <span>角色</span>
+        </button>
+        <button class="nav-item" onclick="showPanel('equipment')">
+            <span class="nav-icon">🎒</span>
+            <span>背包</span>
+        </button>
+        <button class="nav-item" onclick="showShare()">
+            <span class="nav-icon">📤</span>
+            <span>分享</span>
+        </button>
+    </nav>
+
+    <!-- ========== 装备选择弹窗 ========== -->
+    <div class="equip-select-modal" id="equipSelectModal">
+        <div class="equip-select-content">
+            <div class="equip-select-title" id="equipSelectTitle">选择装备</div>
+            <div class="equip-select-list" id="equipSelectList"></div>
+            <button class="pixel-btn" onclick="closeEquipSelect()">关闭</button>
+        </div>
+    </div>
+
+    <!-- ========== 换装/改名弹窗 ========== -->
+    <div class="customize-modal" id="customizeModal">
+        <div class="customize-content">
+            <div class="customize-title">✏️ 换装/改名</div>
+
+            <div class="customize-section">
+                <div class="customize-label">👤 改名</div>
+                <input class="pixel-input" id="customizeNameInput" type="text" placeholder="输入你的名字" maxlength="12" />
+            </div>
+
+            <div class="customize-section">
+                <div class="customize-label">🎨 外观</div>
+                <div class="customize-skins" id="customizeSkins">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <div class="customize-preview" id="customizePreview">
+                <img class="preview-img" id="previewImg" src="job_tank.png" alt="preview" />
+            </div>
+
+            <div class="customize-actions">
+                <button class="pixel-btn" onclick="closeCustomize()">取消</button>
+                <button class="pixel-btn primary" onclick="confirmCustomize()">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ========== 游戏数据 ========== */
+        const QuizData = [
+            {
+                question: "当你面对压力时，你倾向？",
+                options: [
+                    { text: "找朋友倾诉", type: "heal" },
+                    { text: "制定计划应对", type: "tank" },
+                    { text: "迎难而上冒险", type: "dps" }
+                ]
+            },
+            {
+                question: "你更喜欢什么样的朋友？",
+                options: [
+                    { text: "温柔善解人意", type: "heal" },
+                    { text: "稳重可靠", type: "tank" },
+                    { text: "机智灵活", type: "dps" }
+                ]
+            },
+            {
+                question: "你在团队中更愿意扮演？",
+                options: [
+                    { text: "支援角色", type: "heal" },
+                    { text: "保护队友", type: "tank" },
+                    { text: "冲锋陷阵", type: "dps" }
+                ]
+            },
+            {
+                question: "你觉得成功的关键是？",
+                options: [
+                    { text: "人际关系", type: "heal" },
+                    { text: "坚持不懈", type: "tank" },
+                    { text: "灵活变通", type: "dps" }
+                ]
+            }
+        ];
+
+        const JobInfo = {
+            tank: {
+                name: "坦克",
+                icon: "🛡️",
+                image: "job_tank.png",
+                color: "var(--job-tank)",
+                badge: "坦克系",
+                desc: "你是坚实的守护者，擅长保护队友免受伤害，沉稳可靠是你的代名词。"
+            },
+            heal: {
+                name: "治疗",
+                icon: "💚",
+                image: "job_healer.png",
+                color: "var(--job-heal)",
+                badge: "治疗系",
+                desc: "你是温暖的光之使者，善于治愈队友的心灵与伤口，温柔是你的力量。"
+            },
+            dps: {
+                name: "输出",
+                icon: "⚔️",
+                image: "job_dps.png",
+                color: "var(--job-dps)",
+                badge: "输出系",
+                desc: "你是锋利的刃之战士，追求极致的伤害输出，灵活变通是你的天赋。"
+            }
+        };
+
+        const StageInfo = [
+            { minLevel: 1, maxLevel: 5, name: "幼儿园", prefix: "启蒙", color: "var(--stage-1)" },
+            { minLevel: 6, maxLevel: 10, name: "小学", prefix: "童趣", color: "var(--stage-2)" },
+            { minLevel: 11, maxLevel: 13, name: "初中", prefix: "少年", color: "var(--stage-3)" },
+            { minLevel: 14, maxLevel: 16, name: "高中", prefix: "青春", color: "var(--stage-4)" },
+            { minLevel: 17, maxLevel: 21, name: "大学", prefix: "风华", color: "var(--stage-5)" },
+            { minLevel: 22, maxLevel: 25, name: "求职", prefix: "职场", color: "var(--stage-6)" }
+        ];
+
+        function getStageInfo(level) {
+            for (let i = StageInfo.length - 1; i >= 0; i--) {
+                if (level >= StageInfo[i].minLevel) return StageInfo[i];
+            }
+            return StageInfo[0];
+        }
+
+        const EquipmentTypes = ["剑", "盾", "护甲", "头盔", "护靴", "披风", "护腕", "戒指"];
+        const EquipmentPrefixes = [
+            "启蒙", "童趣", "少年", "青春", "风华", "职场",
+            "木制", "铁制", "银制", "金制", "钻石"
+        ];
+
+        const QualityConfig = {
+            white: { name: "普通", color: "var(--quality-white)", chance: 0.60, stats: [1, 5] },
+            green: { name: "优秀", color: "var(--quality-green)", chance: 0.25, stats: [5, 15] },
+            blue: { name: "稀有", color: "var(--quality-blue)", chance: 0.10, stats: [15, 30] },
+            purple: { name: "传说", color: "var(--quality-purple)", chance: 0.05, stats: [30, 50] }
+        };
+
+        /* ========== 副本系统数据 ========== */
+        const DungeonInfo = [
+            { id: 1,  name: "幽影森林",   icon: "🌲", floors: 5,  minLevel: 3,  color: "#4ade80", desc: "迷雾笼罩的古森林，藏着初级装备" },
+            { id: 2,  name: "迷雾沼泽",   icon: "🪨", floors: 5,  minLevel: 6,  color: "#a78bfa", desc: "剧毒瘴气弥漫，经验收益翻倍" },
+            { id: 3,  name: "灰烬盆地",   icon: "🔥", floors: 5,  minLevel: 11, color: "#fb923c", desc: "燃烧的废墟，稀有装备高概率掉落" },
+            { id: 4,  name: "裂谷遗迹",   icon: "⚡", floors: 5,  minLevel: 16, color: "#f472b6", desc: "远古文明遗迹，BOSS层奖励惊人" },
+            { id: 5,  name: "永夜要塞",   icon: "🌙", floors: 5,  minLevel: 21, color: "#38bdf8", desc: "终极挑战，25级满级玩家的圣地" }
+        ];
+
+        function getDungeonInfo(id) {
+            return DungeonInfo.find(d => d.id === id) || DungeonInfo[0];
+        }
+
+        function canEnterDungeon(dungeonId) {
+            const d = getDungeonInfo(dungeonId);
+            return gameState.level >= d.minLevel;
+        }
+
+        function getDungeonRewards(dungeonId, floor) {
+            const d = getDungeonInfo(dungeonId);
+            const multiplier = 1 + (floor - 1) * 0.4;
+            return {
+                exp: Math.floor((30 + d.id * 15 + floor * 10) * multiplier),
+                gold: Math.floor((15 + d.id * 8 + floor * 5) * multiplier),
+                equipChance: Math.min(0.05 + floor * 0.03 + d.id * 0.02, 0.5)
+            };
+        }
+
+        const StatTypes = ["HP", "ATK", "DEF"];
+
+        /* ========== 游戏状态 ========== */
+        let gameState = {
+            name: "",
+            level: 1,
+            exp: 0,
+            gold: 0,
+            job: null,
+            appearance: null,
+            equipment: [],
+            equipmentSlots: { weapon1: null, weapon2: null, armor1: null, armor2: null, accessory1: null, accessory2: null },
+            createdAt: null,
+            dungeonState: null  // { dungeonId, floor, hp, maxHp, wave, totalWaves, rewards }
+        };
+
+        let quizState = {
+            current: 0,
+            answers: []
+        };
+
+        let waitState = {
+            duration: 0,
+            remaining: 0,
+            interval: null
+        };
+
+        /* ========== 核心函数 ========== */
+        
+        // 切换页面显示
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            // 进入副本选择界面时渲染列表
+            if (screenId === 'dungeonSelectScreen') renderDungeonList();
+        }
+
+        // 返回按钮
+        function goBack(screenId) {
+            showScreen(screenId);
+        }
+
+        // 显示面板（底部导航用）
+        function showPanel(panel) {
+            if (panel === 'idle') {
+                // 如果正在倒计时中，恢复倒计时界面而不是主页
+                if (waitState.interval !== null && waitState.remaining > 0) {
+                    restoreCountdown();
+                } else {
+                    showScreen('idleScreen');
+                    updateIdleUI();
+                }
+            } else if (panel === 'equipment') {
+                showScreen('equipmentScreen');
+                updateEquipmentUI();
+            } else if (panel === 'character') {
+                showScreen('characterScreen');
+                updateCharacterPanel();
+            } else if (panel === 'share') {
+                showScreen('idleScreen');
+                generateShareCard();
+            }
+            updateNav(panel);
+        }
+
+        // 更新底部导航状态
+        function updateNav(panel) {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if (panel === 'idle') {
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            } else if (panel === 'equipment') {
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+            }
+        }
+
+        /* ========== MTI测试 ========== */
+        function startQuiz() {
+            quizState = { current: 0, answers: [] };
+            renderQuiz();
+            showScreen('quizScreen');
+        }
+
+        function renderQuiz() {
+            const q = QuizData[quizState.current];
+            document.getElementById('quizNum').textContent = `${quizState.current + 1}/4`;
+            document.getElementById('quizQuestion').textContent = q.question;
+            
+            const optionsEl = document.getElementById('quizOptions');
+            optionsEl.innerHTML = '';
+            
+            const letters = ['A', 'B', 'C'];
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('div');
+                btn.className = 'quiz-option';
+                btn.innerHTML = `
+                    <div class="option-letter">${letters[i]}</div>
+                    <div class="option-text">${opt.text}</div>
+                `;
+                btn.onclick = () => selectOption(i, opt.type);
+                optionsEl.appendChild(btn);
+            });
+            
+            // 更新进度点
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById('dot' + i);
+                dot.classList.remove('active', 'completed');
+                if (i < quizState.current + 1) {
+                    dot.classList.add('completed');
+                } else if (i === quizState.current + 1) {
+                    dot.classList.add('active');
+                }
+            }
+        }
+
+        function selectOption(index, type) {
+            quizState.answers.push(type);
+            
+            // 高亮选中项
+            document.querySelectorAll('.quiz-option').forEach((opt, i) => {
+                opt.classList.toggle('selected', i === index);
+            });
+            
+            // 延迟进入下一题
+            setTimeout(() => {
+                quizState.current++;
+                if (quizState.current < 4) {
+                    renderQuiz();
+                } else {
+                    finishQuiz();
+                }
+            }, 300);
+        }
+
+        function finishQuiz() {
+            // 统计各类型数量
+            const counts = { tank: 0, heal: 0, dps: 0 };
+            quizState.answers.forEach(a => counts[a]++);
+            
+            // 决定职业（多数获胜，相同则随机）
+            let job = 'tank';
+            const maxCount = Math.max(...Object.values(counts));
+            const candidates = Object.entries(counts).filter(([k, v]) => v === maxCount).map(([k]) => k);
+            job = candidates[Math.floor(Math.random() * candidates.length)];
+            
+            // 应用结果
+            gameState.job = job;
+            gameState.createdAt = Date.now();
+            
+            // 显示结果
+            const info = JobInfo[job];
+            document.getElementById('resultJob').textContent = info.name;
+            document.getElementById('resultJob').style.color = info.color;
+            document.getElementById('resultIcon').src = info.image || 'job_tank.png';
+            document.getElementById('resultBadge').textContent = info.badge;
+            document.getElementById('resultBadge').style.background = info.color;
+            document.getElementById('jobDesc').textContent = info.desc;
+
+            showScreen('confirmScreen');
+            fillConfirmScreen(job);
+        }
+
+        /* ========== 职业确认页 ========== */
+        function fillConfirmScreen(job) {
+            const jobInfo = JobInfo[job];
+            const traitMap = {
+                tank: '坚定守护者',
+                heal:  '温暖治愈者',
+                dps:   '无畏冒险家'
+            };
+            // 根据职业生成假的 MBTI（展示用）
+            const mbtiMap = {
+                tank: 'ISTJ',
+                heal: 'INFP',
+                dps:  'ESTP'
+            };
+            const descMap = {
+                tank: '你是坚实的守护者，擅长保护队友免受伤害。你的稳定和可靠是团队最坚实的后盾。',
+                heal: '你是温暖的光，擅长治愈队友的心灵与伤口。你的存在让整个队伍充满希望。',
+                dps:  '你是战场上的利刃，擅长快速击败敌人。你的勇气和决心无人能挡。'
+            };
+            const tipsMap = {
+                tank: '• HP极高，防御最强\n• 优先承受伤害保护队友\n• 装备以板甲+盾牌为主',
+                heal: '• 治疗能力出众，护盾强大\n• 辅助增益为主，续航能力强\n• 装备以法袍+圣器为主',
+                dps:  '• 攻击力爆发最高\n• 暴击率高，输出节奏快\n• 装备以轻甲+双武器为主'
+            };
+
+            document.getElementById('confirmMbti').textContent = mbtiMap[job];
+            document.getElementById('confirmTrait').textContent = traitMap[job];
+            document.getElementById('confirmIcon').textContent = jobInfo.icon;
+            document.getElementById('confirmIcon').style.color = jobInfo.color;
+            document.getElementById('confirmJob').textContent = jobInfo.name;
+            document.getElementById('confirmJob').style.color = jobInfo.color;
+            document.getElementById('confirmBadge').textContent = jobInfo.badge;
+            document.getElementById('confirmBadge').style.background = jobInfo.color;
+            document.getElementById('confirmDesc').textContent = descMap[job];
+            document.getElementById('confirmJobTips').innerHTML = tipsMap[job].replace(/\n/g, '<br>');
+        }
+
+        function confirmJob() {
+            showScreen('appearanceScreen');
+            showAppearanceScreen(gameState.job);
+        }
+
+        /* ========== 外观选择 ========== */
+        const AppearanceData = {
+            tank: [
+                { id: 'tank1', icon: '🛡️', name: '守护者', desc: '经典防护造型，坚不可摧' },
+                { id: 'tank2', icon: '⚔️', name: '十字军', desc: '神圣骑士，信仰坚定' },
+                { id: 'tank3', icon: '🏰', name: '堡垒', desc: '移动城池，难以撼动' }
+            ],
+            heal: [
+                { id: 'heal1', icon: '💚', name: '德鲁伊', desc: '自然之力，生命复苏' },
+                { id: 'heal2', icon: '✨', name: '圣光使', desc: '神圣光明，治愈万物' },
+                { id: 'heal3', icon: '🌸', name: '花仙', desc: '温柔细腻，呵护众生' }
+            ],
+            dps: [
+                { id: 'dps1', icon: '🔥', name: '烈焰', desc: '燃烧一切，毁灭之力' },
+                { id: 'dps2', icon: '⚡', name: '闪电', desc: '迅捷如风，一击必杀' },
+                { id: 'dps3', icon: '🌙', name: '暗影', desc: '潜行暗杀，来去无踪' }
+            ]
+        };
+
+        function showAppearanceScreen(job) {
+            const info = JobInfo[job];
+            document.getElementById('appearJobName').textContent = info.name;
+            document.getElementById('appearJobName').style.color = info.color;
+            
+            const cardsContainer = document.getElementById('appearanceCards');
+            cardsContainer.innerHTML = '';
+            
+            const appearances = AppearanceData[job];
+            appearances.forEach(app => {
+                const card = document.createElement('div');
+                card.className = 'appearance-card';
+                card.onclick = () => selectAppearance(app.id);
+                card.innerHTML = `
+                    <span class="appearance-icon">${app.icon}</span>
+                    <div class="appearance-name">${app.name}</div>
+                    <div class="appearance-desc">${app.desc}</div>
+                `;
+                card.dataset.id = app.id;
+                cardsContainer.appendChild(card);
+            });
+            
+            gameState.appearance = null;
+            document.getElementById('confirmAppearanceBtn').disabled = true;
+        }
+
+        function selectAppearance(id) {
+            gameState.appearance = id;
+            
+            document.querySelectorAll('.appearance-card').forEach(card => {
+                card.classList.toggle('selected', card.dataset.id === id);
+            });
+            
+            document.getElementById('confirmAppearanceBtn').disabled = false;
+        }
+
+        function confirmAppearance() {
+            if (!gameState.appearance) return;
+            
+            // 找到选中的外观信息
+            const job = gameState.job;
+            const appearances = AppearanceData[job];
+            const selectedApp = appearances.find(a => a.id === gameState.appearance);
+            
+            // 更新结果页显示
+            const info = JobInfo[job];
+            document.getElementById('resultJob').textContent = info.name;
+            document.getElementById('resultJob').style.color = info.color;
+            document.getElementById('resultIcon').src = info.image || 'job_tank.png';
+            document.getElementById('resultBadge').textContent = info.badge;
+            document.getElementById('resultBadge').style.background = info.color;
+            document.getElementById('jobDesc').textContent = info.desc;
+
+            showScreen('resultScreen');
+        }
+
+        /* ========== 游戏开始 ========== */
+        function startGame() {
+            saveGame();
+            updateTopBar();
+            updateIdleUI();
+            showScreen('idleScreen');
+            document.getElementById('bottomNav').style.display = 'flex';
+        }
+
+        function loadGame() {
+            const saved = localStorage.getItem('agentWorldGame');
+            if (saved) {
+                try {
+                    gameState = JSON.parse(saved);
+                    updateTopBar();
+                    updateIdleUI();
+                    showScreen('idleScreen');
+                    document.getElementById('bottomNav').style.display = 'flex';
+                } catch (e) {
+                    alert('存档读取失败，将开始新游戏');
+                    startQuiz();
+                }
+            } else {
+                startQuiz();
+            }
+        }
+
+        /* ========== UI更新 ========== */
+        function updateTopBar() {
+            document.getElementById('topLevel').textContent = gameState.level;
+            document.getElementById('topGold').textContent = gameState.gold;
+            const stage = getStage(gameState.level);
+            document.getElementById('topStage').textContent = stage.name;
+        }
+
+        function updateIdleUI() {
+            const job = gameState.job;
+            const info = JobInfo[job];
+            const stage = getStage(gameState.level);
+
+            // 显示职业立绘图片
+            const el = document.getElementById('idleIcon');
+            el.src = info.image || 'job_tank.png';
+            el.style.color = info.color;
+            document.getElementById('idleLevel').textContent = `Lv.${gameState.level}`;
+            document.getElementById('idleLevel').style.color = stage.color;
+            document.getElementById('idleStage').textContent = `${stage.name} · ${stage.prefix}阶段`;
+            
+            const expNeeded = gameState.level * 100;
+            const expPercent = (gameState.exp / expNeeded) * 100;
+            document.getElementById('expFill').style.width = expPercent + '%';
+            document.getElementById('expText').textContent = `${gameState.exp} / ${expNeeded} 经验`;
+
+            // 更新奖励预览（根据当前等级估算）
+            const shortExp = 10 + gameState.level * 3;
+            const longExp = 30 + gameState.level * 8;
+            const shortGold = 5 + gameState.level * 2;
+            const longGold = 20 + gameState.level * 5;
+            document.getElementById('previewExp').textContent = `${shortExp}~${longExp}`;
+            document.getElementById('previewGold').textContent = `${shortGold}~${longGold}`;
+
+            updateTopBar();
+        }
+
+        function getStage(level) {
+            for (const s of StageInfo) {
+                if (level >= s.minLevel && level <= s.maxLevel) {
+                    return s;
+                }
+            }
+            return StageInfo[StageInfo.length - 1];
+        }
+
+        function restoreCountdown() {
+            // 恢复倒计时界面，保持interval继续运行
+            showScreen('countdownScreen');
+            document.getElementById('countdownTime').textContent = waitState.remaining;
+            const ring = document.getElementById('countdownRing');
+            // 重新设置动画：从当前剩余时间的位置继续
+            ring.style.animation = 'none';
+            ring.offsetHeight;
+            ring.style.animation = `countdownRotate ${waitState.duration}s linear forwards`;
+            // interval已经在运行，不需要重启
+        }
+
+        /* ========== 挂机系统 ========== */
+        function startWait(seconds) {
+            waitState.duration = seconds;
+            waitState.remaining = seconds;
+            
+            document.getElementById('countdownTime').textContent = seconds;
+            
+            const ring = document.getElementById('countdownRing');
+            ring.style.animation = 'none';
+            ring.offsetHeight; // 触发重排
+            ring.style.animation = `countdownRotate ${seconds}s linear forwards`;
+            
+            showScreen('countdownScreen');
+            
+            waitState.interval = setInterval(() => {
+                waitState.remaining--;
+                document.getElementById('countdownTime').textContent = waitState.remaining;
+                
+                if (waitState.remaining <= 0) {
+                    clearInterval(waitState.interval);
+                    finishWait();
+                }
+            }, 1000);
+        }
+
+        function cancelWait() {
+            if (waitState.interval) {
+                clearInterval(waitState.interval);
+                waitState.interval = null;
+            }
+            showScreen('idleScreen');
+        }
+
+        function finishWait() {
+            // 计算奖励
+            const baseExp = 20 + gameState.level * 5;
+            const baseGold = 10 + gameState.level * 2;
+            
+            // 随机装备
+            const equipment = generateEquipment();
+            
+            // 更新状态
+            gameState.exp += baseExp;
+            gameState.gold += baseGold;
+            if (gameState.equipment.length >= 10) {
+                gameState.equipment.pop();
+            }
+            gameState.equipment.unshift(equipment);
+            
+            // 检查升级
+            let leveledUp = false;
+            while (gameState.exp >= gameState.level * 100) {
+                gameState.exp -= gameState.level * 100;
+                gameState.level++;
+                leveledUp = true;
+            }
+            
+            saveGame();
+            
+            // 显示奖励
+            document.getElementById('rewardExp').textContent = `+${baseExp}`;
+            document.getElementById('rewardGold').textContent = `+${baseGold}`;
+            document.getElementById('rewardEquipName').textContent = equipment.name;
+            document.getElementById('rewardEquipName').style.color = QualityConfig[equipment.quality].color;
+            document.getElementById('rewardEquipStats').textContent = equipment.stats.map(s => `${s.type} +${s.value}`).join(' | ');
+            
+            document.getElementById('rewardEquipment').style.display = 'block';
+            
+            const modal = document.getElementById('rewardModal');
+            modal.classList.add('show');
+            
+            if (leveledUp) {
+                setTimeout(() => showLevelUp(), 500);
+            }
+        }
+
+        function closeReward() {
+            document.getElementById('rewardModal').classList.remove('show');
+            updateIdleUI();
+            showScreen('idleScreen');
+        }
+
+        /* ========== 装备系统 ========== */
+        function generateEquipment() {
+            // 随机品质
+            const rand = Math.random();
+            let quality = 'white';
+            let cumulative = 0;
+            for (const [q, cfg] of Object.entries(QualityConfig)) {
+                cumulative += cfg.chance;
+                if (rand < cumulative) {
+                    quality = q;
+                    break;
+                }
+            }
+            
+            // 随机类型
+            const type = EquipmentTypes[Math.floor(Math.random() * EquipmentTypes.length)];
+            
+            // 随机前缀（基于等级）
+            const prefixIndex = Math.min(Math.floor((gameState.level - 1) / 5), EquipmentPrefixes.length - 1);
+            const prefix = EquipmentPrefixes[prefixIndex];
+            
+            // 随机属性
+            const cfg = QualityConfig[quality];
+            const statCount = quality === 'purple' ? 3 : (quality === 'blue' ? 2 : 1);
+            const stats = [];
+            const usedStats = [];
+            for (let i = 0; i < statCount; i++) {
+                let statType;
+                do {
+                    statType = StatTypes[Math.floor(Math.random() * StatTypes.length)];
+                } while (usedStats.includes(statType));
+                usedStats.push(statType);
+                const value = Math.floor(Math.random() * (cfg.stats[1] - cfg.stats[0] + 1)) + cfg.stats[0];
+                stats.push({ type: statType, value });
+            }
+            
+            return {
+                id: Date.now(),
+                name: `${prefix}${type}`,
+                quality,
+                type,
+                stats
+            };
+        }
+
+        function updateEquipmentUI() {
+            const list = document.getElementById('equipmentList');
+            document.getElementById('equipCount').textContent = `${gameState.equipment.length}/10 件装备`;
+            
+            if (gameState.equipment.length === 0) {
+                list.innerHTML = `
+                    <p style="color: var(--text-secondary); text-align: center; padding: 40px;">
+                        暂无装备<br>挂机即可获得装备
+                    </p>
+                `;
+                document.getElementById('setBonus').style.display = 'none';
+                return;
+            }
+            
+            list.innerHTML = gameState.equipment.map(eq => {
+                const q = QualityConfig[eq.quality];
+                return `
+                    <div class="equipment-item">
+                        <span class="equipment-icon quality-${eq.quality}">${getEquipIcon(eq.type)}</span>
+                        <div class="equipment-info">
+                            <div class="equipment-name quality-${eq.quality}">${eq.name}</div>
+                            <div class="equipment-props">${eq.stats.map(s => `${s.type} +${s.value}`).join(' | ')}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // 检查套装效果
+            checkSetBonus();
+        }
+
+        function getEquipIcon(type) {
+            const icons = {
+                "剑": "⚔️", "盾": "🛡️", "护甲": "🦺", "头盔": "⛑️",
+                "护靴": "👢", "披风": "🧣", "护腕": "🧤", "戒指": "💍"
+            };
+            return icons[type] || "📦";
+        }
+
+        function checkSetBonus() {
+            const types = gameState.equipment.map(eq => eq.type);
+            const uniqueTypes = [...new Set(types)];
+            const setBonus = document.getElementById('setBonus');
+            const content = document.getElementById('setBonusContent');
+            
+            let bonusHTML = '';
+            
+            // 2件套
+            if (uniqueTypes.length >= 2) {
+                const bonus2 = gameState.level * 5;
+                bonusHTML += `<div class="set-bonus-item active">✅ 2件套: 全属性 +${bonus2}</div>`;
+            } else {
+                bonusHTML += `<div class="set-bonus-item">⬜ 2件套: 收集2种不同装备解锁</div>`;
+            }
+            
+            // 4件套
+            if (uniqueTypes.length >= 4) {
+                const bonus4 = gameState.level * 10;
+                bonusHTML += `<div class="set-bonus-item active">✅ 4件套: 全属性 +${bonus4}</div>`;
+            } else {
+                bonusHTML += `<div class="set-bonus-item">⬜ 4件套: 收集4种不同装备解锁</div>`;
+            }
+            
+            content.innerHTML = bonusHTML;
+            setBonus.style.display = uniqueTypes.length >= 2 ? 'block' : 'none';
+        }
+
+        /* ========== 升级动画 ========== */
+        function showLevelUp() {
+            const modal = document.getElementById('levelupModal');
+            document.getElementById('levelupDetail').textContent = `Lv.${gameState.level}`;
+            
+            // 粒子效果
+            const content = modal.querySelector('.levelup-content');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const angle = (Math.PI * 2 / 20) * i;
+                const distance = 100 + Math.random() * 100;
+                particle.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+                particle.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+                particle.style.left = '50%';
+                particle.style.top = '50%';
+                content.appendChild(particle);
+            }
+            
+            modal.classList.add('show');
+            
+            setTimeout(() => {
+                modal.classList.remove('show');
+                // 移除粒子
+                content.querySelectorAll('.particle').forEach(p => p.remove());
+            }, 2000);
+        }
+
+        /* ========== 副本系统 ========== */
+        function renderDungeonList() {
+            const list = document.getElementById('dungeonList');
+            const power = calculateStats().ATK + calculateStats().DEF;
+            document.getElementById('dungeonPower').textContent = power;
+            list.innerHTML = DungeonInfo.map(d => {
+                const locked = !canEnterDungeon(d.id);
+                const rewards = getDungeonRewards(d.id, 1);
+                return `
+                    <div class="dungeon-card ${locked ? 'locked' : ''}"
+                         onclick="${locked ? '' : `startDungeon(${d.id})`}">
+                        <div class="dungeon-card-header">
+                            <span class="dungeon-card-icon">${d.icon}</span>
+                            <div>
+                                <div class="dungeon-card-name" style="color:${d.color}">${d.name}</div>
+                                <div class="dungeon-card-meta">
+                                    <span>🏰 ${d.floors}层</span>
+                                    <span>⚔️ 战力 ${d.minLevel * 15}~${d.minLevel * 30}</span>
+                                    ${locked ? `<span class="locked-tag">🔒 Lv.${d.minLevel}解锁</span>` : `<span>✨ 经验+${rewards.exp}</span>`}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dungeon-card-desc">${d.desc}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function startDungeon(dungeonId) {
+            const d = getDungeonInfo(dungeonId);
+            // 初始化副本状态：从未通关过的层开始
+            if (!gameState.dungeonState || gameState.dungeonState.dungeonId !== dungeonId) {
+                gameState.dungeonState = {
+                    dungeonId,
+                    floor: 1,
+                    totalFloors: d.floors
+                };
+            }
+            startDungeonFloor();
+        }
+
+        function startDungeonFloor() {
+            const { dungeonId, floor } = gameState.dungeonState;
+            const d = getDungeonInfo(dungeonId);
+            const stats = calculateStats();
+            const maxHp = stats.HP;
+
+            gameState.dungeonState = {
+                ...gameState.dungeonState,
+                hp: maxHp,
+                maxHp,
+                wave: 1,
+                totalWaves: 3,
+                playerAtk: stats.ATK,
+                playerDef: stats.DEF,
+                battleOver: false,
+                interval: null
+            };
+
+            // 更新UI
+            document.getElementById('battleDungeonName').textContent = d.icon + ' ' + d.name;
+            document.getElementById('battleFloorTag').textContent = `第 ${floor} / ${d.floors} 层`;
+            document.getElementById('currentWave').textContent = 1;
+            document.getElementById('totalWaves').textContent = 3;
+            document.getElementById('playerHpFill').style.width = '100%';
+            document.getElementById('playerHpText').textContent = `❤️ ${maxHp} / ${maxHp}`;
+            document.getElementById('enemyHpFill').style.width = '100%';
+            document.getElementById('battleLog').innerHTML = '<p class="log-tip">⚔️ 自动战斗中...</p>';
+
+            // 显示敌人
+            spawnEnemy();
+            showScreen('dungeonBattleScreen');
+
+            // 开始自动战斗
+            gameState.dungeonState.interval = setInterval(dungeonTick, 1000);
+        }
+
+        function spawnEnemy() {
+            const { dungeonId, floor, wave } = gameState.dungeonState;
+            const d = getDungeonInfo(dungeonId);
+            const enemyHp = Math.floor((30 + floor * 25 + wave * 10) * (1 + (d.id - 1) * 0.3));
+            const enemyAtk = Math.floor((5 + floor * 8 + wave * 3) * (1 + (d.id - 1) * 0.2));
+            gameState.dungeonState.enemyHp = enemyHp;
+            gameState.dungeonState.enemyMaxHp = enemyHp;
+            gameState.dungeonState.enemyAtk = enemyAtk;
+
+            const enemyNames = ['哥布林', '骷髅兵', '毒蛇', '石魔像', '暗影刺客', '火焰领主', '冰霜巨龙'];
+            const nameIdx = (d.id + floor + wave) % enemyNames.length;
+            document.getElementById('enemyName').textContent = enemyNames[nameIdx];
+            document.getElementById('enemyHpFill').style.width = '100%';
+            document.getElementById('enemyHpText').textContent = `❤️ ${enemyHp} / ${enemyHp}`;
+        }
+
+        function dungeonTick() {
+            const s = gameState.dungeonState;
+            if (s.battleOver) return;
+
+            // 玩家攻击
+            playerAttackEnemy();
+            if (s.enemyHp <= 0) {
+                enemyDefeated();
+                return;
+            }
+
+            // 敌人攻击
+            enemyAttackPlayer();
+            if (s.hp <= 0) {
+                dungeonFail();
+                return;
+            }
+        }
+
+        function playerAttackEnemy() {
+            const s = gameState.dungeonState;
+            const dmg = Math.max(1, s.playerAtk - Math.floor(s.enemyMaxHp * 0.1));
+            s.enemyHp = Math.max(0, s.enemyHp - dmg);
+            const pct = Math.max(0, s.enemyHp / s.enemyMaxHp * 100);
+            document.getElementById('enemyHpFill').style.width = pct + '%';
+            document.getElementById('enemyHpText').textContent = `❤️ ${s.enemyHp} / ${s.enemyMaxHp}`;
+            addBattleLog(`⚔️ 你造成了 ${dmg} 点伤害`, 'damage');
+        }
+
+        function enemyAttackPlayer() {
+            const s = gameState.dungeonState;
+            const dmg = Math.max(1, s.enemyAtk - Math.floor(s.playerDef * 0.3));
+            s.hp = Math.max(0, s.hp - dmg);
+            const pct = Math.max(0, s.hp / s.maxHp * 100);
+            document.getElementById('playerHpFill').style.width = pct + '%';
+            document.getElementById('playerHpText').textContent = `❤️ ${s.hp} / ${s.maxHp}`;
+            addBattleLog(`👹 敌人造成了 ${dmg} 点伤害`, 'damage');
+
+            // HP低于30%显示治疗按钮
+            const healBtn = document.getElementById('healBtn');
+            if (pct < 30) {
+                healBtn.style.display = 'block';
+            }
+        }
+
+        function addBattleLog(text, type) {
+            const log = document.getElementById('battleLog');
+            const p = document.createElement('p');
+            p.className = `log-${type}`;
+            p.textContent = text;
+            log.appendChild(p);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function enemyDefeated() {
+            const s = gameState.dungeonState;
+            addBattleLog(`✅ 击败了敌人！`, 'heal');
+
+            if (s.wave < s.totalWaves) {
+                // 还有下一波
+                s.wave++;
+                document.getElementById('currentWave').textContent = s.wave;
+                spawnEnemy();
+            } else {
+                // 通关本层
+                clearInterval(s.interval);
+                s.battleOver = true;
+                setTimeout(() => showDungeonResult(), 800);
+            }
+        }
+
+        function dungeonHeal() {
+            const s = gameState.dungeonState;
+            if (gameState.gold < 30) {
+                addBattleLog('💧 金币不足，无法治疗！', 'damage');
+                return;
+            }
+            gameState.gold -= 30;
+            s.hp = Math.min(s.maxHp, s.hp + Math.floor(s.maxHp * 0.5));
+            const pct = s.hp / s.maxHp * 100;
+            document.getElementById('playerHpFill').style.width = pct + '%';
+            document.getElementById('playerHpText').textContent = `❤️ ${s.hp} / ${s.maxHp}`;
+            document.getElementById('healBtn').style.display = 'none';
+            addBattleLog(`💚 恢复了 ${Math.floor(s.maxHp * 0.5)} HP！`, 'heal');
+            saveGame();
+        }
+
+        function dungeonFail() {
+            const s = gameState.dungeonState;
+            clearInterval(s.interval);
+            s.battleOver = true;
+            addBattleLog('💀 挑战失败...', 'damage');
+            setTimeout(() => {
+                showScreen('dungeonResultScreen');
+                document.getElementById('resultTitle').textContent = '💀 挑战失败';
+                document.getElementById('resultTitle').style.color = 'var(--color-danger)';
+                document.getElementById('resultRewards').innerHTML = `
+                    <div class="result-reward-item">💰 金币 -30（治疗消耗）</div>
+                `;
+                document.getElementById('resultDetail').textContent = '再试一次，或返回挂机攒装备！';
+                document.getElementById('nextFloorBtn').style.display = 'none';
+            }, 800);
+        }
+
+        function showDungeonResult() {
+            const { dungeonId, floor } = gameState.dungeonState;
+            const rewards = getDungeonRewards(dungeonId, floor);
+            const isLastFloor = floor >= gameState.dungeonState.totalFloors;
+
+            // 发放奖励
+            // 经验结算
+            let leveledUp = false;
+            gameState.exp += rewards.exp;
+            while (gameState.exp >= gameState.level * 100) {
+                gameState.exp -= gameState.level * 100;
+                gameState.level++;
+                leveledUp = true;
+            }
+            gameState.gold += rewards.gold;
+            let equipDrop = null;
+            if (Math.random() < rewards.equipChance) {
+                const qualityKeys = ['white', 'green', 'blue', 'purple'];
+                const q = qualityKeys[Math.floor(Math.random() * qualityKeys.length)];
+                const types = ['剑', '盾', '护甲', '头盔', '护靴', '戒指'];
+                equipDrop = {
+                    id: 'eq_dungeon_' + Date.now(),
+                    name: QualityConfig[q].name + types[Math.floor(Math.random() * types.length)],
+                    type: types[Math.floor(Math.random() * types.length)],
+                    quality: Object.keys(QualityConfig).indexOf(q),
+                    stats: [{ type: ['HP','ATK','DEF'][Math.floor(Math.random()*3)], value: Math.floor(Math.random() * 20) + 5 }]
+                };
+                gameState.equipment.push(equipDrop);
+            }
+
+            if (leveledUp) setTimeout(() => showLevelUp(), 500);
+
+            showScreen('dungeonResultScreen');
+            document.getElementById('resultTitle').textContent = isLastFloor ? '🏆 副本通关！' : `✅ 第 ${floor} 层通关！`;
+            document.getElementById('resultTitle').style.color = 'var(--color-success)';
+            let html = `
+                <div class="result-reward-item">✨ 经验 +${rewards.exp}</div>
+                <div class="result-reward-item">💰 金币 +${rewards.gold}</div>
+            `;
+            if (equipDrop) {
+                const q = QualityConfig[Object.keys(QualityConfig)[equipDrop.quality]];
+                html += `<div class="result-reward-item" style="color:${q.color}">📦 获得 ${equipDrop.name}</div>`;
+            }
+            document.getElementById('resultRewards').innerHTML = html;
+            document.getElementById('resultDetail').textContent = `下一层奖励更高，是否继续？`;
+
+            // 只有未通关才能继续
+            document.getElementById('nextFloorBtn').style.display = isLastFloor ? 'none' : 'inline-block';
+            saveGame();
+        }
+
+        function dungeonNextFloor() {
+            gameState.dungeonState.floor++;
+            gameState.dungeonState.battleOver = false;
+            startDungeonFloor();
+        }
+
+        /* ========== 存档系统 ========== */
+        function saveGame() {
+            localStorage.setItem('agentWorldGame', JSON.stringify(gameState));
+        }
+
+        function resetGame() {
+            localStorage.removeItem('agentWorldGame');
+            location.reload();
+        }
+
+        /* ========== 角色面板 ========== */
+        function updateCharacterPanel() {
+            const job = JobInfo[gameState.job] || { name: '未知', icon: '❓', color: '#888', badge: '?' };
+            const stage = getStageInfo(gameState.level);
+
+            // B1: 角色立绘图片 + 装备图标叠加层
+            document.getElementById('charPortrait').src = job.image || 'job_tank.png';
+            document.getElementById('charName').textContent = gameState.playerName || job.name;
+            document.getElementById('charJob').textContent = job.badge;
+            document.getElementById('charLevel').textContent = `Lv.${gameState.level} ${stage.name}`;
+
+            // B1: 装备可视化 — 在 charVisual 里渲染装备图标叠加
+            const charVisual = document.getElementById('charVisual');
+            const equipSlotMap = {
+                weapon1: { icon: '⚔️', label: '武1', x: '10%',  y: '20%' },
+                weapon2: { icon: '⚔️', label: '武2', x: '0%',   y: '40%' },
+                armor1:  { icon: '🛡️', label: '甲1', x: '70%',  y: '10%' },
+                armor2:  { icon: '🛡️', label: '甲2', x: '80%',  y: '35%' },
+                accessory1:{ icon: '💎', label: '饰1', x: '15%',  y: '65%' },
+                accessory2:{ icon: '💎', label: '饰2', x: '65%',  y: '70%' }
+            };
+            let equipHTML = `<div class="equip-overlay">
+                <img class="char-full-img" src="${job.image || 'job_tank.png'}" alt="character" />
+                <div class="equip-layer">`;
+            Object.entries(gameState.equipmentSlots).forEach(([slot, eq]) => {
+                if (eq) {
+                    const pos = equipSlotMap[slot] || { x: '50%', y: '50%' };
+                    equipHTML += `<div class="equip-badge" style="left:${pos.x};top:${pos.y}" title="${eq.name}">${getEquipIcon(eq.type)}</div>`;
+                }
+            });
+            equipHTML += `</div></div>`;
+            charVisual.innerHTML = equipHTML;
+
+            // 更新装备槽位
+            const slots = ['weapon1','weapon2','armor1','armor2','accessory1','accessory2'];
+            const slotLabels = ['武器','武器2','防具','防具2','饰品','饰品2'];
+            const slotIcons = { weapon1:'⚔️', weapon2:'⚔️', armor1:'🦺', armor2:'🦺', accessory1:'💍', accessory2:'💍' };
+
+            slots.forEach((slot, i) => {
+                const el = document.getElementById('slot-' + slot);
+                const eq = gameState.equipmentSlots[slot];
+                if (eq) {
+                    el.innerHTML = `
+                        <span class="slot-icon quality-${eq.quality}">${getEquipIcon(eq.type)}</span>
+                        <span class="slot-name quality-${eq.quality}">${eq.name}</span>
+                    `;
+                    el.classList.add('equipped');
+                } else {
+                    el.innerHTML = `
+                        <span class="slot-empty-icon">${slotIcons[slot]}</span>
+                        <span class="slot-label">${slotLabels[i]}</span>
+                    `;
+                    el.classList.remove('equipped');
+                }
+            });
+
+            // 计算属性
+            const stats = calculateStats();
+
+            // 更新属性条
+            const maxHP = 300, maxATK = 200, maxDEF = 250, maxSub = 80;
+            document.getElementById('barHP').style.width = Math.min(stats.HP / maxHP * 100, 100) + '%';
+            document.getElementById('barATK').style.width = Math.min(stats.ATK / maxATK * 100, 100) + '%';
+            document.getElementById('barDEF').style.width = Math.min(stats.DEF / maxDEF * 100, 100) + '%';
+            document.getElementById('barSTR').style.width = Math.min(stats.STR / maxSub * 100, 100) + '%';
+            document.getElementById('barAGI').style.width = Math.min(stats.AGI / maxSub * 100, 100) + '%';
+            document.getElementById('barINT').style.width = Math.min(stats.INT / maxSub * 100, 100) + '%';
+            document.getElementById('barSTA').style.width = Math.min(stats.STA / maxSub * 100, 100) + '%';
+            document.getElementById('statHP').textContent = stats.HP;
+            document.getElementById('statATK').textContent = stats.ATK;
+            document.getElementById('statDEF').textContent = stats.DEF;
+            document.getElementById('statSTR').textContent = stats.STR;
+            document.getElementById('statAGI').textContent = stats.AGI;
+            document.getElementById('statINT').textContent = stats.INT;
+            document.getElementById('statSTA').textContent = stats.STA;
+
+            // B2: 属性成长曲线 Canvas
+            drawStatChart();
+        }
+
+        function drawStatChart() {
+            const canvas = document.getElementById('statChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width, H = canvas.height;
+            const stats = calculateStats();
+            const attrs = [
+                { name: 'HP', val: stats.HP, max: 300, color: '#e74c3c' },
+                { name: 'ATK', val: stats.ATK, max: 200, color: '#e67e22' },
+                { name: 'DEF', val: stats.DEF, max: 250, color: '#3498db' },
+                { name: 'STR', val: stats.STR, max: 80, color: '#9b59b6' },
+                { name: 'AGI', val: stats.AGI, max: 80, color: '#2ecc71' },
+                { name: 'INT', val: stats.INT, max: 80, color: '#f1c40f' },
+                { name: 'STA', val: stats.STA, max: 80, color: '#1abc9c' }
+            ];
+            const barW = W / attrs.length - 4;
+            ctx.clearRect(0, 0, W, H);
+            attrs.forEach((a, i) => {
+                const x = i * (barW + 4) + 2;
+                const barH = (a.val / a.max) * (H - 20);
+                const y = H - 20 - barH;
+                ctx.fillStyle = a.color;
+                ctx.fillRect(x, y, barW, barH);
+                ctx.fillStyle = '#e0e0e0';
+                ctx.font = '9px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(a.name, x + barW/2, H - 6);
+                ctx.fillText(a.val, x + barW/2, y - 3);
+            });
+        }
+
+        function calculateStats() {
+            const base = {
+                tank:  { HP: 150, ATK: 60, DEF: 180 },
+                heal:  { HP: 110, ATK: 80, DEF: 100 },
+                dps:   { HP: 80,  ATK: 150, DEF: 50  }
+            };
+            const job = gameState.job || 'tank';
+            const b = base[job];
+
+            let equipHP = 0, equipATK = 0, equipDEF = 0, equipSTR = 0, equipAGI = 0, equipINT = 0, equipSTA = 0;
+
+            Object.values(gameState.equipmentSlots).forEach(eq => {
+                if (!eq) return;
+                eq.stats.forEach(s => {
+                    if (s.type === 'HP')  equipHP  += s.value;
+                    if (s.type === 'ATK') equipATK += s.value;
+                    if (s.type === 'DEF') equipDEF += s.value;
+                    if (s.type === 'STR') equipSTR += s.value;
+                    if (s.type === 'AGI') equipAGI += s.value;
+                    if (s.type === 'INT') equipINT += s.value;
+                    if (s.type === 'STA') equipSTA += s.value;
+                });
+            });
+
+            return {
+                HP:  Math.floor(b.HP  * (1 + gameState.level * 0.1)) + equipHP,
+                ATK: Math.floor(b.ATK * (1 + gameState.level * 0.05)) + equipATK,
+                DEF: Math.floor(b.DEF * (1 + gameState.level * 0.05)) + equipDEF,
+                STR: 10 + gameState.level * 2 + equipSTR,
+                AGI: 10 + gameState.level * 2 + equipAGI,
+                INT: 10 + gameState.level * 2 + equipINT,
+                STA: 10 + gameState.level * 2 + equipSTA
+            };
+        }
+
+        // 点击装备槽位
+        let currentSlot = null;
+        function clickSlot(slot) {
+            currentSlot = slot;
+            const eq = gameState.equipmentSlots[slot];
+
+            if (eq) {
+                // 槽位有装备 → 卸下
+                unequipItem(slot);
+            } else {
+                // 槽位为空 → 从背包选一件
+                openEquipSelect(slot);
+            }
+        }
+
+        function unequipItem(slot) {
+            const eq = gameState.equipmentSlots[slot];
+            if (!eq) return;
+            gameState.equipment.push(eq);
+            gameState.equipmentSlots[slot] = null;
+            saveGame();
+            updateCharacterPanel();
+            updateEquipmentUI();
+        }
+
+        function openEquipSelect(slot) {
+            const slotType = slot.startsWith('weapon') ? 'weapon' :
+                             slot.startsWith('armor')   ? 'armor'   : 'accessory';
+
+            // 按类型筛选背包里的装备
+            const typeMap = {
+                weapon: ['剑', '盾'],
+                armor:  ['护甲', '头盔', '护靴', '披风', '护腕'],
+                accessory: ['戒指']
+            };
+            const allowed = typeMap[slotType] || [];
+
+            const candidates = gameState.equipment.filter(eq =>
+                allowed.includes(eq.type) && !Object.values(gameState.equipmentSlots).find(e => e && e.id === eq.id)
+            );
+
+            if (candidates.length === 0) {
+                alert('背包里没有可装备的物品');
+                return;
+            }
+
+            const list = document.getElementById('equipSelectList');
+            document.getElementById('equipSelectTitle').textContent = `选择装备（${slot}）`;
+            list.innerHTML = candidates.map(eq => {
+                const q = QualityConfig[eq.quality];
+                return `
+                    <div class="equip-option" onclick="equipToSlot(${eq.id}, '${slot}')">
+                        <span class="quality-${eq.quality}">${getEquipIcon(eq.type)}</span>
+                        <span class="quality-${eq.quality}">${eq.name}</span>
+                        <span class="eq-stats">${eq.stats.map(s => `${s.type}+${s.value}`).join(' | ')}</span>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('equipSelectModal').classList.add('show');
+        }
+
+        function closeEquipSelect() {
+            document.getElementById('equipSelectModal').classList.remove('show');
+        }
+
+        /* ========== 换装/改名 ========== */
+        let customizeSelected = null; // 当前选中的外观
+
+        function openCustomize() {
+            const job = gameState.job;
+            const jobInfo = JobInfo[job];
+            customizeSelected = gameState.appearance;
+
+            // 填充名字
+            document.getElementById('customizeNameInput').value = gameState.name || '';
+
+            // 渲染外观皮肤列表（当前职业的AppearanceData）
+            const skins = AppearanceData[job] || [];
+            const container = document.getElementById('customizeSkins');
+            container.innerHTML = '';
+            skins.forEach(skin => {
+                const card = document.createElement('div');
+                card.className = 'skin-card' + (skin.id === customizeSelected ? ' selected' : '');
+                card.dataset.id = skin.id;
+                card.innerHTML = `
+                    <img class="skin-card-img" src="${jobInfo.image}" alt="${skin.name}" />
+                    <div class="skin-card-name">${skin.name}</div>
+                `;
+                card.onclick = () => {
+                    customizeSelected = skin.id;
+                    document.querySelectorAll('.skin-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    // 更新预览图：当前职业立绘（暂用职业图作为主视觉）
+                    document.getElementById('previewImg').src = jobInfo.image || '';
+                };
+                container.appendChild(card);
+            });
+
+            // 设置预览图
+            const currentSkin = skins.find(s => s.id === customizeSelected);
+            document.getElementById('previewImg').src = jobInfo.image || '';
+            if (currentSkin) {
+                document.getElementById('previewImg').alt = currentSkin.name;
+            }
+
+            document.getElementById('customizeModal').classList.add('show');
+        }
+
+        function closeCustomize() {
+            document.getElementById('customizeModal').classList.remove('show');
+        }
+
+        function confirmCustomize() {
+            // 保存名字
+            const newName = document.getElementById('customizeNameInput').value.trim();
+            if (newName) gameState.name = newName;
+            // 保存外观
+            if (customizeSelected) gameState.appearance = customizeSelected;
+
+            saveGame();
+            updateCharacterPanel();
+            updateIdleUI();
+            closeCustomize();
+        }
+
+        function equipToSlot(eqId, slot) {
+            const idx = gameState.equipment.findIndex(eq => eq.id === eqId);
+            if (idx === -1) return;
+            const eq = gameState.equipment.splice(idx, 1)[0];
+
+            // 记录穿戴前的属性
+            const oldStats = calculateStats();
+
+            gameState.equipmentSlots[slot] = eq;
+            closeEquipSelect();
+            saveGame();
+            updateCharacterPanel();
+            updateEquipmentUI();
+
+            // === 装备穿戴动效 ===
+            const slotEl = document.getElementById('slot-' + slot);
+            const newStats = calculateStats();
+            const changedStats = [];
+            ['hp','atk','def','str','agi','int','sta'].forEach((s, i) => {
+                const oldVal = [oldStats.hp, oldStats.atk, oldStats.def, oldStats.str, oldStats.agi, oldStats.int, oldStats.sta][i];
+                const newVal = [newStats.hp, newStats.atk, newStats.def, newStats.str, newStats.agi, newStats.int, newStats.sta][i];
+                const diff = newVal - oldVal;
+                if (diff > 0) changedStats.push({ label: s.toUpperCase(), diff, color: ['#ff4d4f','#ff7d00','#52c41a','#13c2c2','#722ed1','#eb2f96','#faad14'][i] });
+            });
+
+            // 1) 闪光
+            slotEl.classList.remove('flash');
+            void slotEl.offsetWidth; // reflow 触发重绘
+            slotEl.classList.add('flash');
+            setTimeout(() => slotEl.classList.remove('flash'), 700);
+
+            // 2) 粒子散射
+            const colors = ['#fff','#ffd700','#ff69b4','#00ffff','#98fb98'];
+            for (let i = 0; i < 12; i++) {
+                const p = document.createElement('div');
+                p.className = 'equip-particle';
+                const angle = (Math.PI * 2 / 12) * i;
+                const dist = 30 + Math.random() * 40;
+                p.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
+                p.style.setProperty('--ty', `${Math.sin(angle) * dist}px`);
+                p.style.background = colors[i % colors.length];
+                p.style.left = '50%';
+                p.style.top = '50%';
+                p.style.transform = 'translate(-50%,-50%)';
+                slotEl.appendChild(p);
+                setTimeout(() => p.remove(), 750);
+            }
+
+            // 3) 属性数字跳动
+            const statLabels = { hp:'生命', atk:'攻击', def:'防御', str:'力量', agi:'敏捷', int:'智力', sta:'体力' };
+            changedStats.forEach((s, i) => {
+                const bar = slotEl.closest('.character-panel').querySelector(`[data-stat="${s.label.toLowerCase()}"]`) ||
+                            slotEl.closest('.eq-info') || slotEl;
+                const bump = document.createElement('div');
+                bump.className = 'stat-bump';
+                bump.textContent = `+${s.diff} ${statLabels[s.label.toLowerCase()]}`;
+                bump.style.color = s.color;
+                bump.style.left = '50%';
+                bump.style.top = '0';
+                bump.style.transform = 'translateX(-50%)';
+                bump.style.zIndex = 999;
+                slotEl.appendChild(bump);
+                setTimeout(() => bump.remove(), 950);
+            });
+        }
+
+        /* ========== 分享卡 ========== */
+        function generateShareCard() {
+            const canvas = document.getElementById('shareCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 背景
+            const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(1, '#0d0d0d');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1200, 630);
+            
+            // 边框装饰
+            ctx.strokeStyle = '#333355';
+            ctx.lineWidth = 8;
+            ctx.strokeRect(20, 20, 1160, 590);
+            
+            // 标题
+            ctx.fillStyle = '#e0e0e0';
+            ctx.font = 'bold 48px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('AGENT WORLD', 600, 100);
+            
+            // 职业图标
+            const info = JobInfo[gameState.job];
+            ctx.font = '120px sans-serif';
+            ctx.fillText(info.icon, 600, 280);
+            
+            // 职业名称
+            ctx.fillStyle = info.color;
+            ctx.font = 'bold 72px sans-serif';
+            ctx.fillText(info.name, 600, 380);
+            
+            // 等级
+            const stage = getStage(gameState.level);
+            ctx.fillStyle = '#e0e0e0';
+            ctx.font = '36px sans-serif';
+            ctx.fillText(`Lv.${gameState.level} · ${stage.name}`, 600, 440);
+            
+            // 经验
+            const expNeeded = gameState.level * 100;
+            ctx.fillStyle = '#888';
+            ctx.font = '28px sans-serif';
+            ctx.fillText(`总经验: ${gameState.exp + (gameState.level - 1) * gameState.level * 100} | 金币: ${gameState.gold}`, 600, 500);
+            
+            // 装备数量
+            ctx.fillText(`收集装备: ${gameState.equipment.length}件`, 600, 550);
+            
+            // 显示预览
+            document.getElementById('sharePreview').style.display = 'block';
+            canvas.style.display = 'block';
+            
+            // 下载按钮
+            const downloadBtn = document.createElement('button');
+            downloadBtn.className = 'pixel-btn primary';
+            downloadBtn.style.marginTop = '16px';
+            downloadBtn.textContent = '📥 下载分享卡';
+            downloadBtn.onclick = () => {
+                const link = document.createElement('a');
+                link.download = `agent-world-${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            };
+            document.getElementById('sharePreview').appendChild(downloadBtn);
+        }
+
+        function showShare() {
+            generateShareCard();
+        }
+
+        /* ========== 初始化 ========== */
+        document.addEventListener('DOMContentLoaded', () => {
+            // 检查是否有存档
+            const saved = localStorage.getItem('agentWorldGame');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.job && data.level) {
+                        // 有有效存档，不自动加载，等待用户点击
+                    }
+                } catch (e) {}
+            }
+        });
+    </script>
+</body>
+</html>
