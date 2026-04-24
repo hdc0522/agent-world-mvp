@@ -248,6 +248,38 @@
             filter: drop-shadow(0 0 20px currentColor);
         }
         
+        /* ========== 存档预览卡片 ========== */
+        .save-preview-card {
+            background: var(--bg-card);
+            border: 3px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin: 0 auto 20px;
+            max-width: 340px;
+            display: none;  /* 有存档时才显示 */
+        }
+        .save-preview-card.show { display: block; }
+        .save-preview-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .save-preview-icon { font-size: 32px; }
+        .save-preview-info { flex: 1; }
+        .save-preview-job { font-weight: bold; font-size: 14px; }
+        .save-preview-stage { font-size: 12px; color: var(--text-secondary); }
+        .save-preview-stats {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--border-color);
+            padding-top: 8px;
+            font-size: 12px;
+        }
+        .save-preview-stat { text-align: center; }
+        .save-preview-stat-val { font-weight: bold; color: #ffd700; }
+        .save-preview-stat-label { color: var(--text-secondary); font-size: 10px; }
+
         /* ========== MTI测试页 ========== */
         .quiz-container {
             background: var(--bg-card);
@@ -1115,10 +1147,20 @@
             align-items: center;
             gap: 12px;
             transition: all 0.2s;
+            cursor: pointer;
         }
-        
+
         .equipment-item:hover {
             background: var(--bg-card-hover);
+        }
+
+        .equipment-item.equipped {
+            border-color: var(--job-heal);
+            opacity: 0.7;
+        }
+
+        .equipment-item.equipped:hover {
+            opacity: 1;
         }
         
         .equipment-icon {
@@ -1366,6 +1408,14 @@
             0%   { opacity: 1; transform: translateY(0) scale(1); }
             40%  { transform: translateY(-18px) scale(1.35); }
             100% { opacity: 0; transform: translateY(-32px) scale(1); }
+        }
+        @keyframes mailPopupIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @keyframes mailPopupOut {
+            from { opacity: 1; transform: translateX(-50%) translateY(0); }
+            to   { opacity: 0; transform: translateX(-50%) translateY(-20px); }
         }
         .equipment-slot.flash {
             animation: equip-flash 0.6s ease-out forwards;
@@ -1861,6 +1911,31 @@
                     <div class="guide-step">
                         <span class="guide-num">4</span>
                         <span class="guide-text">收集装备，组队副本，分享炫耀</span>
+                    </div>
+                </div>
+
+                <!-- 存档预览卡片 -->
+                <div class="save-preview-card" id="savePreviewCard">
+                    <div class="save-preview-header">
+                        <span class="save-preview-icon" id="savePreviewIcon">🛡️</span>
+                        <div class="save-preview-info">
+                            <div class="save-preview-job" id="savePreviewJob">坦克 · Lv.5</div>
+                            <div class="save-preview-stage" id="savePreviewStage">幼儿园 · 启蒙阶段</div>
+                        </div>
+                    </div>
+                    <div class="save-preview-stats">
+                        <div class="save-preview-stat">
+                            <div class="save-preview-stat-val" id="savePreviewGold">0</div>
+                            <div class="save-preview-stat-label">金币</div>
+                        </div>
+                        <div class="save-preview-stat">
+                            <div class="save-preview-stat-val" id="savePreviewEquip">0</div>
+                            <div class="save-preview-stat-label">装备</div>
+                        </div>
+                        <div class="save-preview-stat">
+                            <div class="save-preview-stat-val" id="savePreviewMail">0</div>
+                            <div class="save-preview-stat-label">邮件</div>
+                        </div>
                     </div>
                 </div>
 
@@ -2753,6 +2828,34 @@
             document.getElementById('bottomNav').style.display = 'flex';
         }
 
+        function renderTitleSavePreview() {
+            const saved = localStorage.getItem('agentWorldGame');
+            const card = document.getElementById('savePreviewCard');
+            if (!card) return;
+            if (!saved) {
+                card.classList.remove('show');
+                return;
+            }
+            try {
+                const data = JSON.parse(saved);
+                if (!data.job || !data.level) {
+                    card.classList.remove('show');
+                    return;
+                }
+                const info = JobInfo[data.job];
+                const stage = getStageInfo(data.level);
+                document.getElementById('savePreviewIcon').textContent = info.icon;
+                document.getElementById('savePreviewJob').textContent = `${info.name} · Lv.${data.level}`;
+                document.getElementById('savePreviewStage').textContent = `${stage.name} · ${stage.prefix}阶段`;
+                document.getElementById('savePreviewGold').textContent = data.gold ?? 0;
+                document.getElementById('savePreviewEquip').textContent = data.equipment ? data.equipment.length : 0;
+                document.getElementById('savePreviewMail').textContent = data.mails ? data.mails.length : 0;
+                card.classList.add('show');
+            } catch (e) {
+                card.classList.remove('show');
+            }
+        }
+
         function loadGame() {
             const saved = localStorage.getItem('agentWorldGame');
             if (saved) {
@@ -2976,11 +3079,13 @@
             
             list.innerHTML = gameState.equipment.map(eq => {
                 const q = QualityConfig[eq.quality];
+                const isEquipped = Object.values(gameState.equipmentSlots).some(e => e && e.id === eq.id);
+                const eqIcon = getEquipIcon(eq.type);
                 return `
-                    <div class="equipment-item">
-                        <span class="equipment-icon quality-${eq.quality}">${getEquipIcon(eq.type)}</span>
+                    <div class="equipment-item ${isEquipped ? 'equipped' : ''}" onclick="openEquipFromBag('${eq.id}')">
+                        <span class="equipment-icon quality-${eq.quality}">${eqIcon}</span>
                         <div class="equipment-info">
-                            <div class="equipment-name quality-${eq.quality}">${eq.name}</div>
+                            <div class="equipment-name quality-${eq.quality}">${eq.name}${isEquipped ? ' ✅' : ''}</div>
                             <div class="equipment-props">${eq.stats.map(s => `${s.type} +${s.value}`).join(' | ')}</div>
                         </div>
                     </div>
@@ -3341,6 +3446,69 @@
             if (gameState.mails.length > 50) gameState.mails.pop();
             updateMailBadge();
             saveGame();
+            // 有奖励时自动弹出通知
+            if (rewards.exp || rewards.gold || rewards.equip) {
+                showMailPopup(title, desc, rewards);
+            }
+        }
+
+        let mailPopupTimer = null;
+        function showMailPopup(title, desc, rewards) {
+            // 移除旧弹窗
+            const old = document.getElementById('mailPopup');
+            if (old) old.remove();
+            if (mailPopupTimer) clearTimeout(mailPopupTimer);
+
+            const popup = document.createElement('div');
+            popup.id = 'mailPopup';
+            popup.style.cssText = `
+                position: fixed;
+                top: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+                max-width: 360px;
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                border: 3px solid #ffd700;
+                border-radius: 12px;
+                padding: 14px 16px;
+                z-index: 500;
+                cursor: pointer;
+                animation: mailPopupIn 0.3s ease;
+                box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);
+            `;
+
+            const rewardText = [];
+            if (rewards.exp) rewardText.push(`✨+${rewards.exp}经验`);
+            if (rewards.gold) rewardText.push(`💰+${rewards.gold}金币`);
+            if (rewards.equip) rewardText.push(`📦${rewards.equip.name}`);
+
+            popup.innerHTML = `
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:28px;">📬</span>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:bold;font-size:14px;color:#ffd700;margin-bottom:2px;">${title}</div>
+                        <div style="font-size:12px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${desc}</div>
+                        <div style="font-size:12px;color:#ffd700;margin-top:4px;">${rewardText.join(' · ')}</div>
+                    </div>
+                    <span style="font-size:18px;color:#666;">✕</span>
+                </div>
+            `;
+
+            popup.onclick = () => {
+                openMail();
+                popup.remove();
+                if (mailPopupTimer) clearTimeout(mailPopupTimer);
+            };
+            document.body.appendChild(popup);
+
+            mailPopupTimer = setTimeout(() => {
+                const p = document.getElementById('mailPopup');
+                if (p) {
+                    p.style.animation = 'mailPopupOut 0.3s ease forwards';
+                    setTimeout(() => p.remove(), 300);
+                }
+            }, 5000);
         }
 
         function updateMailBadge() {
@@ -3700,6 +3868,44 @@
             resetCompare();
         }
 
+        // 从背包点击装备 → 弹出选择装备栏位界面
+        function openEquipFromBag(eqId) {
+            const eq = gameState.equipment.find(e => e.id === eqId);
+            if (!eq) return;
+
+            // 判断该装备已装备的位置
+            const equippedSlot = Object.entries(gameState.equipmentSlots).find(([, e]) => e && e.id === eqId);
+            if (equippedSlot) {
+                // 已装备 → 卸下
+                const [slot] = equippedSlot;
+                gameState.equipmentSlots[slot] = null;
+                saveGame();
+                updateEquipmentUI();
+                updateCharacterPanel();
+                return;
+            }
+
+            // 未装备 → 判断类型，给出对应槽位选择
+            const slotType = eq.type === '剑' || eq.type === '盾' ? 'weapon' :
+                             eq.type === '戒指' ? 'accessory' : 'armor';
+            const slotMap = {
+                weapon: ['weapon1', 'weapon2'],
+                armor:  ['armor1', 'armor2'],
+                accessory: ['accessory1', 'accessory2']
+            };
+            const candidates = slotMap[slotType] || [];
+
+            // 找空槽位
+            const emptySlot = candidates.find(s => !gameState.equipmentSlots[s]);
+            if (emptySlot) {
+                // 只有一个空槽，直接穿上
+                equipToSlot(eqId, emptySlot);
+            } else {
+                // 两个槽都满了，让用户选
+                openEquipSelect(candidates[0]);
+            }
+        }
+
         /* ========== 换装/改名 ========== */
         let customizeSelected = null; // 当前选中的外观
 
@@ -3898,16 +4104,8 @@
 
         /* ========== 初始化 ========== */
         document.addEventListener('DOMContentLoaded', () => {
-            // 检查是否有存档
-            const saved = localStorage.getItem('agentWorldGame');
-            if (saved) {
-                try {
-                    const data = JSON.parse(saved);
-                    if (data.job && data.level) {
-                        // 有有效存档，不自动加载，等待用户点击
-                    }
-                } catch (e) {}
-            }
+            // 渲染标题页存档预览
+            renderTitleSavePreview();
         });
     </script>
 </body>
