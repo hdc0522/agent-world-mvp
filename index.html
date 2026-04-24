@@ -1412,6 +1412,24 @@
             margin-left: auto;
         }
 
+        /* ========== 装备对比 ========== */
+        #compareSection {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+        .compare-title { font-weight: bold; color: var(--text); margin-bottom: 8px; text-align: center; }
+        .compare-row { display: flex; justify-content: space-between; padding: 3px 0; }
+        .compare-label { color: var(--text-secondary); }
+        .compare-same { color: var(--text-secondary); }
+        .compare-new { font-weight: bold; }
+        .compare-diff.positive { color: #4ade80; }
+        .compare-diff.negative { color: #f87171; }
+
         /* 属性面板 */
         .stats-section {
             background: var(--bg-dark);
@@ -1517,13 +1535,103 @@
         }
 
         /* 装备选择弹窗 */
+        /* ========== 装备对比 ========== */
+        .compare-section {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .compare-title {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .compare-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 0;
+            font-size: 13px;
+        }
+        .compare-label { color: var(--text-secondary); }
+        .compare-old { color: #ff6b6b; text-decoration: line-through; }
+        .compare-new { color: #51cf66; font-weight: bold; }
+        .compare-same { color: var(--text-secondary); }
+        .compare-arrow { color: var(--text-secondary); font-size: 11px; }
+        .compare-diff { font-size: 11px; }
+        .compare-diff.positive { color: #51cf66; }
+        .compare-diff.negative { color: #ff6b6b; }
+
+        /* ========== 邮件系统 ========== */
+        .mail-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ff4d4f;
+            color: #fff;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: sans-serif;
+        }
+        .mail-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 350;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .mail-modal.show { display: flex; }
+        .mail-content {
+            background: var(--bg-card);
+            border: 4px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 380px;
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+        .mail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .mail-title { font-size: 18px; font-weight: bold; }
+        .mail-close { background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; }
+        .mail-list { display: flex; flex-direction: column; gap: 10px; }
+        .mail-item {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .mail-item:hover { border-color: var(--job-heal); }
+        .mail-item.unread { border-left: 4px solid #ffd700; }
+        .mail-item-title { font-weight: bold; margin-bottom: 4px; }
+        .mail-item-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+        .mail-item-reward { font-size: 12px; color: #ffd700; }
+        .mail-item-time { font-size: 10px; color: var(--text-secondary); margin-top: 4px; }
+        .mail-empty { text-align: center; color: var(--text-secondary); padding: 40px 0; }
+
+        /* ========== 装备选择 ========== */
         .equip-select-modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.8);
             z-index: 300;
             align-items: center;
@@ -1722,6 +1830,10 @@
             <span class="stat-label">金币</span>
             <span class="stat-value gold-display" id="topGold">0</span>
         </div>
+        <button class="pixel-btn small" onclick="openMail()" style="padding: 4px 10px; position: relative;">
+            📬
+            <span id="mailBadgeCount" class="mail-badge" style="display:none">0</span>
+        </button>
     </div>
 
     <!-- ========== 主容器 ========== -->
@@ -2183,10 +2295,22 @@
         </button>
     </nav>
 
+    <!-- ========== 邮件系统 ========== -->
+    <div class="mail-modal" id="mailModal">
+        <div class="mail-content">
+            <div class="mail-header">
+                <span class="mail-title">📬 邮件</span>
+                <button class="mail-close" onclick="closeMail()">×</button>
+            </div>
+            <div id="mailListContent"></div>
+        </div>
+    </div>
+
     <!-- ========== 装备选择弹窗 ========== -->
     <div class="equip-select-modal" id="equipSelectModal">
         <div class="equip-select-content">
             <div class="equip-select-title" id="equipSelectTitle">选择装备</div>
+            <div class="compare-section" id="compareSection" style="display:none"></div>
             <div class="equip-select-list" id="equipSelectList"></div>
             <button class="pixel-btn" onclick="closeEquipSelect()">关闭</button>
         </div>
@@ -2354,7 +2478,8 @@
             equipment: [],
             equipmentSlots: { weapon1: null, weapon2: null, armor1: null, armor2: null, accessory1: null, accessory2: null },
             createdAt: null,
-            dungeonState: null  // { dungeonId, floor, hp, maxHp, wave, totalWaves, rewards }
+            dungeonState: null,  // { dungeonId, floor, hp, maxHp, wave, totalWaves, rewards }
+            mails: []  // [{id, title, desc, rewards: {exp,gold,equip}, read, time, collected}]
         };
 
         let quizState = {
@@ -2762,20 +2887,24 @@
             }
             
             saveGame();
-            
+
+            // 发邮件通知
+            sendMail('🎁 挂机奖励', `挂机${waitState.duration}秒归来`, { exp: baseExp, gold: baseGold, equip: equipment });
+
             // 显示奖励
             document.getElementById('rewardExp').textContent = `+${baseExp}`;
             document.getElementById('rewardGold').textContent = `+${baseGold}`;
             document.getElementById('rewardEquipName').textContent = equipment.name;
             document.getElementById('rewardEquipName').style.color = QualityConfig[equipment.quality].color;
             document.getElementById('rewardEquipStats').textContent = equipment.stats.map(s => `${s.type} +${s.value}`).join(' | ');
-            
+
             document.getElementById('rewardEquipment').style.display = 'block';
-            
+
             const modal = document.getElementById('rewardModal');
             modal.classList.add('show');
-            
+
             if (leveledUp) {
+                sendMail('🎉 升级了！', `恭喜达到 Lv.${gameState.level}！`, {});
                 setTimeout(() => showLevelUp(), 500);
             }
         }
@@ -3153,7 +3282,14 @@
                 gameState.equipment.push(equipDrop);
             }
 
-            if (leveledUp) setTimeout(() => showLevelUp(), 500);
+            if (leveledUp) {
+                sendMail('🎉 升级了！', `恭喜达到 Lv.${gameState.level}！`, {});
+                setTimeout(() => showLevelUp(), 500);
+            }
+
+            if (isLastFloor) {
+                sendMail('🏆 副本通关！', `通关「${dungeonId}」全${gameState.dungeonState.totalFloors}层`, { exp: 0, gold: rewards.gold * 2, equip: equipDrop });
+            }
 
             showScreen('dungeonResultScreen');
             document.getElementById('resultTitle').textContent = isLastFloor ? '🏆 副本通关！' : `✅ 第 ${floor} 层通关！`;
@@ -3188,6 +3324,167 @@
         function resetGame() {
             localStorage.removeItem('agentWorldGame');
             location.reload();
+        }
+
+        /* ========== 邮件系统 ========== */
+        function sendMail(title, desc, rewards) {
+            gameState.mails.unshift({
+                id: Date.now(),
+                title,
+                desc,
+                rewards,  // { exp, gold, equip }
+                read: false,
+                time: Date.now(),
+                collected: false
+            });
+            // 最多保留50封
+            if (gameState.mails.length > 50) gameState.mails.pop();
+            updateMailBadge();
+            saveGame();
+        }
+
+        function updateMailBadge() {
+            const unread = gameState.mails.filter(m => !m.read).length;
+            const badge = document.getElementById('mailBadgeCount');
+            if (badge) {
+                badge.textContent = unread;
+                badge.style.display = unread > 0 ? 'flex' : 'none';
+            }
+        }
+
+        function openMail() {
+            renderMailList();
+            document.getElementById('mailModal').classList.add('show');
+        }
+
+        function closeMail() {
+            document.getElementById('mailModal').classList.remove('show');
+        }
+
+        function renderMailList() {
+            const list = document.getElementById('mailListContent');
+            if (gameState.mails.length === 0) {
+                list.innerHTML = '<div class="mail-empty">📭 暂无邮件<br><br><span style="font-size:12px;color:var(--text-secondary)">升级和通关会收到邮件通知</span></div>';
+                return;
+            }
+            list.innerHTML = '<div class="mail-list">' + gameState.mails.map(m => `
+                <div class="mail-item ${m.read ? '' : 'unread'}" onclick="openMailItem(${m.id})">
+                    <div class="mail-item-title">${m.title}</div>
+                    <div class="mail-item-desc">${m.desc}</div>
+                    ${m.rewards.exp || m.rewards.gold || m.rewards.equip ? `<div class="mail-item-reward">🎁 奖励: ${m.rewards.exp ? '✨+'+m.rewards.exp+'经验 ' : ''}${m.rewards.gold ? '💰+'+m.rewards.gold+'金币 ' : ''}${m.rewards.equip ? '📦'+m.rewards.equip.name : ''}</div>` : ''}
+                    <div class="mail-item-time">${formatTime(m.time)}${m.collected ? ' ✅已领取' : ' ⏳待领取'}</div>
+                </div>
+            `).join('') + '</div>';
+        }
+
+        function formatTime(ts) {
+            const d = new Date(ts);
+            const now = new Date();
+            const diff = Math.floor((now - d) / 1000);
+            if (diff < 60) return '刚刚';
+            if (diff < 3600) return Math.floor(diff/60) + '分钟前';
+            if (diff < 86400) return Math.floor(diff/3600) + '小时前';
+            return `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+        }
+
+        function openMailItem(id) {
+            const mail = gameState.mails.find(m => m.id === id);
+            if (!mail) return;
+            if (!mail.read) {
+                mail.read = true;
+                updateMailBadge();
+                saveGame();
+                renderMailList();
+            }
+            // 弹出领取确认
+            if (!mail.collected && (mail.rewards.exp || mail.rewards.gold || mail.rewards.equip)) {
+                collectMail(id);
+            }
+        }
+
+        function collectMail(id) {
+            const mail = gameState.mails.find(m => m.id === id);
+            if (!mail || mail.collected) return;
+            const r = mail.rewards;
+            let msg = '';
+            if (r.exp) { gameState.exp += r.exp; msg += `✨ 经验 +${r.exp}\n`; }
+            if (r.gold) { gameState.gold += r.gold; msg += `💰 金币 +${r.gold}\n`; }
+            if (r.equip) {
+                if (gameState.equipment.length >= 10) gameState.equipment.pop();
+                gameState.equipment.unshift(r.equip);
+                msg += `📦 获得 ${r.equip.name}\n`;
+            }
+            mail.collected = true;
+            saveGame();
+            alert(msg || '已领取');
+            renderMailList();
+        }
+
+        /* ========== 装备对比 ========== */
+        // 选中装备时高亮显示穿上后的属性变化
+        function highlightEquipOption(eqId, slot) {
+            document.querySelectorAll('.equip-option').forEach(el => el.style.borderColor = '');
+            const el = document.querySelector(`[data-eqid="${eqId}"]`);
+            if (el) el.style.borderColor = 'var(--job-heal)';
+        }
+
+        function renderCompare(eqId, slot) {
+            const compareEl = document.getElementById('compareSection');
+            const eq = gameState.equipment.find(e => e.id === eqId);
+            if (!eq) { compareEl.style.display = 'none'; return; }
+
+            const currentEquipped = gameState.equipmentSlots[slot];
+            const oldStats = calculateStatsWithout(eq, slot);
+            const tempSlot = { ...gameState.equipmentSlots, [slot]: eq };
+            const newStats = calculateStatsWith(slot, eq);
+
+            const statLabels = { HP: '生命', ATK: '攻击', DEF: '防御', STR: '力量', AGI: '敏捷', INT: '智力', STA: '体力' };
+            const allStats = ['HP', 'ATK', 'DEF', 'STR', 'AGI', 'INT', 'STA'];
+            let html = `<div class="compare-title">${currentEquipped ? '换装对比' : '穿上后属性'}</div>`;
+            allStats.forEach(s => {
+                const oldVal = oldStats[s] || 0;
+                const newVal = newStats[s] || 0;
+                const diff = newVal - oldVal;
+                let cls = 'compare-same', valStr = oldVal;
+                if (diff > 0) { cls = 'compare-new'; valStr = `${oldVal} → ${newVal} <span class="compare-diff positive">(+${diff})</span>`; }
+                else if (diff < 0) { cls = 'compare-new'; valStr = `${oldVal} → ${newVal} <span class="compare-diff negative">(${diff})</span>`; }
+                html += `<div class="compare-row"><span class="compare-label">${statLabels[s]}</span><span class="${cls}">${valStr}</span></div>`;
+            });
+            compareEl.innerHTML = html;
+            compareEl.style.display = 'block';
+        }
+
+        function calculateStatsWithout(eq, slot) {
+            const base = { tank: { HP: 150, ATK: 60, DEF: 180 }, heal: { HP: 110, ATK: 80, DEF: 100 }, dps: { HP: 80, ATK: 150, DEF: 50 } };
+            const job = gameState.job || 'tank';
+            const b = base[job];
+            let HP = Math.floor(b.HP * (1 + gameState.level * 0.1));
+            let ATK = Math.floor(b.ATK * (1 + gameState.level * 0.05));
+            let DEF = Math.floor(b.DEF * (1 + gameState.level * 0.05));
+            let STR = 10 + gameState.level * 2, AGI = 10 + gameState.level * 2, INT = 10 + gameState.level * 2, STA = 10 + gameState.level * 2;
+            Object.entries(gameState.equipmentSlots).forEach(([s, e]) => {
+                if (!e || s === slot) return;
+                e.stats.forEach(stat => {
+                    if (stat.type === 'HP') HP += stat.value;
+                    if (stat.type === 'ATK') ATK += stat.value;
+                    if (stat.type === 'DEF') DEF += stat.value;
+                    if (stat.type === 'STR') STR += stat.value;
+                    if (stat.type === 'AGI') AGI += stat.value;
+                    if (stat.type === 'INT') INT += stat.value;
+                    if (stat.type === 'STA') STA += stat.value;
+                });
+            });
+            return { HP, ATK, DEF, STR, AGI, INT, STA };
+        }
+
+        function calculateStatsWith(slot, eq) {
+            const stats = calculateStatsWithout(eq, slot);
+            if (eq) eq.stats.forEach(s => { if (s.type === 'HP') stats.HP += s.value; if (s.type === 'ATK') stats.ATK += s.value; if (s.type === 'DEF') stats.DEF += s.value; if (s.type === 'STR') stats.STR += s.value; if (s.type === 'AGI') stats.AGI += s.value; if (s.type === 'INT') stats.INT += s.value; if (s.type === 'STA') stats.STA += s.value; });
+            return stats;
+        }
+
+        function resetCompare() {
+            document.getElementById('compareSection').style.display = 'none';
         }
 
         /* ========== 角色面板 ========== */
@@ -3384,10 +3681,11 @@
 
             const list = document.getElementById('equipSelectList');
             document.getElementById('equipSelectTitle').textContent = `选择装备（${slot}）`;
+            resetCompare();
             list.innerHTML = candidates.map(eq => {
                 const q = QualityConfig[eq.quality];
                 return `
-                    <div class="equip-option" onclick="equipToSlot(${eq.id}, '${slot}')">
+                    <div class="equip-option" data-eqid="${eq.id}" onclick="equipToSlot(${eq.id}, '${slot}')" onmouseover="renderCompare(${eq.id}, '${slot}')">
                         <span class="quality-${eq.quality}">${getEquipIcon(eq.type)}</span>
                         <span class="quality-${eq.quality}">${eq.name}</span>
                         <span class="eq-stats">${eq.stats.map(s => `${s.type}+${s.value}`).join(' | ')}</span>
@@ -3399,6 +3697,7 @@
 
         function closeEquipSelect() {
             document.getElementById('equipSelectModal').classList.remove('show');
+            resetCompare();
         }
 
         /* ========== 换装/改名 ========== */
