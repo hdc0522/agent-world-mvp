@@ -2543,18 +2543,44 @@
         const StatTypes = ["HP", "ATK", "DEF"];
 
         /* ========== 游戏状态 ========== */
+        const ALL_MBTIS = ['intj','intp','entj','entp','infj','infp','enfj','enfp','istj','isfj','estj','esfj','istp','isfp','estp','esfp'];
+        const GENDERS = ['boy', 'girl'];
+
+        function getAgeStage(level) {
+            if (level <= 5)  return 0; // 幼儿
+            if (level <= 10) return 1; // 童年
+            if (level <= 13) return 2; // 少年
+            if (level <= 17) return 3; // 青年
+            if (level <= 21) return 4; // 中年
+            return 5;                  // 博士
+        }
+
+        function getCharImage(mbti, gender, level) {
+            const stage = getAgeStage(level);
+            return `characters/${mbti}_${gender}_age${stage}.png`;
+        }
+
+        function getRandomMBTI() {
+            return ALL_MBTIS[Math.floor(Math.random() * ALL_MBTIS.length)];
+        }
+
+        function getRandomGender() {
+            return GENDERS[Math.floor(Math.random() * GENDERS.length)];
+        }
+
         let gameState = {
             name: "",
             level: 1,
             exp: 0,
             gold: 0,
             job: null,
-            appearance: null,
+            mbti: null,      // e.g. 'intj'
+            gender: null,   // 'boy' or 'girl'
             equipment: [],
             equipmentSlots: { weapon1: null, weapon2: null, armor1: null, armor2: null, accessory1: null, accessory2: null },
             createdAt: null,
-            dungeonState: null,  // { dungeonId, floor, hp, maxHp, wave, totalWaves, rewards }
-            mails: []  // [{id, title, desc, rewards: {exp,gold,equip}, read, time, collected}]
+            dungeonState: null,
+            mails: []
         };
 
         let quizState = {
@@ -2675,31 +2701,41 @@
         }
 
         function finishQuiz() {
-            // 统计各类型数量
             const counts = { tank: 0, heal: 0, dps: 0 };
             quizState.answers.forEach(a => counts[a]++);
-            
-            // 决定职业（多数获胜，相同则随机）
+
             let job = 'tank';
             const maxCount = Math.max(...Object.values(counts));
             const candidates = Object.entries(counts).filter(([k, v]) => v === maxCount).map(([k]) => k);
             job = candidates[Math.floor(Math.random() * candidates.length)];
-            
-            // 应用结果
+
             gameState.job = job;
+            gameState.mbti = getRandomMBTI();
+            gameState.gender = getRandomGender();
             gameState.createdAt = Date.now();
-            
-            // 显示结果
+
             const info = JobInfo[job];
             document.getElementById('resultJob').textContent = info.name;
             document.getElementById('resultJob').style.color = info.color;
-            document.getElementById('resultIcon').src = info.image || 'job_tank.png';
+
+            // 显示真实角色图
+            const charImg = getCharImage(gameState.mbti, gameState.gender, gameState.level);
+            const resultIcon = document.getElementById('resultIcon');
+            resultIcon.src = charImg;
+            resultIcon.onerror = function() {
+                this.src = `job_${job}_new.png`;
+                this.onerror = null;
+            };
+
             document.getElementById('resultBadge').textContent = info.badge;
             document.getElementById('resultBadge').style.background = info.color;
             document.getElementById('jobDesc').textContent = info.desc;
 
-            showScreen('confirmScreen');
-            fillConfirmScreen(job);
+            // 显示MBTI
+            document.getElementById('resultLevel').textContent =
+                `${gameState.mbti.toUpperCase()} · ${gameState.gender === 'boy' ? '男' : '女'}`;
+
+            showScreen('resultScreen');
         }
 
         /* ========== 职业确认页 ========== */
@@ -2887,14 +2923,22 @@
             const info = JobInfo[job];
             const stage = getStage(gameState.level);
 
-            // 显示职业立绘图片
+            // 显示真实角色图
             const el = document.getElementById('idleIcon');
-            el.src = info.image || 'job_tank.png';
+            if (gameState.mbti && gameState.gender) {
+                el.src = getCharImage(gameState.mbti, gameState.gender, gameState.level);
+                el.onerror = function() {
+                    this.src = `job_${job}_new.png`;
+                    this.onerror = null;
+                };
+            } else {
+                el.src = info.image || 'job_tank.png';
+            }
             el.style.color = info.color;
             document.getElementById('idleLevel').textContent = `Lv.${gameState.level}`;
             document.getElementById('idleLevel').style.color = stage.color;
             document.getElementById('idleStage').textContent = `${stage.name} · ${stage.prefix}阶段`;
-            
+
             const expNeeded = gameState.level * 100;
             const expPercent = (gameState.exp / expNeeded) * 100;
             document.getElementById('expFill').style.width = expPercent + '%';
@@ -3661,7 +3705,12 @@
             const stage = getStageInfo(gameState.level);
 
             // B1: 角色立绘图片 + 装备图标叠加层
-            document.getElementById('charPortrait').src = job.image || 'job_tank.png';
+            // 显示真实角色图
+            if (gameState.mbti && gameState.gender) {
+                document.getElementById('charPortrait').src = getCharImage(gameState.mbti, gameState.gender, gameState.level);
+            } else {
+                document.getElementById('charPortrait').src = job.image || 'job_tank.png';
+            }
             document.getElementById('charName').textContent = gameState.playerName || job.name;
             document.getElementById('charJob').textContent = job.badge;
             document.getElementById('charLevel').textContent = `Lv.${gameState.level} ${stage.name}`;
