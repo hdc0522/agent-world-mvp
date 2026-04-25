@@ -1431,6 +1431,7 @@
     .equip-option-info { flex: 1; }
     .equip-option-name { font-weight: 700; font-size: 13px; }
     .equip-option-stats { font-size: 11px; color: var(--text-dim); }
+    .equip-option-diff { font-size: 11px; min-width: 60px; text-align: right; }
     .compare-section {
         padding: 12px;
         background: var(--bg-elevated);
@@ -2625,12 +2626,76 @@ function unequipItem(slot) {
     updateEquipmentUI();
 }
 
+// Calculate stats without a specific equipped item (used for comparison)
+function calculateStatsWithoutEq(excludeItem) {
+    let atk = 10, def = 10, hp = 100;
+    Object.values(gameState.equipmentSlots).forEach(eq => {
+        if (!eq || eq === excludeItem) return;
+        eq.stats.forEach(s => {
+            if (s.type === 'atk') atk += s.value;
+            else if (s.type === 'def') def += s.value;
+            else if (s.type === 'hp') hp += s.value;
+        });
+    });
+    atk += gameState.level * 2;
+    def += gameState.level * 2;
+    hp += gameState.level * 10;
+    return { atk, def, hp };
+}
+
+// Get stats with a hypothetical item equipped (simulate equipping)
+function getStatsWithItem(item) {
+    let atk = 10, def = 10, hp = 100;
+    Object.values(gameState.equipmentSlots).forEach(eq => {
+        if (!eq) return;
+        eq.stats.forEach(s => {
+            if (s.type === 'atk') atk += s.value;
+            else if (s.type === 'def') def += s.value;
+            else if (s.type === 'hp') hp += s.value;
+        });
+    });
+    // Add the hypothetical item stats
+    if (item) {
+        item.stats.forEach(s => {
+            if (s.type === 'atk') atk += s.value;
+            else if (s.type === 'def') def += s.value;
+            else if (s.type === 'hp') hp += s.value;
+        });
+    }
+    atk += gameState.level * 2;
+    def += gameState.level * 2;
+    hp += gameState.level * 10;
+    return { atk, def, hp };
+}
+
+// Format stat diff HTML: green for positive, red for negative
+function formatStatDiff(currentStats, newStats) {
+    const diffs = [];
+    const types = ['atk', 'def', 'hp'];
+    const labels = { atk: '攻击', def: '防御', hp: '生命' };
+    types.forEach(type => {
+        const diff = newStats[type] - currentStats[type];
+        if (diff !== 0) {
+            const cls = diff > 0 ? 'compare-up' : 'compare-down';
+            const sign = diff > 0 ? '+' : '';
+            diffs.push(`<span class="${cls}">${labels[type]} ${sign}${diff}</span>`);
+        }
+    });
+    return diffs.length > 0 ? diffs.join(' ') : '<span style="color:var(--text-dark)">无变化</span>';
+}
+
 function openEquipSelect(slot) {
     document.getElementById('equipSelectTitle').textContent = `装备槽: ${EquipTypeNames[slot]}`;
     const list = document.getElementById('equipSelectList');
+    const compareSection = document.getElementById('compareSection');
     list.innerHTML = '';
     const currentEquipped = gameState.equipmentSlots[slot];
     const currentStats = calculateStatsWithoutEq(currentEquipped);
+
+    // Show current equipped stats at top
+    const fullStats = calculateStats();
+    compareSection.innerHTML = `当前属性: 攻击 ${fullStats.atk} | 防御 ${fullStats.def} | 生命 ${fullStats.hp}`;
+    compareSection.style.display = 'block';
 
     // Show currently equipped
     if (currentEquipped) {
@@ -2639,7 +2704,8 @@ function openEquipSelect(slot) {
         div.style.borderColor = QualityConfig[currentEquipped.quality].color;
         div.innerHTML = `<div class="equip-option-icon">${EquipIcons[slot]}</div>
             <div class="equip-option-info"><div class="equip-option-name" style="color:${QualityConfig[currentEquipped.quality].color}">${currentEquipped.name}</div>
-            <div class="equip-option-stats">${currentEquipped.stats.map(s => `${s.type} +${s.value}`).join(', ')}</div></div>`;
+            <div class="equip-option-stats">${currentEquipped.stats.map(s => `${s.type === 'atk' ? '攻击' : s.type === 'def' ? '防御' : '生命'} +${s.value}`).join(', ')}</div></div>
+            <div class="equip-option-diff"><span class="compare-down">卸下</span></div>`;
         div.onclick = () => { unequipItem(slot); closeEquipSelect(); };
         list.appendChild(div);
     }
@@ -2653,9 +2719,12 @@ function openEquipSelect(slot) {
         const div = document.createElement('div');
         div.className = 'equip-option';
         div.style.borderColor = QualityConfig[eq.quality].color;
+        const newStats = getStatsWithItem(eq);
+        const diffHtml = formatStatDiff(currentStats, newStats);
         div.innerHTML = `<div class="equip-option-icon">${EquipIcons[slot]}</div>
             <div class="equip-option-info"><div class="equip-option-name" style="color:${QualityConfig[eq.quality].color}">${eq.name}</div>
-            <div class="equip-option-stats">${eq.stats.map(s => `${s.type} +${s.value}`).join(', ')}</div></div>`;
+            <div class="equip-option-stats">${eq.stats.map(s => `${s.type === 'atk' ? '攻击' : s.type === 'def' ? '防御' : '生命'} +${s.value}`).join(', ')}</div></div>
+            <div class="equip-option-diff">${diffHtml}</div>`;
         div.onclick = () => { equipToSlot(eq, slot); closeEquipSelect(); };
         list.appendChild(div);
     });
