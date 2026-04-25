@@ -3150,6 +3150,10 @@
         }
 
         function selectOption(index, type) {
+            // Prevent rapid re-selection / double-click
+            if (quizState.locked) return;
+            quizState.locked = true;
+
             quizState.answers.push(type);
 
             document.querySelectorAll('.quiz-option').forEach((opt, i) => {
@@ -3163,6 +3167,7 @@
                 } else {
                     finishQuiz();
                 }
+                quizState.locked = false;
             }, 300);
         }
 
@@ -3172,8 +3177,10 @@
 
             let job = 'tank';
             const maxCount = Math.max(...Object.values(counts));
+            // Deterministic tiebreaker: priority order tank > heal > dps
             const candidates = Object.entries(counts).filter(([k, v]) => v === maxCount).map(([k]) => k);
-            job = candidates[Math.floor(Math.random() * candidates.length)];
+            const priority = ['tank', 'heal', 'dps'];
+            job = priority.find(p => candidates.includes(p)) || candidates[0];
 
             gameState.job = job;
             gameState.mbti = getRandomMBTI();
