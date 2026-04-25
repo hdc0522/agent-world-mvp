@@ -1117,7 +1117,122 @@
             0% { transform: translate(0, 0) scale(1); opacity: 1; }
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
-        
+
+        /* ========== 爽感增强 ========== */
+
+        /* 敌人受击抖动 */
+        @keyframes enemyShake {
+            0%   { transform: translateX(0); }
+            15%  { transform: translateX(-12px) rotate(-3deg); }
+            30%  { transform: translateX(10px) rotate(2deg); }
+            45%  { transform: translateX(-8px) rotate(-1deg); }
+            60%  { transform: translateX(6px); }
+            80%  { transform: translateX(-3px); }
+            100% { transform: translateX(0); }
+        }
+        .enemy-hit { animation: enemyShake 0.4s ease-out; }
+
+        /* 玩家受击抖动 */
+        @keyframes playerShake {
+            0%   { transform: translateX(0); filter: brightness(1); }
+            20%  { transform: translateX(-6px); filter: brightness(1.5) hue-rotate(10deg); }
+            40%  { transform: translateX(5px); filter: brightness(1.2); }
+            60%  { transform: translateX(-3px); }
+            80%  { transform: translateX(2px); filter: brightness(1.1); }
+            100% { transform: translateX(0); filter: brightness(1); }
+        }
+        .player-hit { animation: playerShake 0.35s ease-out; }
+
+        /* 伤害飘字 */
+        @keyframes floatUp {
+            0%   { opacity: 1; transform: translateY(0) scale(1); }
+            20%  { transform: translateY(-10px) scale(1.2); }
+            100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+        }
+        .damage-text {
+            position: absolute;
+            font-weight: bold;
+            font-size: 22px;
+            color: #ff4444;
+            text-shadow: 0 0 8px #ff0000, 2px 2px 0 #330000;
+            pointer-events: none;
+            animation: floatUp 0.9s ease-out forwards;
+            z-index: 200;
+            white-space: nowrap;
+        }
+        .damage-text.crit {
+            font-size: 30px;
+            color: #ffdd00;
+            text-shadow: 0 0 12px #ffaa00, 2px 2px 0 #663300;
+        }
+        .damage-text.heal {
+            color: #44ff88;
+            text-shadow: 0 0 8px #00ff66, 2px 2px 0 #003322;
+        }
+
+        /* 暴击星星特效 */
+        @keyframes starBurst {
+            0%   { opacity: 0; transform: scale(0) rotate(0deg); }
+            50%  { opacity: 1; transform: scale(1.2) rotate(180deg); }
+            100% { opacity: 0; transform: scale(0.5) rotate(360deg); }
+        }
+        .crit-star {
+            position: absolute;
+            font-size: 28px;
+            animation: starBurst 0.6s ease-out forwards;
+            pointer-events: none;
+            z-index: 201;
+        }
+
+        /* 角色呼吸待机动画 */
+        @keyframes charBreathe {
+            0%   { transform: scaleY(1) translateY(0); }
+            50%  { transform: scaleY(1.015) translateY(-2px); }
+            100% { transform: scaleY(1) translateY(0); }
+        }
+        .char-breathe {
+            animation: charBreathe 3s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        /* 升级金色光环 */
+        @keyframes goldPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+            50%  { box-shadow: 0 0 0 20px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+        .levelup-glow {
+            animation: goldPulse 0.8s ease-out;
+            border-color: #ffd700 !important;
+        }
+
+        /* 按钮点击反馈 */
+        .pixel-btn:active {
+            transform: scale(0.95) translateY(1px) !important;
+        }
+
+        /* 装备获得闪烁 */
+        @keyframes equipGlow {
+            0%   { background: rgba(255, 215, 0, 0.3); }
+            50%  { background: rgba(255, 215, 0, 0.6); }
+            100% { background: rgba(255, 215, 0, 0.3); }
+        }
+        .reward-equip-flash {
+            animation: equipGlow 0.5s ease-in-out 3;
+        }
+
+        /* 经验条增加闪烁 */
+        @keyframes expFlash {
+            0%   { filter: brightness(1); }
+            25%  { filter: brightness(1.8); }
+            50%  { filter: brightness(1.3); }
+            75%  { filter: brightness(1.6); }
+            100% { filter: brightness(1); }
+        }
+        .exp-flash {
+            animation: expFlash 0.4s ease-out;
+        }
+
         /* ========== 装备面板 ========== */
         .equipment-panel {
             margin-top: 30px;
@@ -2056,7 +2171,7 @@
         <div class="screen" id="idleScreen">
             <div class="idle-container">
                 <div class="idle-character">
-                    <img class="job-icon" id="idleIcon" src="job_tank_new.png" alt="character" />
+                    <img class="job-icon char-breathe" id="idleIcon" src="job_tank_new.png" alt="character" />
                 </div>
                 
                 <div class="idle-status">
@@ -3046,12 +3161,30 @@
             document.getElementById('rewardEquipStats').textContent = equipment.stats.map(s => `${s.type} +${s.value}`).join(' | ');
 
             document.getElementById('rewardEquipment').style.display = 'block';
+            document.getElementById('rewardEquipment').classList.remove('reward-equip-flash');
+            void document.getElementById('rewardEquipment').offsetWidth;
+            document.getElementById('rewardEquipment').classList.add('reward-equip-flash');
+
+            // 经验条闪烁
+            const expFill = document.getElementById('expFill');
+            if (expFill) {
+                expFill.classList.remove('exp-flash');
+                void expFill.offsetWidth;
+                expFill.classList.add('exp-flash');
+            }
 
             const modal = document.getElementById('rewardModal');
             modal.classList.add('show');
 
             if (leveledUp) {
                 sendMail('🎉 升级了！', `恭喜达到 Lv.${gameState.level}！`, {});
+                // 角色图金色光环
+                const idleIcon = document.getElementById('idleIcon');
+                if (idleIcon) {
+                    idleIcon.classList.remove('levelup-glow');
+                    void idleIcon.offsetWidth;
+                    idleIcon.classList.add('levelup-glow');
+                }
                 setTimeout(() => showLevelUp(), 500);
             }
         }
@@ -3297,6 +3430,49 @@
             document.getElementById('enemyHpText').textContent = `❤️ ${enemyHp} / ${enemyHp}`;
         }
 
+        /* ========== 副本战斗 ========== */
+
+        // 飘字效果
+        function showDamageText(targetId, text, type) {
+            const el = document.getElementById(targetId);
+            if (!el) return;
+            const rect = el.getBoundingClientRect();
+            const span = document.createElement('span');
+            span.className = `damage-text ${type}`;
+            span.textContent = text;
+            span.style.left = (rect.left + rect.width / 2 - 20) + 'px';
+            span.style.top = (rect.top + 10) + 'px';
+            document.body.appendChild(span);
+            setTimeout(() => span.remove(), 950);
+        }
+
+        // 暴击星星
+        function showCritStars(targetId) {
+            const el = document.getElementById(targetId);
+            if (!el) return;
+            const rect = el.getBoundingClientRect();
+            for (let i = 0; i < 3; i++) {
+                const star = document.createElement('span');
+                star.className = 'crit-star';
+                star.textContent = '✨';
+                star.style.left = (rect.left + rect.width / 2 - 30 + i * 25) + 'px';
+                star.style.top = (rect.top + rect.height / 2 - 20) + 'px';
+                star.style.animationDelay = (i * 0.1) + 's';
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 700);
+            }
+        }
+
+        // 元素抖动
+        function shakeElement(id, className) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.remove(className);
+            void el.offsetWidth; // reflow
+            el.classList.add(className);
+            setTimeout(() => el.classList.remove(className), 450);
+        }
+
         function dungeonTick() {
             const s = gameState.dungeonState;
             if (s.battleOver) return;
@@ -3318,12 +3494,20 @@
 
         function playerAttackEnemy() {
             const s = gameState.dungeonState;
-            const dmg = Math.max(1, s.playerAtk - Math.floor(s.enemyMaxHp * 0.1));
+            // 15% 暴击率，暴击伤害 × 2
+            const isCrit = Math.random() < 0.15;
+            const baseDmg = Math.max(1, s.playerAtk - Math.floor(s.enemyMaxHp * 0.1));
+            const dmg = isCrit ? baseDmg * 2 : baseDmg;
             s.enemyHp = Math.max(0, s.enemyHp - dmg);
             const pct = Math.max(0, s.enemyHp / s.enemyMaxHp * 100);
             document.getElementById('enemyHpFill').style.width = pct + '%';
             document.getElementById('enemyHpText').textContent = `❤️ ${s.enemyHp} / ${s.enemyMaxHp}`;
-            addBattleLog(`⚔️ 你造成了 ${dmg} 点伤害`, 'damage');
+            const logText = isCrit ? `⚔️ 暴击！造成了 ${dmg} 点伤害` : `⚔️ 你造成了 ${dmg} 点伤害`;
+            addBattleLog(logText, 'damage');
+            // 爽感
+            shakeElement('battleEnemy', 'enemy-hit');
+            showDamageText('battleEnemy', (isCrit ? dmg + '!' : dmg), isCrit ? 'crit' : '');
+            if (isCrit) showCritStars('battleEnemy');
         }
 
         function enemyAttackPlayer() {
@@ -3334,6 +3518,9 @@
             document.getElementById('playerHpFill').style.width = pct + '%';
             document.getElementById('playerHpText').textContent = `❤️ ${s.hp} / ${s.maxHp}`;
             addBattleLog(`👹 敌人造成了 ${dmg} 点伤害`, 'damage');
+            // 爽感：玩家受击抖动+红字
+            shakeElement('battlePlayer', 'player-hit');
+            showDamageText('battlePlayer', dmg, '');
 
             // HP低于30%显示治疗按钮
             const healBtn = document.getElementById('healBtn');
@@ -3381,6 +3568,9 @@
             document.getElementById('playerHpText').textContent = `❤️ ${s.hp} / ${s.maxHp}`;
             document.getElementById('healBtn').style.display = 'none';
             addBattleLog(`💚 恢复了 ${Math.floor(s.maxHp * 0.5)} HP！`, 'heal');
+            // 治疗飘字
+            const healAmt = Math.floor(s.maxHp * 0.5);
+            showDamageText('battlePlayer', '+' + healAmt, 'heal');
             saveGame();
         }
 
