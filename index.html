@@ -1654,11 +1654,11 @@
         transform: translateX(-50%);
         width: 200px; height: 240px;
         border-radius: 50%;
-        border: 2px solid rgba(var(--job-color-rgb), 0.35);
+        border: calc(1px + var(--equip-glow, 0) * 0.4px) solid rgba(var(--job-color-rgb), calc(0.2 + var(--equip-glow, 0) * 0.12));
         box-shadow:
-            0 0 20px rgba(var(--job-color-rgb), 0.3),
-            inset 0 0 20px rgba(var(--job-color-rgb), 0.1);
-        animation: aura-breathe 2.5s ease-in-out infinite;
+            0 0 calc(15px + var(--equip-glow, 0) * 8px) rgba(var(--job-color-rgb), calc(0.2 + var(--equip-glow, 0) * 0.1)),
+            inset 0 0 calc(15px + var(--equip-glow, 0) * 8px) rgba(var(--job-color-rgb), calc(0.08 + var(--equip-glow, 0) * 0.05));
+        animation: aura-breathe calc(2.5s - var(--equip-glow, 0) * 0.2s) ease-in-out infinite;
         pointer-events: none;
         z-index: 1;
     }
@@ -1667,8 +1667,8 @@
         position: absolute;
         inset: -8px;
         border-radius: 50%;
-        border: 1px solid rgba(var(--job-color-rgb), 0.15);
-        animation: aura-rotate 8s linear infinite;
+        border: 1px solid rgba(var(--job-color-rgb), calc(0.1 + var(--equip-glow, 0) * 0.05));
+        animation: aura-rotate calc(8s - var(--equip-glow, 0) * 0.5s) linear infinite;
     }
 
     /* ---- 粒子系统 ---- */
@@ -1679,13 +1679,15 @@
         width: 220px; height: 260px;
         pointer-events: none;
         z-index: 2;
+        opacity: calc(0.3 + var(--equip-glow, 0) * 0.14);
     }
     .char-particle {
         position: absolute;
-        width: 6px; height: 6px;
+        width: calc(4px + var(--equip-glow, 0) * 0.8px);
+        height: calc(4px + var(--equip-glow, 0) * 0.8px);
         border-radius: 50%;
         background: var(--job-color);
-        box-shadow: 0 0 6px var(--job-color), 0 0 12px rgba(var(--job-color-rgb), 0.5);
+        box-shadow: 0 0 calc(4px + var(--equip-glow, 0) * 2px) var(--job-color), 0 0 calc(8px + var(--equip-glow, 0) * 4px) rgba(var(--job-color-rgb), 0.5);
         animation: particle-orbit var(--orbit-dur, 6s) linear infinite;
         animation-delay: var(--orbit-delay, 0s);
     }
@@ -1710,7 +1712,7 @@
         width: 100%;
         max-width: 300px;
         box-shadow:
-            0 0 30px rgba(var(--job-color-rgb), 0.15),
+            0 0 calc(20px + var(--equip-glow, 0) * 10px) rgba(var(--job-color-rgb), calc(0.1 + var(--equip-glow, 0) * 0.05)),
             0 8px 32px rgba(0,0,0,0.5),
             inset 0 1px 0 rgba(255,255,255,0.05);
         overflow: hidden;
@@ -1782,8 +1784,46 @@
     }
     .char-job-label {
         font-size: 14px;
-        margin-bottom: 14px;
+        margin-bottom: 6px;
         font-weight: 600;
+    }
+    .char-mbti {
+        font-family: 'Orbitron', monospace;
+        font-size: 11px;
+        color: var(--gold-dim);
+        margin-bottom: 14px;
+        letter-spacing: 1px;
+    }
+
+    /* ---- 装备预览行 ---- */
+    .equip-preview-row {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+    }
+    .equip-preview-slot {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        border: 2px solid var(--card-border);
+        background: var(--card);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+        opacity: 0.3;
+    }
+    .equip-preview-slot.has-item {
+        opacity: 1;
+        border-color: var(--gold);
+        box-shadow: 0 0 8px rgba(201,162,39,0.3);
+    }
+    .equip-preview-slot:hover {
+        transform: scale(1.1);
     }
 
     /* ---- 属性网格 ---- */
@@ -2359,12 +2399,21 @@
                     <div class="char-level-badge">
                         <div class="char-name" id="charName">冒险者</div>
                         <div class="char-job-label" id="charJobLabel">坦克 · Lv.1</div>
+                        <div class="char-mbti" id="charMbti">INTJ · 建筑师</div>
                     </div>
                     <div class="char-stats-grid">
                         <div class="char-stat-item"><span class="char-stat-name">攻击</span><span class="char-stat-num" id="charAtk">10</span></div>
                         <div class="char-stat-item"><span class="char-stat-name">防御</span><span class="char-stat-num" id="charDef">10</span></div>
                         <div class="char-stat-item"><span class="char-stat-name">生命</span><span class="char-stat-num" id="charHp">100</span></div>
                         <div class="char-stat-item"><span class="char-stat-name">暴击</span><span class="char-stat-num" id="charCrit">15%</span></div>
+                    </div>
+                    <div class="equip-preview-row" id="equipPreviewRow">
+                        <div class="equip-preview-slot" id="equipPreview_weapon" title="武器">?</div>
+                        <div class="equip-preview-slot" id="equipPreview_shield" title="护盾">?</div>
+                        <div class="equip-preview-slot" id="equipPreview_head" title="头盔">?</div>
+                        <div class="equip-preview-slot" id="equipPreview_chest" title="胸甲">?</div>
+                        <div class="equip-preview-slot" id="equipPreview_accessory" title="饰品">?</div>
+                        <div class="equip-preview-slot" id="equipPreview_pants" title="护腿">?</div>
                     </div>
                     <button class="customize-btn" onclick="openCustomize()">✏️ 换装 / 改名</button>
                 </div>
@@ -3812,26 +3861,73 @@ function collectMail(id) {
 // ====================================================
 function updateCharacterPanel() {
     const info = JobInfo[gameState.job];
-    const charImg = `assets/characters/${gameState.job}_full.png`;
-    document.getElementById('charPortrait').src = charImg;
-    document.getElementById('charPortrait').onerror = function() {
-        this.src = `assets/characters/tank_full.png`; this.onerror = null;
+
+    // MBTI专属角色立绘（不是职业通用图）
+    const charImg = getCharImage(gameState.mbti, gameState.gender, gameState.level);
+    const portrait = document.getElementById('charPortrait');
+    portrait.src = charImg;
+    portrait.onerror = function() {
+        this.src = `assets/characters/${gameState.job}_full.png`;
+        this.onerror = null;
     };
+
+    // 装备光效强度：所有装备稀有度总分 → CSS变量
+    const qualityScore = calculateEquipGlow();
+    const charScreen = document.getElementById('charScreen');
+    const charScreenInner = charScreen ? charScreen.querySelector('.char-screen') : null;
+    charScreen.style.setProperty('--equip-glow', qualityScore);
+    if (charScreenInner) charScreenInner.setProperty('--equip-glow', qualityScore);
+    charScreen.setAttribute('data-job', gameState.job);
+    if (charScreenInner) charScreenInner.setAttribute('data-job', gameState.job);
+
+    const mbtiInfo = MBTINames[gameState.mbti] || { name: gameState.mbti, desc: '' };
     document.getElementById('charName').textContent = gameState.name;
     document.getElementById('charJobLabel').textContent = `${info.name} · Lv.${gameState.level}`;
     document.getElementById('charJobLabel').style.color = info.color;
-    // Sync job color CSS variable via data-job attribute
-    const charScreen = document.getElementById('charScreen');
-    const charScreenInner = charScreen.querySelector('.char-screen');
-    if (charScreenInner) charScreenInner.setAttribute('data-job', gameState.job);
-    charScreen.setAttribute('data-job', gameState.job);
+    document.getElementById('charMbti').textContent = `${gameState.mbti} · ${mbtiInfo.name}`;
+
     const stats = calculateStats();
     document.getElementById('charAtk').textContent = stats.atk;
     document.getElementById('charDef').textContent = stats.def;
     document.getElementById('charHp').textContent = stats.hp;
     document.getElementById('charCrit').textContent = '15%';
+
+    // 装备预览：显示当前穿戴的装备图标
+    updateEquipPreview();
 }
 
+function calculateEquipGlow() {
+    const qualityRank = { white: 0, green: 1, blue: 2, purple: 3, gold: 4 };
+    const equipped = gameState.equipment.slice(0, 6); // 6个装备槽位
+    let total = 0;
+    equipped.forEach(eq => {
+        if (eq) total += qualityRank[eq.quality] || 0;
+    });
+    // 返回0-5的强度等级
+    return Math.min(5, Math.floor(total / 2));
+}
+
+function updateEquipPreview() {
+    const slots = ['weapon', 'shield', 'head', 'chest', 'accessory', 'pants'];
+    const slotMap = { weapon: 0, shield: 1, head: 2, chest: 3, accessory: 4, pants: 5 };
+    const equipped = gameState.equipment;
+    slots.forEach((slot, idx) => {
+        const eq = equipped[slotMap[slot]];
+        const iconEl = document.getElementById('equipPreview_' + slot);
+        if (!iconEl) return;
+        if (eq) {
+            iconEl.textContent = eq.icon || '📦';
+            iconEl.style.opacity = '1';
+            iconEl.classList.add('has-item');
+            iconEl.title = `${eq.name} (+${eq.stats.atk || 0}ATK)`;
+        } else {
+            iconEl.textContent = '?';
+            iconEl.style.opacity = '0.3';
+            iconEl.classList.remove('has-item');
+            iconEl.title = '未装备';
+        }
+    });
+}
 function openCustomize() {
     document.getElementById('customizeNameInput').value = gameState.name;
     document.getElementById('customizeModal').classList.add('show');
