@@ -7,7 +7,7 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  background: #080810;
+  background: #07070f;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -16,41 +16,23 @@ body {
   overflow: hidden;
 }
 
-/* ========== 背景星辰 ========== */
+/* ========== 背景 ========== */
 .starfield {
   position: fixed; inset: 0;
-  background: radial-gradient(ellipse at 50% 30%, #0d1030 0%, #050510 70%);
+  background: radial-gradient(ellipse at 50% 30%, #0c0c24 0%, #040410 70%);
   z-index: 0;
-}
-.starfield::after {
-  content: '';
-  position: absolute; inset: 0;
-  background-image:
-    radial-gradient(1px 1px at 20% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
-    radial-gradient(1px 1px at 80% 25%, rgba(255,255,255,0.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 65% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 10% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 90% 55%, rgba(255,255,255,0.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 50% 40%, rgba(255,255,255,0.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 30% 75%, rgba(255,255,255,0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 75% 10%, rgba(255,255,255,0.4) 0%, transparent 100%);
-  pointer-events: none;
 }
 
 /* ========== 主容器 ========== */
 .game-container {
   position: relative; z-index: 1;
   width: 1100px;
-  height: 680px;
-  background: linear-gradient(160deg, #0c0c1e 0%, #0a0a16 60%, #08081a 100%);
-  border: 1px solid #1e1e40;
-  border-radius: 12px;
+  height: 660px;
+  background: linear-gradient(160deg, #0c0c20 0%, #090916 100%);
+  border: 1px solid #1c1c3a;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(79,172,254,0.08),
-    0 30px 80px rgba(0,0,0,0.7),
-    inset 0 1px 0 rgba(255,255,255,0.04);
+  box-shadow: 0 0 0 1px rgba(79,172,254,0.06), 0 30px 80px rgba(0,0,0,0.7);
 }
 
 /* ========== 顶部标签栏 ========== */
@@ -58,8 +40,8 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 40px;
-  background: rgba(0,0,0,0.45);
-  border-bottom: 1px solid #151530;
+  background: rgba(0,0,0,0.4);
+  border-bottom: 1px solid #141428;
   display: flex;
   align-items: center;
   padding: 0 16px;
@@ -68,21 +50,20 @@ body {
 }
 .tab {
   padding: 7px 16px;
-  color: rgba(255,255,255,0.38);
+  color: rgba(255,255,255,0.35);
   font-size: 12px;
   border-radius: 5px 5px 0 0;
   cursor: pointer;
   transition: all 0.15s;
   border: 1px solid transparent;
-  letter-spacing: 0.5px;
 }
 .tab.active {
   color: #ffd700;
   background: rgba(255,215,0,0.07);
   border-color: rgba(255,215,0,0.18);
-  border-bottom-color: #0a0a16;
+  border-bottom-color: #090916;
 }
-.tab:hover:not(.active) { color: rgba(255,255,255,0.65); }
+.tab:hover:not(.active) { color: rgba(255,255,255,0.6); }
 
 /* ========== 主面板 ========== */
 .main-panel {
@@ -91,104 +72,100 @@ body {
   display: flex;
 }
 
-/* ========== 左侧区：Paper Doll ========== */
-.left-area {
-  flex: 0 0 440px;
+/* ========== 角色中央区域 ========== */
+.char-center {
+  flex: 0 0 480px;
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at 50% 45%, rgba(40,50,120,0.18) 0%, transparent 65%);
+  background: radial-gradient(ellipse at 50% 55%, rgba(40,50,120,0.15) 0%, transparent 65%);
 }
 
-/* 角色名字 + 职业悬浮 */
-.char-info-badge {
+/* 角色名 + 职业顶部标签 */
+.top-char-badge {
   position: absolute;
-  z-index: 5;
+  top: 8px; left: 50%;
+  transform: translateX(-50%);
   background: rgba(6,7,18,0.88);
   border: 1px solid rgba(255,215,0,0.28);
   border-radius: 8px;
-  padding: 5px 14px;
+  padding: 4px 16px;
   text-align: center;
-  backdrop-filter: blur(4px);
+  z-index: 10;
+  white-space: nowrap;
 }
-.char-info-badge.name {
-  top: 6px; left: 50%;
-  transform: translateX(-50%);
-}
-.char-info-badge.name .cname { color: #ffd700; font-size: 15px; font-weight: bold; }
-.char-info-badge.name .cclass { color: #7ec8e3; font-size: 9px; margin-top: 1px; }
-.char-info-badge.mbti {
-  bottom: 8px; right: 8px;
-  padding: 5px 10px;
-}
-.char-info-badge.mbti .mbti-val { color: #ffd700; font-size: 16px; font-weight: bold; }
-.char-info-badge.mbti .mbti-label { color: rgba(255,255,255,0.38); font-size: 8px; }
-.char-info-badge.age-badge {
-  bottom: 8px; left: 8px;
-  padding: 4px 10px;
-}
-.char-info-badge.age-badge .age-label { color: rgba(255,255,255,0.35); font-size: 8px; }
-.char-info-badge.age-badge .age-stage { color: #a0c8ff; font-size: 11px; font-weight: bold; }
+.top-char-badge .cname { color: #ffd700; font-size: 15px; font-weight: bold; }
+.top-char-badge .cclass { color: #7ec8e3; font-size: 9px; }
 
-/* ========== Paper Doll 主体 ========== */
-.paper-doll {
+/* ========== 角色主体 ========== */
+.char-body {
   position: relative;
-  width: 340px;
-  height: 540px;
+  width: 240px;
+  height: 400px;
 }
 
-/* 角色立绘 */
-.char-portrait {
+/* 角色图片 - 带骨骼动画效果 */
+.char-img-wrap {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 200px;
-  height: 360px;
+  width: 180px;
+  height: 340px;
   z-index: 2;
 }
-.char-portrait img {
-  width: 100%; height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.7))
-          drop-shadow(0 0 18px rgba(79,172,254,0.12));
+
+/* 角色整体容器 - 呼吸+微晃动画 */
+.char-img-wrap {
+  animation: charBreath 3.2s ease-in-out infinite;
+  transform-origin: center bottom;
 }
-.char-portrait::before {
-  content: '';
-  position: absolute;
-  inset: -20px;
-  background: radial-gradient(ellipse at 50% 60%, rgba(79,172,254,0.06) 0%, transparent 70%);
-  pointer-events: none;
+
+@keyframes charBreath {
+  0%   { transform: translate(-50%, -50%) scale(1.00) rotate(0deg); }
+  15%  { transform: translate(-50%, -50%) scale(1.012) rotate(-0.2deg); }
+  30%  { transform: translate(-50%, -50%) scale(1.00) rotate(0.1deg); }
+  45%  { transform: translate(-50%, -50%) scale(0.995) rotate(0.2deg); }
+  60%  { transform: translate(-50%, -50%) scale(1.008) rotate(-0.1deg); }
+  75%  { transform: translate(-50%, -50%) scale(1.00) rotate(0.15deg); }
+  100% { transform: translate(-50%, -50%) scale(1.00) rotate(0deg); }
+}
+
+.char-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 28px rgba(0,0,0,0.7))
+          drop-shadow(0 0 20px rgba(79,172,254,0.1));
 }
 
 /* 阴影地面 */
 .char-ground {
   position: absolute;
-  bottom: 20px; left: 50%;
+  bottom: 8px; left: 50%;
   transform: translateX(-50%);
-  width: 120px; height: 16px;
-  background: radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%);
+  width: 110px; height: 14px;
+  background: radial-gradient(ellipse, rgba(0,0,0,0.55) 0%, transparent 70%);
   border-radius: 50%;
   z-index: 1;
 }
 
-/* ========== 装备槽 — WoW人偶架布局 ========== */
-/*
-  WoW装备位置（相对于角色中心）:
-  头顶: Head
-  肩部左右: ShoulderL / ShoulderR
-  项链: Neck
-  胸部: Chest
-  披风: Back (背后, 图层在角色后)
-  腰带: Waist
-  腿部: Legs
-  脚部: Feet
-  手部: Hands
-  手指左右: FingerL / FingerR
-  饰品左右: TrinketL / TrinketR
-  主手/副手: MainHand / OffHand
-*/
+/* MBTI + 年龄角标 */
+.badge-mbti {
+  position: absolute;
+  bottom: 12px; right: -20px;
+  background: rgba(6,7,18,0.88);
+  border: 1px solid rgba(255,215,0,0.28);
+  border-radius: 8px;
+  padding: 4px 10px;
+  text-align: center;
+  z-index: 10;
+}
+.badge-mbti .mbti-val { color: #ffd700; font-size: 16px; font-weight: bold; }
+.badge-mbti .mbti-label { color: rgba(255,255,255,0.38); font-size: 8px; }
 
+/* ========== 装备槽基础样式 ========== */
 .equip-slot {
   position: absolute;
   cursor: pointer;
@@ -226,123 +203,92 @@ body {
 .equipped .slot-box {
   border-color: #3a5a7a;
   background: rgba(20,35,55,0.95);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.5);
 }
-
 .slot-label {
   font-size: 7px;
-  color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.22);
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
-.equipped .slot-label { color: rgba(255,255,255,0.48); }
+.equipped .slot-label { color: rgba(255,255,255,0.45); }
 
-/* 空槽虚线样式 */
-.slot-empty .slot-box {
-  border-style: dashed;
-  border-color: rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.01);
+/* ========== 左侧装备栏（左侧，竖排） ========== */
+.left-equip-panel {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 10;
 }
 
-/* ========== 各装备槽位置（相对于paper-doll） ========== */
+.eq-col-label {
+  font-size: 8px;
+  color: rgba(255,255,255,0.2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 2px;
+}
 
-/* 头顶 — 正上方 */
-.slot-head {
-  top: 0; left: 50%;
+/* 左侧装备竖排 */
+.slot-l-head    { left: 20px; top: 20px; }
+.slot-l-shoulder { left: 20px; top: 78px; }
+.slot-l-chest   { left: 20px; top: 136px; }
+.slot-l-waist   { left: 20px; top: 194px; }
+.slot-l-legs    { left: 20px; top: 252px; }
+.slot-l-hands   { left: 20px; top: 310px; }
+.slot-l-feet    { left: 20px; top: 368px; }
+
+/* ========== 右侧饰品栏（右侧，竖排） ========== */
+.right-equip-panel {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 10;
+}
+
+.slot-r-neck    { right: 20px; top: 20px; }
+.slot-r-finger1 { right: 20px; top: 78px; }
+.slot-r-finger2 { right: 20px; top: 136px; }
+.slot-r-trinket1 { right: 20px; top: 194px; }
+.slot-r-trinket2 { right: 20px; top: 252px; }
+
+/* ========== 底部武器栏 ========== */
+.bottom-weapon-panel {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
   transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  z-index: 10;
 }
 
-/* 肩部 — 两侧偏上 */
-.slot-shoulder-l {
-  top: 55px; left: 8px;
-}
-.slot-shoulder-r {
-  top: 55px; right: 8px;
-}
+.slot-mainhand { }
+.slot-offhand  { }
 
-/* 项链 — 左上 */
-.slot-neck {
-  top: 95px; left: 0;
-}
-
-/* 胸部 — 正中偏上 */
-.slot-chest {
-  top: 100px; left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-}
-
-/* 披风 — 左后（角色背后） */
-.slot-back {
-  top: 110px; left: 15px;
-  z-index: 1;
-}
-
-/* 腰部 — 中 */
-.slot-waist {
-  top: 200px; left: 50%;
-  transform: translateX(-50%);
-}
-
-/* 腿部 — 下中 */
-.slot-legs {
-  top: 265px; left: 50%;
-  transform: translateX(-50%);
-}
-
-/* 脚部 — 底部左侧 */
-.slot-feet {
-  bottom: 8px; left: 70px;
-}
-
-/* 手部 — 右侧中部 */
-.slot-hands {
-  top: 195px; right: 8px;
-}
-
-/* 手指左 — 左下 */
-.slot-finger-l {
-  bottom: 45px; left: 55px;
-}
-
-/* 手指右 — 右下 */
-.slot-finger-r {
-  bottom: 45px; right: 55px;
-}
-
-/* 饰品左 — 左侧低 */
-.slot-trinket-l {
-  bottom: 100px; left: 0;
-}
-
-/* 饰品右 — 右侧低 */
-.slot-trinket-r {
-  bottom: 100px; right: 0;
-}
-
-/* 主手 — 右下角 */
-.slot-mainhand {
-  bottom: 5px; right: 18px;
-}
-/* 副手 — 左下角 */
-.slot-offhand {
-  bottom: 5px; left: 18px;
-}
-
-/* ========== 右侧：属性面板 ========== */
+/* ========== 右侧属性面板 ========== */
 .right-area {
   flex: 1;
   display: flex;
-  border-left: 1px solid #151530;
+  border-left: 1px solid #131328;
 }
 
 .stats-col {
-  width: 260px;
-  padding: 16px 14px;
+  width: 270px;
+  padding: 14px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  border-right: 1px solid #111128;
+  gap: 9px;
+  border-right: 1px solid #0f0f22;
   overflow-y: auto;
 }
 .char-header {
@@ -353,14 +299,14 @@ body {
 .char-name { color: #ffd700; font-size: 18px; font-weight: bold; }
 .char-class { color: #7ec8e3; font-size: 11px; }
 .char-level { margin-left: auto; color: #a0c8ff; font-size: 12px; }
-.char-title { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+.char-title { font-size: 10px; color: rgba(255,255,255,0.28); margin-top: 2px; }
 
 .char-subheader { display: flex; gap: 5px; flex-wrap: wrap; }
 .char-tag {
   background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 10px; padding: 2px 8px;
-  font-size: 9px; color: rgba(255,255,255,0.4);
+  font-size: 9px; color: rgba(255,255,255,0.38);
 }
 .char-tag.mbti {
   background: rgba(255,215,0,0.07);
@@ -369,19 +315,19 @@ body {
 }
 
 .ilvl-row { display: flex; align-items: baseline; gap: 5px; }
-.ilvl-label { color: rgba(255,255,255,0.28); font-size: 10px; }
+.ilvl-label { color: rgba(255,255,255,0.25); font-size: 10px; }
 .ilvl-val { color: #e8e8ff; font-size: 20px; font-weight: bold; }
-.ilvl-max { color: rgba(255,255,255,0.2); font-size: 10px; }
+.ilvl-max { color: rgba(255,255,255,0.18); font-size: 10px; }
 
 .stats-section {
   background: rgba(255,255,255,0.015);
   border: 1px solid rgba(255,255,255,0.04);
-  border-radius: 6px; padding: 9px 11px;
+  border-radius: 5px; padding: 8px 10px;
 }
 .section-title {
-  color: rgba(255,255,255,0.24);
+  color: rgba(255,255,255,0.22);
   font-size: 8px; text-transform: uppercase;
-  letter-spacing: 1.2px; margin-bottom: 8px;
+  letter-spacing: 1.2px; margin-bottom: 7px;
 }
 .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
 .stat-row { display: flex; align-items: center; gap: 5px; }
@@ -389,109 +335,75 @@ body {
   width: 13px; height: 13px; border-radius: 3px;
   display: flex; align-items: center; justify-content: center; font-size: 8px;
 }
-.stat-label { color: rgba(255,255,255,0.35); font-size: 9px; }
+.stat-label { color: rgba(255,255,255,0.32); font-size: 9px; }
 .stat-val { color: #d0d8f0; font-size: 10px; font-weight: bold; margin-left: auto; }
 
 .power-section {
   background: rgba(79,172,254,0.03);
-  border: 1px solid rgba(79,172,254,0.08);
-  border-radius: 6px; padding: 9px 11px;
+  border: 1px solid rgba(79,172,254,0.07);
+  border-radius: 5px; padding: 8px 10px;
 }
-.power-label { color: rgba(79,172,254,0.6); font-size: 9px; margin-bottom: 6px; }
+.power-label { color: rgba(79,172,254,0.55); font-size: 9px; margin-bottom: 5px; }
 .power-bar { height: 4px; background: rgba(255,255,255,0.04); border-radius: 2px; overflow: hidden; }
 .power-fill { height: 100%; background: linear-gradient(90deg, #4facfe, #00f2fe); border-radius: 2px; }
 
-/* ========== 右侧2: 角色年龄展示 ========== */
+/* ========== 右侧2: 年龄成长 ========== */
 .age-col {
   flex: 1;
-  padding: 16px 12px;
+  padding: 14px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 .age-col-title {
-  color: rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.2);
   font-size: 8px; text-transform: uppercase;
-  letter-spacing: 1.2px; margin-bottom: 4px;
+  letter-spacing: 1.2px; margin-bottom: 2px;
 }
-.age-timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+.age-timeline { display: flex; flex-direction: column; gap: 5px; }
+
 .age-entry {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.02);
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  background: rgba(255,255,255,0.015);
   border: 1px solid rgba(255,255,255,0.04);
   cursor: pointer;
   transition: all 0.15s;
 }
-.age-entry:hover, .age-entry.active {
-  background: rgba(79,172,254,0.05);
-  border-color: rgba(79,172,254,0.15);
-}
-.age-entry.active {
-  background: rgba(255,215,0,0.05);
-  border-color: rgba(255,215,0,0.15);
-}
-.age-num {
-  font-size: 9px;
-  color: rgba(255,255,255,0.25);
-  width: 16px;
-  text-align: center;
-}
-.age-stage-name {
-  font-size: 11px;
-  color: rgba(255,255,255,0.6);
-  width: 48px;
-}
-.age-bar-wrap {
-  flex: 1;
-  height: 3px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.age-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #4facfe, #a78bfa);
-  border-radius: 2px;
-}
+.age-entry:hover { background: rgba(79,172,254,0.04); border-color: rgba(79,172,254,0.12); }
+.age-entry.active { background: rgba(255,215,0,0.04); border-color: rgba(255,215,0,0.14); }
+
+.age-num { font-size: 8px; color: rgba(255,255,255,0.2); width: 14px; text-align: center; }
+.age-stage-name { font-size: 10px; color: rgba(255,255,255,0.55); width: 42px; }
+.age-bar-wrap { flex: 1; height: 3px; background: rgba(255,255,255,0.04); border-radius: 2px; overflow: hidden; }
+.age-bar { height: 100%; background: linear-gradient(90deg, #4facfe, #a78bfa); border-radius: 2px; }
 .age-entry.active .age-bar { background: linear-gradient(90deg, #ffd700, #ff8c00); }
-.age-thumbnail {
-  width: 32px; height: 32px;
+.age-thumb {
+  width: 28px; height: 28px;
   border-radius: 4px;
   object-fit: cover;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.02);
 }
-.age-mbti-tag {
-  font-size: 9px;
-  color: rgba(255,215,0,0.5);
-  width: 36px;
-  text-align: right;
-}
+.age-mbti { font-size: 8px; color: rgba(255,215,0,0.45); width: 34px; text-align: right; }
 .age-desc {
-  font-size: 9px;
-  color: rgba(255,255,255,0.25);
-  margin-top: 3px;
-  padding-left: 26px;
+  font-size: 9px; color: rgba(255,255,255,0.22);
+  margin-top: 2px; padding-left: 22px;
   display: none;
 }
 .age-entry.active .age-desc { display: block; }
 
-/* 底部装饰 */
+/* ========== 底部装饰 ========== */
 .bottom-bar {
   position: absolute; bottom: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(79,172,254,0.4) 30%, rgba(255,215,0,0.5) 50%, rgba(79,172,254,0.4) 70%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(79,172,254,0.35) 30%, rgba(255,215,0,0.45) 50%, rgba(79,172,254,0.35) 70%, transparent);
 }
 
-/* 弹出面板 */
+/* ========== 弹出面板 ========== */
 .overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.65);
@@ -513,22 +425,22 @@ body {
 }
 .popup.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
 .popup-name { color: #ffd700; font-size: 17px; font-weight: bold; margin-bottom: 2px; }
-.popup-type { color: rgba(255,255,255,0.38); font-size: 11px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.popup-type { color: rgba(255,255,255,0.35); font-size: 11px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
 .popup-stat { color: #7ec8e3; font-size: 12px; margin-bottom: 4px; }
-.popup-desc { color: rgba(255,255,255,0.5); font-size: 11px; line-height: 1.6; margin: 10px 0; }
+.popup-desc { color: rgba(255,255,255,0.48); font-size: 11px; line-height: 1.6; margin: 10px 0; }
 .popup-btn {
   width: 100%; padding: 8px;
   background: rgba(255,215,0,0.07); border: 1px solid rgba(255,215,0,0.22);
   border-radius: 6px; color: #ffd700; font-size: 12px; cursor: pointer; transition: all 0.15s; margin-top: 8px;
 }
 .popup-btn:hover { background: rgba(255,215,0,0.14); }
-.popup-close { position: absolute; top: 10px; right: 12px; color: rgba(255,255,255,0.28); font-size: 16px; cursor: pointer; }
+.popup-close { position: absolute; top: 10px; right: 12px; color: rgba(255,255,255,0.25); font-size: 16px; cursor: pointer; }
 .popup-close:hover { color: #fff; }
 
 /* 滚动条 */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2a2a50; border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: #252550; border-radius: 2px; }
 </style>
 </head>
 <body>
@@ -546,143 +458,149 @@ body {
 
   <div class="main-panel">
 
-    <!-- ========== 左侧：Paper Doll ========== -->
-    <div class="left-area">
+    <!-- ========== 中央角色区 ========== -->
+    <div class="char-center">
 
-      <!-- 角色名字+职业标签 -->
-      <div class="char-info-badge name">
+      <!-- 顶部名字标签 -->
+      <div class="top-char-badge">
         <div class="cname">小杰</div>
-        <div class="cclass">🛡️ 战士</div>
+        <div class="cclass">🛡️ 战士 · 研究生</div>
       </div>
 
-      <!-- Paper Doll 人偶架 -->
-      <div class="paper-doll">
+      <!-- 角色主体（含动画） -->
+      <div class="char-body">
 
         <!-- 阴影地面 -->
         <div class="char-ground"></div>
 
-        <!-- 角色立绘（中心） -->
-        <div class="char-portrait">
+        <!-- 角色图片（呼吸+微晃动画） -->
+        <div class="char-img-wrap">
           <img src="char_warrior_intj.png" alt="战士"
-               onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 360%22><rect fill=%22%230a0a1a%22 width=%22200%22 height=%22360%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23ffd700%22 font-size=%2240%22>🛡️</text></svg>'">
+               onerror="this.style.opacity='0'">
         </div>
 
-        <!-- 头顶：Head -->
-        <div class="equip-slot equipped slot-head" data-name="战士白板盔" data-type="头部 · 板甲" data-ilvl="12" data-desc="基础战士装备，由新手村铁匠打造。">
-          <div class="slot-box">🪖</div>
-          <div class="slot-label">头部</div>
+        <!-- MBTI角标 -->
+        <div class="badge-mbti">
+          <div class="mbti-val">INTJ</div>
+          <div class="mbti-label">战略大师</div>
         </div>
 
-        <!-- 肩部左 -->
-        <div class="equip-slot equipped slot-shoulder-l" data-name="见习肩甲" data-type="肩部 · 板甲" data-ilvl="10" data-desc="保护肩膀的入门级铠甲。">
-          <div class="slot-box">🎽</div>
-          <div class="slot-label">肩左</div>
+        <!-- ========== 左侧装备栏 ========== -->
+        <div class="left-equip-panel">
+          <div class="eq-col-label">装备</div>
+
+          <div class="equip-slot equipped slot-l-head"
+               data-name="战士白板盔" data-type="头部 · 板甲" data-ilvl="12"
+               data-desc="基础战士装备，由新手村铁匠打造。">
+            <div class="slot-box">🪖</div>
+            <div class="slot-label">头部</div>
+          </div>
+
+          <div class="equip-slot equipped slot-l-shoulder"
+               data-name="见习肩甲" data-type="肩部 · 板甲" data-ilvl="10"
+               data-desc="保护肩膀的入门级铠甲。">
+            <div class="slot-box">🎽</div>
+            <div class="slot-label">肩部</div>
+          </div>
+
+          <div class="equip-slot equipped slot-l-chest"
+               data-name="战士皮甲" data-type="胸部 · 板甲" data-ilvl="14"
+               data-desc="新手战士的标准护甲。">
+            <div class="slot-box">🛡️</div>
+            <div class="slot-label">胸部</div>
+          </div>
+
+          <div class="equip-slot equipped slot-l-waist"
+               data-name="粗制腰带" data-type="腰部 · 皮革" data-ilvl="7"
+               data-desc="扎实耐用的入门级腰带。">
+            <div class="slot-box">🎗️</div>
+            <div class="slot-label">腰部</div>
+          </div>
+
+          <div class="equip-slot equipped slot-l-legs"
+               data-name="战士护腿" data-type="腿部 · 板甲" data-ilvl="13"
+               data-desc="覆盖大腿的金属护腿。">
+            <div class="slot-box">👖</div>
+            <div class="slot-label">腿部</div>
+          </div>
+
+          <div class="equip-slot equipped slot-l-hands"
+               data-name="搏击手套" data-type="手部 · 皮革" data-ilvl="11"
+               data-desc="拳击训练用护手套。">
+            <div class="slot-box">🧤</div>
+            <div class="slot-label">手部</div>
+          </div>
+
+          <div class="equip-slot equipped slot-l-feet"
+               data-name="训练长靴" data-type="脚部 · 皮革" data-ilvl="9"
+               data-desc="适合新手的轻便战靴。">
+            <div class="slot-box">👢</div>
+            <div class="slot-label">脚部</div>
+          </div>
+        </div><!-- /left-equip-panel -->
+
+        <!-- ========== 右侧饰品栏 ========== -->
+        <div class="right-equip-panel">
+          <div class="eq-col-label">饰品</div>
+
+          <div class="equip-slot equipped slot-r-neck"
+               data-name="勇气徽章" data-type="颈部" data-ilvl="15"
+               data-desc="新手村村长的赠礼。">
+            <div class="slot-box">📿</div>
+            <div class="slot-label">项链</div>
+          </div>
+
+          <div class="equip-slot equipped slot-r-finger1"
+               data-name="力量指环" data-type="手指" data-ilvl="10"
+               data-desc="增加少量力量的粗糙戒指。">
+            <div class="slot-box">💍</div>
+            <div class="slot-label">戒指</div>
+          </div>
+
+          <div class="equip-slot equipped slot-r-finger2"
+               data-name="敏捷指环" data-type="手指" data-ilvl="10"
+               data-desc="增加少量敏捷的入门戒指。">
+            <div class="slot-box">💍</div>
+            <div class="slot-label">戒指</div>
+          </div>
+
+          <div class="equip-slot equipped slot-r-trinket1"
+               data-name="战痕勋章" data-type="饰品" data-ilvl="16"
+               data-desc="记录了第一次击杀怪物的荣誉。">
+            <div class="slot-box">🏅</div>
+            <div class="slot-label">饰品</div>
+          </div>
+
+          <div class="equip-slot equipped slot-r-trinket2"
+               data-name="力量护符" data-type="饰品" data-ilvl="14"
+               data-desc="增加少量力量的入门饰品。">
+            <div class="slot-box">🔮</div>
+            <div class="slot-label">饰品</div>
+          </div>
+        </div><!-- /right-equip-panel -->
+
+        <!-- ========== 底部武器 ========== -->
+        <div class="bottom-weapon-panel">
+          <div class="equip-slot equipped slot-mainhand"
+               data-name="新手短剑" data-type="主手 · 单手剑" data-ilvl="12"
+               data-desc="锋利的新手短剑，14-22伤害。">
+            <div class="slot-box">⚔️</div>
+            <div class="slot-label">主手</div>
+          </div>
+          <div class="equip-slot slot-offhand"
+               data-name="未装备" data-type="副手" data-ilvl="0"
+               data-desc="请装备物品">
+            <div class="slot-box" style="border-style:dashed;border-color:rgba(255,255,255,0.1);">📦</div>
+            <div class="slot-label">副手</div>
+          </div>
         </div>
 
-        <!-- 肩部右 -->
-        <div class="equip-slot equipped slot-shoulder-r" data-name="战士肩胛" data-type="肩部 · 板甲" data-ilvl="11" data-desc="右肩防护装甲。">
-          <div class="slot-box">🎽</div>
-          <div class="slot-label">肩右</div>
-        </div>
+      </div><!-- /char-body -->
+    </div><!-- /char-center -->
 
-        <!-- 项链 -->
-        <div class="equip-slot equipped slot-neck" data-name="勇气徽章" data-type="颈部" data-ilvl="15" data-desc="新手村村长的赠礼。">
-          <div class="slot-box">📿</div>
-          <div class="slot-label">项链</div>
-        </div>
-
-        <!-- 胸部（角色前面） -->
-        <div class="equip-slot equipped slot-chest" data-name="战士皮甲" data-type="胸部 · 板甲" data-ilvl="14" data-desc="新手战士的标准护甲。">
-          <div class="slot-box">🛡️</div>
-          <div class="slot-label">胸部</div>
-        </div>
-
-        <!-- 披风（左后） -->
-        <div class="equip-slot equipped slot-back" data-name="新手披风" data-type="背部 · 布料" data-ilvl="8" data-desc="保暖的初学者披风。">
-          <div class="slot-box">🧣</div>
-          <div class="slot-label">披风</div>
-        </div>
-
-        <!-- 腰部 -->
-        <div class="equip-slot equipped slot-waist" data-name="粗制腰带" data-type="腰部 · 皮革" data-ilvl="7" data-desc="扎实耐用的入门级腰带。">
-          <div class="slot-box">🎗️</div>
-          <div class="slot-label">腰部</div>
-        </div>
-
-        <!-- 腿部 -->
-        <div class="equip-slot equipped slot-legs" data-name="战士护腿" data-type="腿部 · 板甲" data-ilvl="13" data-desc="覆盖大腿的金属护腿。">
-          <div class="slot-box">👖</div>
-          <div class="slot-label">腿部</div>
-        </div>
-
-        <!-- 脚部 -->
-        <div class="equip-slot equipped slot-feet" data-name="训练长靴" data-type="脚部 · 皮革" data-ilvl="9" data-desc="适合新手的轻便战靴。">
-          <div class="slot-box">👢</div>
-          <div class="slot-label">脚部</div>
-        </div>
-
-        <!-- 手部 -->
-        <div class="equip-slot equipped slot-hands" data-name="搏击手套" data-type="手部 · 皮革" data-ilvl="11" data-desc="拳击训练用护手套。">
-          <div class="slot-box">🧤</div>
-          <div class="slot-label">手部</div>
-        </div>
-
-        <!-- 手指左 -->
-        <div class="equip-slot equipped slot-finger-l" data-name="力量指环" data-type="手指" data-ilvl="10" data-desc="增加少量力量的粗糙戒指。">
-          <div class="slot-box">💍</div>
-          <div class="slot-label">戒左</div>
-        </div>
-
-        <!-- 手指右 -->
-        <div class="equip-slot equipped slot-finger-r" data-name="敏捷指环" data-type="手指" data-ilvl="10" data-desc="增加少量敏捷的入门戒指。">
-          <div class="slot-box">💍</div>
-          <div class="slot-label">戒右</div>
-        </div>
-
-        <!-- 饰品左 -->
-        <div class="equip-slot equipped slot-trinket-l" data-name="战痕勋章" data-type="饰品" data-ilvl="16" data-desc="记录了第一次击杀怪物的荣誉。">
-          <div class="slot-box">🏅</div>
-          <div class="slot-label">饰左</div>
-        </div>
-
-        <!-- 饰品右 -->
-        <div class="equip-slot equipped slot-trinket-r" data-name="力量护符" data-type="饰品" data-ilvl="14" data-desc="增加少量力量的入门饰品。">
-          <div class="slot-box">🔮</div>
-          <div class="slot-label">饰右</div>
-        </div>
-
-        <!-- 主手 -->
-        <div class="equip-slot equipped slot-mainhand" data-name="新手短剑" data-type="主手 · 单手剑" data-ilvl="12" data-desc="锋利的新手短剑，14-22伤害。">
-          <div class="slot-box">⚔️</div>
-          <div class="slot-label">主手</div>
-        </div>
-
-        <!-- 副手 -->
-        <div class="equip-slot slot-empty slot-offhand" data-name="未装备" data-type="副手" data-ilvl="0" data-desc="请装备物品">
-          <div class="slot-box">📦</div>
-          <div class="slot-label">副手</div>
-        </div>
-
-      </div><!-- /paper-doll -->
-
-      <!-- MBTI标签 -->
-      <div class="char-info-badge mbti">
-        <div class="mbti-val">INTJ</div>
-        <div class="mbti-label">战略大师</div>
-      </div>
-
-      <!-- 年龄阶段标签 -->
-      <div class="char-info-badge age-badge">
-        <div class="age-label">当前阶段</div>
-        <div class="age-stage">研究生</div>
-      </div>
-
-    </div><!-- /left-area -->
-
-    <!-- ========== 右侧：属性 + 年龄成长 ========== -->
+    <!-- ========== 右侧属性 + 成长 ========== -->
     <div class="right-area">
 
-      <!-- 角色属性 -->
       <div class="stats-col">
         <div class="char-header">
           <div class="char-name">小杰</div>
@@ -728,22 +646,10 @@ body {
         <div class="stats-section">
           <div class="section-title">战斗属性</div>
           <div class="stats-grid">
-            <div class="stat-row">
-              <div class="stat-label">暴击</div>
-              <div class="stat-val" style="color:#ffd700;margin-left:auto;">5.2%</div>
-            </div>
-            <div class="stat-row">
-              <div class="stat-label">加速</div>
-              <div class="stat-val" style="color:#4facfe;margin-left:auto;">8.1%</div>
-            </div>
-            <div class="stat-row">
-              <div class="stat-label">精通</div>
-              <div class="stat-val" style="color:#c44bc4;margin-left:auto;">3.0%</div>
-            </div>
-            <div class="stat-row">
-              <div class="stat-label">全能</div>
-              <div class="stat-val" style="color:#e8a84c;margin-left:auto;">1.2%</div>
-            </div>
+            <div class="stat-row"><div class="stat-label">暴击</div><div class="stat-val" style="color:#ffd700;margin-left:auto;">5.2%</div></div>
+            <div class="stat-row"><div class="stat-label">加速</div><div class="stat-val" style="color:#4facfe;margin-left:auto;">8.1%</div></div>
+            <div class="stat-row"><div class="stat-label">精通</div><div class="stat-val" style="color:#c44bc4;margin-left:auto;">3.0%</div></div>
+            <div class="stat-row"><div class="stat-label">全能</div><div class="stat-val" style="color:#e8a84c;margin-left:auto;">1.2%</div></div>
           </div>
         </div>
         <div class="power-section">
@@ -752,63 +658,57 @@ body {
         </div>
       </div>
 
-      <!-- 角色年龄成长历程 -->
+      <!-- 年龄成长 -->
       <div class="age-col">
         <div class="age-col-title">成长历程</div>
         <div class="age-timeline">
 
-          <div class="age-entry" data-age="0" data-img="characters/intj_boy_age0.png" data-mbti="INTJ" data-desc="幼儿园 · 性格内向，喜欢独自玩耍，展现出超常的逻辑思维">
+          <div class="age-entry" data-img="characters/intj_boy_age0.png" data-desc="幼儿园 · 内向寡言，喜欢独自拼乐高">
             <div class="age-num">1</div>
-            <img class="age-thumbnail" src="characters/intj_boy_age0.png" alt="幼儿"
-                 onerror="this.style.opacity='0'">
+            <img class="age-thumb" src="characters/intj_boy_age0.png" alt="幼儿" onerror="this.style.opacity='0'">
             <div class="age-stage-name">幼儿</div>
             <div class="age-bar-wrap"><div class="age-bar" style="width:15%"></div></div>
-            <div class="age-mbti-tag">INTJ</div>
+            <div class="age-mbti">INTJ</div>
           </div>
 
-          <div class="age-entry" data-age="1" data-img="characters/intj_boy_age1.png" data-mbti="INTJ" data-desc="小学 · 成绩优异，是班里的"小军师"，擅长策划活动">
+          <div class="age-entry" data-img="characters/intj_boy_age1.png" data-desc="小学 · 班里"小军师"，擅长策划活动">
             <div class="age-num">2</div>
-            <img class="age-thumbnail" src="characters/intj_boy_age1.png" alt="童年"
-                 onerror="this.style.opacity='0'">
+            <img class="age-thumb" src="characters/intj_boy_age1.png" alt="童年" onerror="this.style.opacity='0'">
             <div class="age-stage-name">童年</div>
             <div class="age-bar-wrap"><div class="age-bar" style="width:28%"></div></div>
-            <div class="age-mbti-tag">INTJ</div>
+            <div class="age-mbti">INTJ</div>
           </div>
 
-          <div class="age-entry" data-age="2" data-img="characters/intj_boy_age2.png" data-mbti="INTJ" data-desc="中学 · 开始接触游戏，展现出战略眼光，是公会领袖">
+          <div class="age-entry" data-img="characters/intj_boy_age2.png" data-desc="中学 · 游戏公会领袖，初显战略天赋">
             <div class="age-num">3</div>
-            <img class="age-thumbnail" src="characters/intj_boy_age2.png" alt="少年"
-                 onerror="this.style.opacity='0'">
+            <img class="age-thumb" src="characters/intj_boy_age2.png" alt="少年" onerror="this.style.opacity='0'">
             <div class="age-stage-name">少年</div>
             <div class="age-bar-wrap"><div class="age-bar" style="width:42%"></div></div>
-            <div class="age-mbti-tag">INTJ</div>
+            <div class="age-mbti">INTJ</div>
           </div>
 
-          <div class="age-entry active" data-age="3" data-img="characters/intj_boy_age3.png" data-mbti="INTJ" data-desc="大学 · 选择计算机专业，在虚拟世界组建了自己的团队">
+          <div class="age-entry active" data-img="characters/intj_boy_age3.png" data-desc="大学 · 计算机专业，虚拟团队创始人">
             <div class="age-num">4</div>
-            <img class="age-thumbnail" src="characters/intj_boy_age3.png" alt="青年"
-                 onerror="this.style.opacity='0'">
+            <img class="age-thumb" src="characters/intj_boy_age3.png" alt="青年" onerror="this.style.opacity='0'">
             <div class="age-stage-name">青年</div>
             <div class="age-bar-wrap"><div class="age-bar" style="width:58%"></div></div>
-            <div class="age-mbti-tag">INTJ</div>
+            <div class="age-mbti">INTJ</div>
           </div>
 
-          <div class="age-entry" data-age="4" data-img="characters/intj_boy_age4.png" data-mbti="INTJ" data-desc="研究生 · 战略学方向，虚拟世界战略大师">
+          <div class="age-entry" data-img="characters/intj_boy_age4.png" data-desc="研究生 · 战略学，虚拟世界战略大师">
             <div class="age-num">5</div>
-            <img class="age-thumbnail" src="characters/intj_boy_age4.png" alt="中年"
-                 onerror="this.style.opacity='0'">
+            <img class="age-thumb" src="characters/intj_boy_age4.png" alt="中年" onerror="this.style.opacity='0'">
             <div class="age-stage-name">中年</div>
             <div class="age-bar-wrap"><div class="age-bar" style="width:75%"></div></div>
-            <div class="age-mbti-tag">INTJ</div>
+            <div class="age-mbti">INTJ</div>
           </div>
 
-          <div class="age-entry" data-age="5" data-img="characters/intj_boy_age5.png" data-mbti="INTJ" data-desc="博士 · 桃李满天下，写进了游戏世界的传说">
+          <div class="age-entry" data-img="characters/intj_boy_age5.png" data-desc="博士 · 桃李满天下，写进游戏传说">
             <div class="age-num">6</div>
-            <img class="age-thumbnail" src="characters/intj_boy_age5.png" alt="老年"
-                 onerror="this.style.opacity='0'">
+            <img class="age-thumb" src="characters/intj_boy_age5.png" alt="博士" onerror="this.style.opacity='0'">
             <div class="age-stage-name">博士</div>
             <div class="age-bar-wrap"><div class="age-bar" style="width:90%"></div></div>
-            <div class="age-mbti-tag">INTJ</div>
+            <div class="age-mbti">INTJ</div>
           </div>
 
         </div>
@@ -835,10 +735,10 @@ body {
 // 装备槽点击 → 弹出详情
 document.querySelectorAll('.equip-slot').forEach(slot => {
   slot.addEventListener('click', () => {
-    const name = slot.dataset.name || '空装备槽';
-    const type = slot.dataset.type || '';
-    const ilvl = slot.dataset.ilvl || '0';
-    const desc = slot.dataset.desc || '';
+    const name  = slot.dataset.name  || '空装备槽';
+    const type  = slot.dataset.type  || '';
+    const ilvl  = slot.dataset.ilvl  || '0';
+    const desc  = slot.dataset.desc  || '';
     document.getElementById('popup-name').textContent = name;
     document.getElementById('popup-type').textContent = ilvl > 0 ? `${type} · ilvl ${ilvl}` : '空装备槽';
     document.getElementById('popup-stat').textContent = ilvl > 0 ? `装等: ${ilvl}` : '请装备物品';
@@ -857,29 +757,16 @@ document.getElementById('overlay').addEventListener('click', closePopup);
 // 年龄条目点击 → 切换角色立绘
 document.querySelectorAll('.age-entry').forEach(entry => {
   entry.addEventListener('click', () => {
-    // 更新激活状态
     document.querySelectorAll('.age-entry').forEach(e => e.classList.remove('active'));
     entry.classList.add('active');
-
-    // 切换角色图片
     const img = entry.dataset.img;
-    const portrait = document.querySelector('.char-portrait img');
+    const portrait = document.querySelector('.char-img-wrap img');
     if (img) {
       portrait.src = img;
-      portrait.onerror = function() {
-        this.style.opacity = '0';
-        this.onerror = null;
-      };
+      portrait.onerror = function() { this.style.opacity = '0'; this.onerror = null; };
     }
-
-    // 更新中心角色年龄阶段文字
     const stage = entry.querySelector('.age-stage-name').textContent;
-    document.querySelector('.age-badge .age-stage').textContent = stage;
-
-    // 更新中央角色名标签的职业文字（随年龄变化）
-    const classEl = document.querySelector('.char-info-badge.name .cclass');
-    const ageDesc = entry.dataset.desc || '';
-    // 保持职业不变
+    document.querySelector('.cclass').textContent = `🛡️ 战士 · ${stage}`;
   });
 });
 </script>
