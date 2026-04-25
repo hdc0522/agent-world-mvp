@@ -2899,7 +2899,8 @@
                 options: [
                     { text: "找朋友倾诉", type: "heal" },
                     { text: "制定计划应对", type: "tank" },
-                    { text: "迎难而上冒险", type: "dps" }
+                    { text: "迎难而上冒险", type: "dps" },
+                    { text: "独自冷静思考", type: "tank" }
                 ]
             },
             {
@@ -2907,7 +2908,8 @@
                 options: [
                     { text: "温柔善解人意", type: "heal" },
                     { text: "稳重可靠", type: "tank" },
-                    { text: "机智灵活", type: "dps" }
+                    { text: "机智灵活", type: "dps" },
+                    { text: "热情开朗", type: "dps" }
                 ]
             },
             {
@@ -2915,7 +2917,8 @@
                 options: [
                     { text: "支援角色", type: "heal" },
                     { text: "保护队友", type: "tank" },
-                    { text: "冲锋陷阵", type: "dps" }
+                    { text: "冲锋陷阵", type: "dps" },
+                    { text: "出谋划策", type: "heal" }
                 ]
             },
             {
@@ -2923,7 +2926,8 @@
                 options: [
                     { text: "人际关系", type: "heal" },
                     { text: "坚持不懈", type: "tank" },
-                    { text: "灵活变通", type: "dps" }
+                    { text: "灵活变通", type: "dps" },
+                    { text: "把握时机", type: "dps" }
                 ]
             }
         ];
@@ -3122,7 +3126,7 @@
             const optionsEl = document.getElementById('quizOptions');
             optionsEl.innerHTML = '';
 
-            const letters = ['A', 'B', 'C'];
+            const letters = ['A', 'B', 'C', 'D'];
             q.options.forEach((opt, i) => {
                 const btn = document.createElement('div');
                 btn.className = 'quiz-option';
