@@ -2776,8 +2776,8 @@
         }
 
         function confirmJob() {
-            showScreen('appearanceScreen');
-            showAppearanceScreen(gameState.job);
+            // 直接进入结果页展示角色图，不再经过外观选择
+            finishQuiz();
         }
 
         /* ========== 外观选择 ========== */
