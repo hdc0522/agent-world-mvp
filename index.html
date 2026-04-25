@@ -403,11 +403,12 @@
     .quiz-progress {
         display: flex;
         justify-content: center;
-        gap: 10px;
+        gap: 6px;
         margin-bottom: 32px;
+        flex-wrap: wrap;
     }
     .quiz-dot {
-        width: 10px; height: 10px;
+        width: 8px; height: 8px;
         border-radius: 50%;
         border: 2px solid var(--border);
         background: transparent;
@@ -515,6 +516,106 @@
     }
 
     /* ====================================================
+       CHARACTER SELECT SCREEN
+    ==================================================== */
+    .char-select-title {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 8px;
+        letter-spacing: 2px;
+    }
+    .char-select-hint {
+        text-align: center;
+        font-size: 13px;
+        color: var(--text-dim);
+        margin-bottom: 20px;
+    }
+    .char-select-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding: 0 16px;
+        max-width: 420px;
+        margin: 0 auto;
+    }
+    .char-select-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        cursor: pointer;
+        transition: all 0.25s;
+        position: relative;
+        overflow: hidden;
+    }
+    .char-select-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--job-color, var(--gold));
+        opacity: 0.5;
+        transition: opacity 0.25s;
+    }
+    .char-select-card:hover {
+        border-color: var(--job-color, var(--gold));
+        transform: translateX(4px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .char-select-card:hover::before {
+        opacity: 1;
+    }
+    .char-select-card.recommended {
+        border-color: var(--job-color, var(--gold));
+        box-shadow: 0 0 20px color-mix(in srgb, var(--job-color, var(--gold)) 30%, transparent);
+    }
+    .char-select-card.recommended::before {
+        opacity: 1;
+    }
+    .char-select-card.recommended::after {
+        content: '★ 推荐';
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        font-size: 11px;
+        color: var(--job-color, var(--gold));
+        letter-spacing: 1px;
+    }
+    .char-select-icon {
+        font-size: 32px;
+        margin-bottom: 6px;
+    }
+    .char-select-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--job-color, var(--text));
+        margin-bottom: 2px;
+    }
+    .char-select-badge {
+        display: inline-block;
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: color-mix(in srgb, var(--job-color, var(--gold)) 20%, transparent);
+        color: var(--job-color, var(--gold));
+        margin-bottom: 8px;
+    }
+    .char-select-desc {
+        font-size: 13px;
+        color: var(--text-dim);
+        line-height: 1.5;
+        margin-bottom: 8px;
+    }
+    .char-select-mbti {
+        font-size: 12px;
+        color: var(--text-dim);
+    }
+
+    /* ====================================================
        RESULT SCREEN
     ==================================================== */
     .result-screen {
@@ -528,24 +629,38 @@
         text-transform: uppercase;
         margin-bottom: 6px;
     }
-    .result-job-name {
+    .result-mbti-type {
         font-family: 'Cinzel', serif;
-        font-size: 42px;
+        font-size: 56px;
         font-weight: 700;
+        color: var(--gold);
+        letter-spacing: 8px;
+        text-shadow: 0 0 40px rgba(201,162,39,0.6);
         margin-bottom: 4px;
-        text-shadow: 0 0 30px currentColor;
+        animation: result-char-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .result-level {
-        font-size: 14px;
-        color: var(--text-dim);
+    .result-mbti-name {
+        font-family: 'Noto Sans SC', sans-serif;
+        font-size: 22px;
+        color: var(--text);
+        margin-bottom: 10px;
+        letter-spacing: 4px;
+    }
+    .result-job-badge {
+        display: inline-block;
+        padding: 5px 18px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        white-space: nowrap;
         margin-bottom: 20px;
     }
     .result-char-wrap {
         position: relative;
         width: 200px;
         height: 200px;
-        margin: 0 auto 24px;
-        animation: result-char-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        margin: 0 auto 16px;
     }
     .result-char-img {
         width: 100%;
@@ -556,24 +671,11 @@
         box-shadow: 0 0 30px rgba(201,162,39,0.4);
         animation: breathe 3.5s ease-in-out infinite;
     }
-    .result-job-badge {
-        position: absolute;
-        bottom: -12px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 6px 20px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 2px;
-        white-space: nowrap;
-        z-index: 2;
-    }
     .result-divider {
         width: 60px;
         height: 2px;
         background: linear-gradient(90deg, transparent, var(--gold), transparent);
-        margin: 0 auto 20px;
+        margin: 16px auto;
     }
     .result-desc {
         font-size: 14px;
@@ -581,18 +683,66 @@
         line-height: 1.7;
         max-width: 300px;
         margin: 0 auto 8px;
+        text-align: center;
     }
-    .result-mbti {
-        font-family: 'Orbitron', monospace;
-        font-size: 12px;
+    .result-select-label {
+        font-size: 13px;
         color: var(--gold-dim);
-        margin-bottom: 32px;
+        letter-spacing: 2px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .result-gender-select {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 4px;
+    }
+    .gender-btn {
+        padding: 12px 28px;
+        border-radius: 12px;
+        border: 2px solid var(--card-border);
+        background: var(--card);
+        color: var(--text-dim);
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .gender-btn.selected, .gender-btn:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+        background: rgba(201,162,39,0.1);
+        box-shadow: 0 0 16px rgba(201,162,39,0.3);
+    }
+    .result-age-select {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 16px;
+        margin-bottom: 4px;
+    }
+    .age-btn {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1px solid var(--card-border);
+        background: var(--card);
+        color: var(--text-dim);
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .age-btn.selected, .age-btn:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+        background: rgba(201,162,39,0.1);
     }
     .result-enter-btn {
         width: 100%;
         max-width: 300px;
         padding: 18px;
         font-size: 16px;
+        margin-top: 8px;
         animation: bounce-in 0.5s ease 0.3s both;
     }
 
@@ -1992,32 +2142,45 @@
     <!-- ========== QUIZ SCREEN ========== -->
     <div class="screen" id="quizScreen">
         <button class="back-btn" onclick="goBack()">← 返回</button>
-        <div class="quiz-progress">
-            <div class="quiz-dot" id="dot1"></div>
-            <div class="quiz-dot" id="dot2"></div>
-            <div class="quiz-dot" id="dot3"></div>
-            <div class="quiz-dot" id="dot4"></div>
-        </div>
+        <div class="quiz-progress" id="quizDots"></div>
         <div class="quiz-card">
             <div class="quiz-question" id="quizQuestion"></div>
             <div class="quiz-options" id="quizOptions"></div>
         </div>
     </div>
 
+    <!-- ========== CHARACTER SELECT SCREEN ========== -->
+    <div class="screen" id="charSelectScreen">
+        <button class="back-btn" onclick="goBack()">← 返回</button>
+        <div class="char-select-title">选择你的职业</div>
+        <div class="char-select-hint">推荐: <span id="recommendedJob">坦克系</span></div>
+        <div class="char-select-cards" id="charSelectCards"></div>
+    </div>
+
     <!-- ========== RESULT SCREEN ========== -->
     <div class="screen" id="resultScreen">
         <div class="result-screen">
-            <div class="result-label">你的职业是</div>
-            <div class="result-job-name" id="resultJob"></div>
-            <div class="result-level" id="resultLevel">人生阶段 · Lv.1</div>
+            <div class="result-label">你的性格类型</div>
+            <div class="result-mbti-type" id="resultMbtiType">INTJ</div>
+            <div class="result-mbti-name" id="resultMbtiName">建筑师</div>
+            <div class="result-job-badge" id="resultBadge">坦克系</div>
             <div class="result-char-wrap">
                 <img class="result-char-img" id="resultIcon" src="job_tank_new.png" alt="character" />
-                <div class="result-job-badge" id="resultBadge">坦克系</div>
             </div>
+            <div class="result-desc" id="resultDesc"></div>
+
             <div class="result-divider"></div>
-            <div class="result-desc" id="jobDesc"></div>
-            <div class="result-mbti" id="resultMbti">MBTI: INTJ · 女</div>
-            <button class="fantasy-btn primary result-enter-btn" onclick="startGame()">进入游戏</button>
+            <div class="result-select-label">选择你的性别</div>
+            <div class="result-gender-select">
+                <button class="gender-btn" id="genderBtnBoy" onclick="selectGender('男')">👦 男</button>
+                <button class="gender-btn" id="genderBtnGirl" onclick="selectGender('女')">👧 女</button>
+            </div>
+
+            <div class="result-divider"></div>
+            <div class="result-select-label">选择你的年龄</div>
+            <div class="result-age-select" id="resultAgeSelect"></div>
+
+            <button class="fantasy-btn primary result-enter-btn" id="enterGameBtn" onclick="startGame()" style="display:none">进入游戏</button>
         </div>
     </div>
 
@@ -2329,44 +2492,153 @@
 // ====================================================
 // GAME DATA
 // ====================================================
+// ====================================================
+// MBTI QUIZ DATA — 12题4维度计分
+// 维度: E/I(外向/内向) S/N(实感/直觉) T/F(理性/情感) J/P(判断/知觉)
+// ====================================================
 const QuizData = [
+    // E/I 维度 — 3题
     {
-        question: "当你面对压力时，你倾向？",
+        question: "假期你更想做什么？",
         options: [
-            { text: "找朋友倾诉", type: "heal" },
-            { text: "制定计划应对", type: "tank" },
-            { text: "迎难而上冒险", type: "dps" },
-            { text: "独自冷静思考", type: "tank" }
+            { text: "呼朋唤友，一起热闹", ei: 3 },
+            { text: "和几个朋友小聚", ei: 1 },
+            { text: "一个人安静待着", ie: 2 },
+            { text: "宅家里看书打游戏", ie: 3 }
         ]
     },
     {
-        question: "你更喜欢什么样的朋友？",
+        question: "在陌生聚会中，你会？",
         options: [
-            { text: "温柔善解人意", type: "heal" },
-            { text: "稳重可靠", type: "tank" },
-            { text: "机智灵活", type: "dps" },
-            { text: "热情开朗", type: "dps" }
+            { text: "主动搭话，打破僵局", ei: 3 },
+            { text: "等别人来认识我", ie: 2 },
+            { text: "观察一会再行动", ie: 1 },
+            { text: "专注于认识一两个人", ei: 1 }
         ]
     },
     {
-        question: "你在团队中更愿意扮演？",
+        question: "你的表达风格更接近？",
         options: [
-            { text: "支援角色", type: "heal" },
-            { text: "保护队友", type: "tank" },
-            { text: "冲锋陷阵", type: "dps" },
-            { text: "出谋划策", type: "heal" }
+            { text: "想到就说，语速快", ei: 3 },
+            { text: "想清楚再说，有条理", ie: 2 },
+            { text: "不太主动开口", ie: 3 },
+            { text: "必要时才开口", ie: 1 }
+        ]
+    },
+    // S/N 维度 — 3题
+    {
+        question: "你看小说的偏好是？",
+        options: [
+            { text: "情节跌宕、意外频出", sn: 2, nn: 3 },
+            { text: "文笔优美、意境深远", nn: 3 },
+            { text: "描写真实、细节丰富", sn: 3 },
+            { text: "人物丰满、情感细腻", sn: 1, nn: 2 }
         ]
     },
     {
-        question: "你觉得成功的关键是？",
+        question: "朋友描述一件事时，你更关注？",
         options: [
-            { text: "人际关系", type: "heal" },
-            { text: "坚持不懈", type: "tank" },
-            { text: "灵活变通", type: "dps" },
-            { text: "把握时机", type: "dps" }
+            { text: "他的感受和情绪", ff: 2, nn: 2 },
+            { text: "事情的前因后果", tt: 2, sn: 1 },
+            { text: "具体的细节和数据", sn: 3 },
+            { text: "背后的意义和可能性", nn: 3 }
+        ]
+    },
+    {
+        question: "解决一个新问题的办法，你更倾向？",
+        options: [
+            { text: "沿用被验证过的老方法", sn: 3 },
+            { text: "尝试没人用过的全新思路", nn: 3 },
+            { text: "结合经验稍加改进", sn: 1 },
+            { text: "看情况两者都行", sn: 1, nn: 1 }
+        ]
+    },
+    // T/F 维度 — 3题
+    {
+        question: "做重要决定时，你主要考虑？",
+        options: [
+            { text: "客观利弊，逻辑自洽", tt: 3 },
+            { text: "大家的感受和接受度", ff: 3 },
+            { text: "长远影响和后果", tt: 2, sn: 1 },
+            { text: "对关系的影响", ff: 2 }
+        ]
+    },
+    {
+        question: "朋友找你诉苦，你通常会？",
+        options: [
+            { text: "先安慰情绪，再给建议", ff: 2 },
+            { text: "分析问题，给出解决方案", tt: 3 },
+            { text: "耐心倾听，陪伴在身边", ff: 3 },
+            { text: "说说我自己类似的经历", ff: 1, tt: 1 }
+        ]
+    },
+    {
+        question: "你觉得自己更像是？",
+        options: [
+            { text: "铁面判官，对错分明", tt: 3 },
+            { text: "温柔仁者，以和为贵", ff: 3 },
+            { text: "讲道理但也有人情味", tt: 1, ff: 1 },
+            { text: "看情况，有时候这样有时候那样", tt: 1, ff: 1 }
+        ]
+    },
+    // J/P 维度 — 3题
+    {
+        question: "旅行前你会怎么准备？",
+        options: [
+            { text: "提前订好每一天的行程", jj: 3 },
+            { text: "只订机票和酒店，其他随缘", pp: 3 },
+            { text: "大致规划，关键节点定好", jj: 1, pp: 1 },
+            { text: "完全不做计划，说走就走", pp: 2, jj: -1 }
+        ]
+    },
+    {
+        question: "你更喜欢哪种工作节奏？",
+        options: [
+            { text: "按计划推进，井井有条", jj: 3 },
+            { text: "灵活弹性，随时调整", pp: 3 },
+            { text: "有大框架，小细节随机应变", pp: 1, jj: 1 },
+            { text: " deadline是第一生产力", pp: 2, jj: -1 }
+        ]
+    },
+    {
+        question: "你的房间/桌面通常是？",
+        options: [
+            { text: "整洁有序，东西各有定位", jj: 3 },
+            { text: "乱中有序，能找到想要的东西", pp: 2, jj: 1 },
+            { text: "比较随意，随用随取", pp: 3 },
+            { text: "有时候整洁有时候乱", pp: 1, jj: 1 }
         ]
     }
 ];
+
+// MBTI 16型 → 职业映射
+const MBTIToJob = {
+    'ISTJ': 'tank', 'ESTJ': 'tank', 'ISFJ': 'tank', 'ESFJ': 'tank',
+    'INFJ': 'healer', 'INFP': 'healer', 'ENFJ': 'healer', 'ENFP': 'healer',
+    'ISFP': 'healer', 'ESFP': 'dps',
+    'INTJ': 'dps', 'INTP': 'dps', 'ENTJ': 'tank', 'ENTP': 'dps',
+    'ESTP': 'dps', 'ISTP': 'dps'
+};
+
+// MBTI 性格名称库
+const MBTINames = {
+    'INTJ': { name: '建筑师', desc: '独立思考者，擅长战略规划，追求知识和能力提升。' },
+    'INTP': { name: '逻辑学家', desc: '沉浸在逻辑世界，喜欢复杂问题的解决。' },
+    'ENTJ': { name: '指挥官', desc: '天生的领导者，果断且富有远见。' },
+    'ENTP': { name: '辩论家', desc: '思维敏捷，喜欢智识挑战和可能性。' },
+    'INFJ': { name: '提倡者', desc: '理想主义者，洞察人心，追求意义和价值。' },
+    'INFP': { name: '调停者', desc: '浪漫理想主义者，重视内心和谐与独特性。' },
+    'ENFJ': { name: '主人公', desc: '魅力型领袖，激励他人，富有感染力。' },
+    'ENFP': { name: '竞选者', desc: '热情洋溢的创意者，热爱可能性和联结。' },
+    'ISTJ': { name: '物流师', desc: '尽职尽责，脚踏实地，重视承诺和责任。' },
+    'ISFJ': { name: '守护者', desc: '温暖可靠，默默付出，重视传统和稳定。' },
+    'ESTJ': { name: '总经理', desc: '务实高效，善于组织，追求效率和秩序。' },
+    'ESFJ': { name: '执政官', desc: '热情周到，重视关系，善于照顾他人。' },
+    'ISTP': { name: '鉴赏家', desc: '自由务实，擅长动手解决具体问题。' },
+    'ISFP': { name: '探险家', desc: '灵活魅力，热爱体验活在当下。' },
+    'ESTP': { name: '企业家', desc: '活在当下，行动派，善于把握机会。' },
+    'ESFP': { name: '表演者', desc: '阳光开朗，热爱舞台和他人关注。' }
+};
 
 const JobInfo = {
     tank: {
@@ -2587,31 +2859,39 @@ function renderQuiz() {
         const btn = document.createElement('div');
         btn.className = 'quiz-option' + (quizState.locked ? ' locked' : '');
         btn.innerHTML = `<div class="option-letter">${letters[i]}</div><div class="option-text">${opt.text}</div>`;
-        btn.onclick = () => selectOption(i, opt.type);
+        // Pass the whole option object for MBTI scoring
+        btn.onclick = () => selectOption(i, opt);
         optionsEl.appendChild(btn);
     });
-    for (let i = 1; i <= 4; i++) {
-        const dot = document.getElementById('dot' + i);
-        dot.classList.remove('active', 'completed');
-        if (i < quizState.current + 1) dot.classList.add('completed');
-        else if (i === quizState.current + 1) dot.classList.add('active');
+
+    // Dynamic dots based on QuizData.length
+    const dotsContainer = document.getElementById('quizDots');
+    const total = QuizData.length;
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'quiz-dot';
+        if (i < quizState.current) dot.classList.add('completed');
+        else if (i === quizState.current) dot.classList.add('active');
+        dotsContainer.appendChild(dot);
     }
 }
 
-function selectOption(index, type) {
+function selectOption(index, opt) {
     if (quizState.locked) return;
     quizState.locked = true;
-    quizState.answers.push(type);
+    // Store full option for MBTI scoring
+    quizState.answers.push(opt);
 
-    document.querySelectorAll('.quiz-option').forEach((opt, i) => {
-        opt.classList.toggle('selected', i === index);
-        if (i !== index) opt.classList.add('locked');
+    document.querySelectorAll('.quiz-option').forEach((el, i) => {
+        el.classList.toggle('selected', i === index);
+        if (i !== index) el.classList.add('locked');
     });
 
     setTimeout(() => {
         quizState.current++;
         quizState.locked = false;
-        if (quizState.current < 4) {
+        if (quizState.current < QuizData.length) {
             renderQuiz();
         } else {
             finishQuiz();
@@ -2620,35 +2900,160 @@ function selectOption(index, type) {
 }
 
 function finishQuiz() {
-    const counts = { tank: 0, heal: 0, dps: 0 };
-    quizState.answers.forEach(a => counts[a]++);
-    const maxCount = Math.max(...Object.values(counts));
-    const candidates = Object.entries(counts).filter(([k, v]) => v === maxCount).map(([k]) => k);
-    // Deterministic priority: tank > heal > dps
-    const priority = ['tank', 'heal', 'dps'];
-    for (let p of priority) {
-        if (candidates.includes(p)) { gameState.job = p; break; }
-    }
+    // MBTI 4维度计分
+    const scores = { e: 0, i: 0, s: 0, n: 0, t: 0, f: 0, j: 0, p: 0 };
+    quizState.answers.forEach(opt => {
+        if (opt.ei) scores.e += opt.ei;
+        if (opt.ie) scores.i += opt.ie;
+        if (opt.sn) scores.s += opt.sn;
+        if (opt.nn) scores.n += opt.nn;
+        if (opt.tt) scores.t += opt.tt;
+        if (opt.ff) scores.f += opt.ff;
+        if (opt.jj) scores.j += opt.jj;
+        if (opt.pp) scores.p += opt.pp;
+    });
 
-    gameState.mbti = getRandomMBTI();
-    gameState.gender = getRandomGender();
+    // 组成MBTI
+    const mbti =
+        (scores.e >= scores.i ? 'E' : 'I') +
+        (scores.s >= scores.n ? 'S' : 'N') +
+        (scores.t >= scores.f ? 'T' : 'F') +
+        (scores.j >= scores.p ? 'J' : 'P');
+
+    gameState.mbti = mbti;
+    gameState.job = MBTIToJob[mbti] || 'tank';
     gameState.createdAt = Date.now();
 
+    // 跳转到职业选择页（推荐职业已确定）
+    showCharacterSelect();
+}
+
+function showCharacterSelect() {
+    // Render three job cards
+    const container = document.getElementById('charSelectCards');
+    container.innerHTML = '';
+    const jobs = ['tank', 'heal', 'dps'];
+    jobs.forEach(jobKey => {
+        const info = JobInfo[jobKey];
+        const card = document.createElement('div');
+        card.className = 'char-select-card';
+        card.style.setProperty('--job-color', info.color);
+        card.innerHTML = `
+            <div class="char-select-icon">${info.icon}</div>
+            <div class="char-select-name">${info.name}</div>
+            <div class="char-select-badge">${info.badge}</div>
+            <div class="char-select-desc">${info.desc}</div>
+            <div class="char-select-mbti" id="charSelectMbti_${jobKey}">MBTI: ${gameState.mbti}</div>
+        `;
+        card.onclick = () => selectJobAndContinue(jobKey);
+        container.appendChild(card);
+    });
+
+    // Also generate preview images for each card
+    const previews = ['charSelectPreviewTank', 'charSelectPreviewHeal', 'charSelectPreviewDps'];
+    previews.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if (el) {
+            const jobKey = jobs[idx];
+            const img = getCharImage(gameState.mbti, gameState.gender, gameState.level);
+            el.src = img;
+            el.onerror = function() { this.src = JobInfo[jobKey].image; this.onerror = null; };
+        }
+    });
+
+    // Show recommended job highlighted based on quiz result
+    const recommendedInfo = JobInfo[gameState.job];
+    const recEl = document.getElementById('recommendedJob');
+    if (recEl) {
+        recEl.textContent = recommendedInfo.badge;
+        recEl.style.color = recommendedInfo.color;
+    }
+    setTimeout(() => {
+        const cards = container.querySelectorAll('.char-select-card');
+        cards.forEach(c => c.classList.remove('recommended'));
+        // Find card by data-job attribute after it's set
+        const allCards = document.querySelectorAll('.char-select-card');
+        allCards.forEach(c => {
+            if (c.querySelector('.char-select-name') && c.querySelector('.char-select-name').textContent === recommendedInfo.name) {
+                c.classList.add('recommended');
+            }
+        });
+    }, 50);
+
+    showScreen('charSelectScreen');
+}
+
+function selectJobAndContinue(jobKey) {
+    gameState.job = jobKey;
     const info = JobInfo[gameState.job];
-    document.getElementById('resultJob').textContent = info.name;
-    document.getElementById('resultJob').style.color = info.color;
+    const mbtiInfo = MBTINames[gameState.mbti] || { name: gameState.mbti, desc: info.desc };
+
+    document.getElementById('resultMbtiType').textContent = gameState.mbti;
+    document.getElementById('resultMbtiName').textContent = mbtiInfo.name;
+    document.getElementById('resultBadge').textContent = info.badge;
+    document.getElementById('resultBadge').style.background = info.color;
+    document.getElementById('resultDesc').textContent = mbtiInfo.desc;
+
+    // Set default gender so preview image works
+    if (!gameState.gender) gameState.gender = '男';
     const charImg = getCharImage(gameState.mbti, gameState.gender, gameState.level);
     const resultIcon = document.getElementById('resultIcon');
     resultIcon.src = charImg;
     resultIcon.onerror = function() { this.src = info.image; this.onerror = null; };
-    document.getElementById('resultBadge').textContent = info.badge;
-    document.getElementById('resultBadge').style.background = info.color;
-    document.getElementById('jobDesc').textContent = info.desc;
-    const stage = getStage(gameState.level);
-    document.getElementById('resultLevel').textContent = `${stage.name} · Lv.${gameState.level}`;
-    document.getElementById('resultMbti').textContent = `MBTI: ${gameState.mbti} · ${gameState.gender}`;
+
+    // Reset gender selection UI
+    document.getElementById('genderBtnBoy').classList.remove('selected');
+    document.getElementById('genderBtnGirl').classList.remove('selected');
+    document.getElementById('enterGameBtn').style.display = 'none';
+
+    // Render age selection buttons
+    const ageContainer = document.getElementById('resultAgeSelect');
+    ageContainer.innerHTML = '';
+    const ageStages = [
+        { age: 0, label: '3-5岁 幼儿园', level: 1 },
+        { age: 1, label: '6-10岁 小学', level: 6 },
+        { age: 2, label: '11-13岁 初中', level: 11 },
+        { age: 3, label: '14-16岁 高中', level: 14 },
+        { age: 4, label: '17-20岁 大学', level: 17 },
+        { age: 5, label: '21-23岁 研究生', level: 21 },
+        { age: 6, label: '24+岁 博士', level: 24 }
+    ];
+    ageStages.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'age-btn';
+        btn.textContent = s.label;
+        btn.dataset.age = s.age;
+        btn.dataset.level = s.level;
+        btn.onclick = () => selectAge(s.age, s.level, btn);
+        ageContainer.appendChild(btn);
+    });
 
     showScreen('resultScreen');
+}
+
+function selectGender(g) {
+    gameState.gender = g;
+    document.getElementById('genderBtnBoy').classList.toggle('selected', g === '男');
+    document.getElementById('genderBtnGirl').classList.toggle('selected', g === '女');
+    // Update character image
+    const img = getCharImage(gameState.mbti, g, gameState.level);
+    document.getElementById('resultIcon').src = img;
+    tryShowEnterBtn();
+}
+
+function selectAge(age, level, btnEl) {
+    // Remove previous selection
+    document.querySelectorAll('.age-btn').forEach(b => b.classList.remove('selected'));
+    btnEl.classList.add('selected');
+    gameState.ageStage = age;
+    gameState.level = level;
+    tryShowEnterBtn();
+}
+
+function tryShowEnterBtn() {
+    if (gameState.gender && gameState.ageStage !== undefined) {
+        document.getElementById('enterGameBtn').style.display = 'inline-block';
+    }
 }
 
 function startGame() {
