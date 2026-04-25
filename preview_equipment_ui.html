@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>装备环绕UI预览</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #1a1a2e;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Courier New', monospace;
+}
+
+/* ===== 角色面板容器 ===== */
+.character-panel {
+  position: relative;
+  width: 520px;
+  height: 580px;
+  background: linear-gradient(180deg, #16213e 0%, #0f0f23 100%);
+  border: 3px solid #ffd700;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 0 40px rgba(255,215,0,0.2), inset 0 0 30px rgba(0,0,0,0.5);
+}
+
+/* 标题 */
+.panel-title {
+  text-align: center;
+  color: #ffd700;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0 0 10px #ffd700;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+
+/* 等级 */
+.level-badge {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: linear-gradient(135deg, #8B4513, #D2691E);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  border: 2px solid #ffd700;
+}
+
+/* ===== 中心角色 ===== */
+.center-character {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+  border: 2px solid rgba(255,215,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  animation: char-idle 1.5s ease-in-out infinite;
+}
+
+@keyframes char-idle {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.03) translateY(-3px); }
+}
+
+.center-character img {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 15px rgba(255,215,0,0.5));
+}
+
+/* ===== 装备槽位基础样式 ===== */
+.equip-slot {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2a2a4a 0%, #1a1a2e 100%);
+  border: 2px solid #444466;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 11px;
+  color: #aaa;
+  z-index: 20;
+}
+
+.equip-slot:hover {
+  border-color: #ffd700;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255,215,0,0.4);
+}
+
+.equip-slot.filled {
+  border-color: #00ff88;
+  box-shadow: 0 0 10px rgba(0,255,136,0.3);
+}
+
+.equip-slot .slot-icon {
+  font-size: 28px;
+  margin-bottom: 2px;
+}
+
+.equip-slot .slot-label {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ===== 装备槽位置 ===== */
+
+/* 头顶 - 头盔 */
+.slot-head { top: 60px; left: 50%; transform: translateX(-50%); }
+
+/* 左上 - 副手/盾牌 */
+.slot-offhand { top: 130px; left: 60px; }
+
+/* 右手 - 主手武器 */
+.slot-mainhand { top: 130px; right: 60px; }
+
+/* 上衣 - 胸甲 */
+.slot-chest { top: 230px; left: 50%; transform: translateX(-50%); }
+
+/* 左手 - 手套 */
+.slot-gloves { top: 310px; left: 60px; }
+
+/* 右手 - 护腕 */
+.slot-bracer { top: 310px; right: 60px; }
+
+/* 腰带 */
+.slot-belt { top: 390px; left: 50%; transform: translateX(-50%); }
+
+/* 左下 - 护腿 */
+.slot-legs { bottom: 80px; left: 60px; }
+
+/* 右下 - 鞋子 */
+.slot-boots { bottom: 80px; right: 60px; }
+
+/* 披风 - 背部 */
+.slot-cloak { top: 170px; right: 20px; width: 50px; height: 50px; }
+
+/* ===== 角色信息 ===== */
+.char-info {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: #ffd700;
+  font-size: 14px;
+  font-weight: bold;
+  text-shadow: 0 0 8px #ffd700;
+}
+
+.char-class {
+  color: #aaa;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* ===== 属性条 ===== */
+.stats-bar {
+  position: absolute;
+  top: 55px;
+  left: 20px;
+  width: 130px;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: #ccc;
+}
+
+.stat-label {
+  width: 30px;
+  color: #888;
+}
+
+.stat-fill {
+  flex: 1;
+  height: 6px;
+  background: #222;
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 0 6px;
+}
+
+.stat-fill-inner {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.stat-hp .stat-fill-inner { background: #ff4444; }
+.stat-mp .stat-fill-inner { background: #4488ff; }
+.stat-atk .stat-fill-inner { background: #ffaa00; }
+.stat-def .stat-fill-inner { background: #44ff88; }
+
+/* ===== 抖动动画（像素风回合制效果）===== */
+@keyframes shake {
+  0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+  25% { transform: translate(-50%, -50%) translateX(-4px) rotate(-2deg); }
+  75% { transform: translate(-50%, -50%) translateX(4px) rotate(2deg); }
+}
+
+.shake {
+  animation: shake 0.3s ease-in-out infinite;
+}
+
+/* ===== 装备弹窗 ===== */
+.equip-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  background: linear-gradient(135deg, #1a1a3e 0%, #0f0f2a 100%);
+  border: 2px solid #ffd700;
+  border-radius: 16px;
+  padding: 20px;
+  z-index: 100;
+  display: none;
+  box-shadow: 0 0 60px rgba(0,0,0,0.8);
+}
+
+.equip-popup.active {
+  display: block;
+}
+
+.popup-title {
+  text-align: center;
+  color: #ffd700;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.equip-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  background: #222;
+  border: 1px solid #333;
+  transition: all 0.2s;
+}
+
+.equip-item:hover {
+  border-color: #ffd700;
+  background: #2a2a4a;
+}
+
+.equip-item-icon {
+  width: 44px;
+  height: 44px;
+  background: #333;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  margin-right: 12px;
+}
+
+.equip-item-info { flex: 1; }
+.equip-item-name { color: #fff; font-size: 14px; }
+.equip-item-desc { color: #888; font-size: 11px; margin-top: 2px; }
+.equip-item-stat { color: #ffd700; font-size: 11px; margin-top: 2px; }
+
+.popup-close {
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+  cursor: pointer;
+  padding-top: 10px;
+  border-top: 1px solid #333;
+  margin-top: 10px;
+}
+
+.popup-close:hover { color: #ffd700; }
+
+/* ===== 背景装饰 ===== */
+.panel-bg-pattern {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255,215,0,0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(100,100,255,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* 关闭按钮 */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  left: 14px;
+  color: #888;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 50;
+}
+.close-btn:hover { color: #ffd700; }
+
+/* ===== 攻击动画 ===== */
+@keyframes atk-shake {
+  0% { transform: translate(-50%, -50%); }
+  20% { transform: translate(-50%, -50%) translateX(-8px) rotate(-5deg); }
+  40% { transform: translate(-50%, -50%) translateX(8px) rotate(5deg); }
+  60% { transform: translate(-50%, -50%) translateX(-4px) rotate(-2deg); }
+  80% { transform: translate(-50%, -50%) translateX(4px) rotate(2deg); }
+  100% { transform: translate(-50%, -50%); }
+}
+
+.atk-shake { animation: atk-shake 0.5s ease-out; }
+
+/* 暴击飘字 */
+.crit-text {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 36px;
+  font-weight: bold;
+  color: #ff4444;
+  text-shadow: 0 0 10px #ff0000, 2px 2px 0 #000;
+  z-index: 200;
+  display: none;
+  pointer-events: none;
+  animation: crit-float 1s ease-out forwards;
+}
+
+@keyframes crit-float {
+  0% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) translateY(-40px) scale(1.3); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-80px) scale(1.5); }
+}
+
+/* ===== 攻击按钮 ===== */
+.attack-btn {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  background: linear-gradient(135deg, #8B0000, #ff4444);
+  color: #fff;
+  border: 2px solid #ffd700;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 50;
+  letter-spacing: 1px;
+  box-shadow: 0 0 15px rgba(255,0,0,0.4);
+}
+
+.attack-btn:hover {
+  background: linear-gradient(135deg, #aa0000, #ff6666);
+  box-shadow: 0 0 25px rgba(255,0,0,0.6);
+}
+
+</style>
+</head>
+<body>
+
+<div class="character-panel">
+  <div class="panel-bg-pattern"></div>
+
+  <!-- 关闭按钮 -->
+  <div class="close-btn" onclick="closePanel()">✕</div>
+
+  <!-- 标题 -->
+  <div class="panel-title">⚔️ 角色装备 ⚔️</div>
+  <div class="level-badge">LV.12</div>
+
+  <!-- 属性条 -->
+  <div class="stats-bar">
+    <div class="stat-row stat-hp">
+      <span class="stat-label">HP</span>
+      <div class="stat-fill"><div class="stat-fill-inner" style="width:75%"></div></div>
+      <span>750</span>
+    </div>
+    <div class="stat-row stat-mp">
+      <span class="stat-label">MP</span>
+      <div class="stat-fill"><div class="stat-fill-inner" style="width:45%"></div></div>
+      <span>230</span>
+    </div>
+    <div class="stat-row stat-atk">
+      <span class="stat-label">攻</span>
+      <div class="stat-fill"><div class="stat-fill-inner" style="width:60%"></div></div>
+      <span>120</span>
+    </div>
+    <div class="stat-row stat-def">
+      <span class="stat-label">防</span>
+      <div class="stat-fill"><div class="stat-fill-inner" style="width:80%"></div></div>
+      <span>200</span>
+    </div>
+  </div>
+
+  <!-- 中心角色 -->
+  <div class="center-character" id="centerChar">
+    <img src="preview_tank_warrior.jpg" alt="角色" onerror="this.style.display='none'">
+  </div>
+
+  <!-- 暴击飘字 -->
+  <div class="crit-text" id="critText">💥暴击!</div>
+
+  <!-- 装备槽位 -->
+  <div class="equip-slot slot-head" onclick="openPopup('head')">
+    <div class="slot-icon">🪖</div>
+    <div class="slot-label">头盔</div>
+  </div>
+
+  <div class="equip-slot slot-offhand" onclick="openPopup('offhand')">
+    <div class="slot-icon">🛡️</div>
+    <div class="slot-label">盾牌</div>
+  </div>
+
+  <div class="equip-slot slot-mainhand" onclick="openPopup('mainhand')">
+    <div class="slot-icon">⚔️</div>
+    <div class="slot-label">武器</div>
+  </div>
+
+  <div class="equip-slot slot-chest" onclick="openPopup('chest')">
+    <div class="slot-icon">🎽</div>
+    <div class="slot-label">胸甲</div>
+  </div>
+
+  <div class="equip-slot slot-gloves" onclick="openPopup('gloves')">
+    <div class="slot-icon">🧤</div>
+    <div class="slot-label">手套</div>
+  </div>
+
+  <div class="equip-slot slot-bracer" onclick="openPopup('bracer')">
+    <div class="slot-icon">🦾</div>
+    <div class="slot-label">护腕</div>
+  </div>
+
+  <div class="equip-slot slot-belt" onclick="openPopup('belt')">
+    <div class="slot-icon">🪢</div>
+    <div class="slot-label">腰带</div>
+  </div>
+
+  <div class="equip-slot slot-legs" onclick="openPopup('legs')">
+    <div class="slot-icon">🩳</div>
+    <div class="slot-label">护腿</div>
+  </div>
+
+  <div class="equip-slot slot-boots" onclick="openPopup('boots')">
+    <div class="slot-icon">👢</div>
+    <div class="slot-label">鞋子</div>
+  </div>
+
+  <div class="equip-slot slot-cloak" onclick="openPopup('cloak')">
+    <div class="slot-icon">🧥</div>
+    <div class="slot-label">披风</div>
+  </div>
+
+  <!-- 角色信息 -->
+  <div class="char-info">
+    Tank小战士
+    <div class="char-class">TANK · 战士系</div>
+  </div>
+
+  <!-- 攻击按钮 -->
+  <button class="attack-btn" onclick="doAttack()">⚔️ 攻击!</button>
+
+  <!-- 装备弹窗 -->
+  <div class="equip-popup" id="equipPopup">
+    <div class="popup-title" id="popupTitle">选择装备</div>
+    <div id="popupItems"></div>
+    <div class="popup-close" onclick="closePopup()">点击外部关闭</div>
+  </div>
+
+</div>
+
+<script>
+// 装备数据
+const equipData = {
+  head: [
+    { icon: '🪖', name: '铁盔', desc: '基础防护头盔', stat: '防御+15' },
+    { icon: '👑', name: '战士头盔', desc: '土黄色战士头盔', stat: '防御+28' },
+    { icon: '⛑️', name: '黄金头盔', desc: '金色战神头盔', stat: '防御+45' },
+  ],
+  mainhand: [
+    { icon: '🗡️', name: '短剑', desc: '基础单手武器', stat: '攻击+12' },
+    { icon: '⚔️', name: '战士长剑', desc: '土黄色战士长剑', stat: '攻击+35' },
+    { icon: '🗡️', name: '炎魔之剑', desc: '火焰附魔长剑', stat: '攻击+68' },
+  ],
+  offhand: [
+    { icon: '🛡️', name: '木盾', desc: '基础盾牌', stat: '防御+8' },
+    { icon: '🛡️', name: '钢盾', desc: '钢铁圆盾', stat: '防御+22' },
+  ],
+  chest: [
+    { icon: '🎽', name: '布衣', desc: '基础胸甲', stat: '防御+10' },
+    { icon: '🦺', name: '战士胸甲', desc: '土黄色战士胸甲', stat: '防御+38' },
+  ],
+};
+
+let popupType = '';
+
+function openPopup(type) {
+  popupType = type;
+  const popup = document.getElementById('equipPopup');
+  const title = document.getElementById('popupTitle');
+  const items = document.getElementById('popupItems');
+  const names = {head:'头盔',mainhand:'武器',offhand:'盾牌',chest:'胸甲',gloves:'手套',bracer:'护腕',belt:'腰带',legs:'护腿',boots:'鞋子',cloak:'披风'};
+  title.textContent = '⚔️ 选择' + (names[type] || '装备');
+  const data = equipData[type] || [];
+  items.innerHTML = data.map(item => `
+    <div class="equip-item" onclick="selectEquip('${item.name}')">
+      <div class="equip-item-icon">${item.icon}</div>
+      <div class="equip-item-info">
+        <div class="equip-item-name">${item.name}</div>
+        <div class="equip-item-desc">${item.desc}</div>
+        <div class="equip-item-stat">${item.stat}</div>
+      </div>
+    </div>
+  `).join('');
+  popup.classList.add('active');
+}
+
+function closePopup() {
+  document.getElementById('equipPopup').classList.remove('active');
+}
+
+function selectEquip(name) {
+  closePopup();
+  // 简单反馈
+  const slot = document.querySelector('.equip-slot.slot-' + popupType);
+  slot.classList.add('filled');
+}
+
+function doAttack() {
+  const char = document.getElementById('centerChar');
+  char.classList.remove('atk-shake');
+  void char.offsetWidth; // 触发重排重置动画
+  char.classList.add('atk-shake');
+
+  // 暴击飘字
+  const crit = document.getElementById('critText');
+  crit.style.display = 'block';
+  crit.style.animation = 'none';
+  void crit.offsetWidth;
+  crit.style.animation = 'crit-float 1s ease-out forwards';
+
+  setTimeout(() => {
+    char.classList.remove('atk-shake');
+  }, 500);
+}
+
+function closePanel() {
+  document.querySelector('.character-panel').style.display = 'none';
+}
+
+// 点击弹窗外部关闭
+document.addEventListener('click', function(e) {
+  const popup = document.getElementById('equipPopup');
+  const panel = document.querySelector('.character-panel');
+  if (!popup.contains(e.target) && !e.target.classList.contains('equip-slot')) {
+    closePopup();
+  }
+});
+</script>
+
+</body>
+</html>

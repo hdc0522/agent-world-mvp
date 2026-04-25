@@ -1,0 +1,386 @@
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_boy_age0.png (21595B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_boy_age1.png (35880B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_boy_age2.png (30195B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_boy_age3.png (18559B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_boy_age4.png (24798B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_boy_age5.png (31583B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_girl_age0.png (22871B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_girl_age1.png (38240B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_girl_age2.png (37620B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_girl_age3.png (36424B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_girl_age4.png (36406B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intj_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/intj_girl_age5.png (25350B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_boy_age0.png (28891B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_boy_age1.png (40624B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_boy_age2.png (29193B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_boy_age3.png (31367B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_boy_age4.png (33188B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_boy_age5.png (37309B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_girl_age0.png (28303B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_girl_age1.png (36518B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_girl_age2.png (17481B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_girl_age3.png (18616B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_girl_age4.png (16208B)
+Generating: /home/hdc0522/agent-world-mvp/characters/intp_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/intp_girl_age5.png (39018B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_boy_age0.png (33561B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_boy_age1.png (35085B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_boy_age2.png (33310B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_boy_age3.png (25331B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_boy_age4.png (26198B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_boy_age5.png (34402B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_girl_age0.png (36892B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_girl_age1.png (35948B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_girl_age2.png (36138B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_girl_age3.png (31859B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_girl_age4.png (38112B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entj_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/entj_girl_age5.png (36337B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_boy_age0.png (34934B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_boy_age1.png (35131B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_boy_age2.png (32703B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_boy_age3.png (33096B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_boy_age4.png (31153B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_boy_age5.png (34911B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_girl_age0.png (34598B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_girl_age1.png (39811B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_girl_age2.png (32108B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_girl_age3.png (40265B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_girl_age4.png (15935B)
+Generating: /home/hdc0522/agent-world-mvp/characters/entp_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/entp_girl_age5.png (35808B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_boy_age0.png (38607B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_boy_age1.png (40128B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_boy_age2.png (32323B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_boy_age3.png (22627B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_boy_age4.png (16448B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_boy_age5.png (32589B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_girl_age0.png (32262B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_girl_age1.png (39410B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_girl_age2.png (33683B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_girl_age3.png (29783B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_girl_age4.png (23349B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infj_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/infj_girl_age5.png (35579B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_boy_age0.png (31444B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_boy_age1.png (35388B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_boy_age2.png (30716B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_boy_age3.png (37454B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_boy_age4.png (39449B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_boy_age5.png (36298B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_girl_age0.png (33407B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_girl_age1.png (43598B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_girl_age2.png (34319B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_girl_age3.png (35045B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_girl_age4.png (29423B)
+Generating: /home/hdc0522/agent-world-mvp/characters/infp_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/infp_girl_age5.png (25373B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age0.png (28090B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age1.png (35794B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age2.png (32602B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age3.png (23281B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age4.png (22836B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_boy_age5.png (19375B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age0.png (33655B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age1.png (39875B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age2.png (16652B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age3.png (31316B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age4.png (30483B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfj_girl_age5.png (36672B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age0.png (35671B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age1.png (20744B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age2.png (39168B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age3.png (34581B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age4.png (26564B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_boy_age5.png (31492B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age0.png (35573B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age1.png (21406B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age2.png (33256B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age3.png (39570B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age4.png (30016B)
+Generating: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/enfp_girl_age5.png (22652B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_boy_age0.png (19085B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_boy_age1.png (37344B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_boy_age2.png (38078B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_boy_age3.png (35862B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_boy_age4.png (26265B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_boy_age5.png (19331B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_girl_age0.png (29831B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_girl_age1.png (32281B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_girl_age2.png (35493B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_girl_age3.png (36270B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_girl_age4.png (34773B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istj_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/istj_girl_age5.png (27689B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age0.png (29711B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age1.png (42357B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age2.png (35476B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age3.png (26494B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age4.png (31838B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfj_boy_age5.png (32328B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age0.png (21092B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age1.png (32232B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age2.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age2.png
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age3.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age3.png
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age4.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age4.png
+Generating: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age5.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/isfj_girl_age5.png
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_boy_age0.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/estj_boy_age0.png
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_boy_age1.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/estj_boy_age1.png
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/estj_boy_age2.png (29068B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/estj_boy_age3.png (26727B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/estj_boy_age4.png (19267B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/estj_boy_age5.png (33078B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/estj_girl_age0.png (28321B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/estj_girl_age1.png (35199B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/estj_girl_age2.png (32647B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/estj_girl_age3.png (17720B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/estj_girl_age4.png (31587B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estj_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/estj_girl_age5.png (26332B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age0.png (19524B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age1.png (37432B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age2.png (31761B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age3.png (40521B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age4.png (35583B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_boy_age5.png (36145B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age0.png (38155B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age1.png (31896B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age2.png (18649B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age3.png (31991B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age4.png (20460B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfj_girl_age5.png (30061B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/istp_boy_age0.png (28728B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/istp_boy_age1.png (35819B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/istp_boy_age2.png (31180B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/istp_boy_age3.png (30214B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/istp_boy_age4.png (35850B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/istp_boy_age5.png (34839B)
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_girl_age0.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/istp_girl_age0.png
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_girl_age1.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/istp_girl_age1.png
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_girl_age2.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/istp_girl_age2.png
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_girl_age3.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/istp_girl_age3.png
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_girl_age4.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/istp_girl_age4.png
+Generating: /home/hdc0522/agent-world-mvp/characters/istp_girl_age5.png
+FAIL: /home/hdc0522/agent-world-mvp/characters/istp_girl_age5.png
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age0.png (39234B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age1.png (44366B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age2.png (33443B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age3.png (35675B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age4.png (31076B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_boy_age5.png (36105B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age0.png (30840B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age1.png (36753B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age2.png (34136B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age3.png (38659B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age4.png (32721B)
+Generating: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/isfp_girl_age5.png (27842B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_boy_age0.png (20029B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_boy_age1.png (38082B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_boy_age2.png (23695B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_boy_age3.png (35445B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_boy_age4.png (30120B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_boy_age5.png (30598B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_girl_age0.png (34736B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_girl_age1.png (38378B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_girl_age2.png (28511B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_girl_age3.png (19053B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_girl_age4.png (31888B)
+Generating: /home/hdc0522/agent-world-mvp/characters/estp_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/estp_girl_age5.png (30805B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age0.png (18228B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age1.png (38231B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age2.png (34495B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age3.png (24970B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age4.png (26748B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_boy_age5.png (33842B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age0.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age0.png (29148B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age1.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age1.png (40969B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age2.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age2.png (35200B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age3.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age3.png (37231B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age4.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age4.png (34287B)
+Generating: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age5.png
+OK: /home/hdc0522/agent-world-mvp/characters/esfp_girl_age5.png (31465B)
+=== ALL DONE ===
+183
