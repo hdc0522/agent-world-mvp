@@ -1446,71 +1446,314 @@
     }
 
     /* ====================================================
-       CHARACTER PANEL
+       CHARACTER SCREEN — 热血特效版
     ==================================================== */
     .char-screen {
         padding-top: 10px;
+        position: relative;
     }
+    .char-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: char-breathe 3.5s ease-in-out infinite;
+    }
+
+    /* ---- 职业色背景 ---- */
+    .char-bg-glow {
+        position: absolute;
+        top: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 280px; height: 320px;
+        background: radial-gradient(ellipse at 50% 60%,
+            var(--job-color) 0%,
+            rgba(var(--job-color-rgb), 0.25) 35%,
+            transparent 70%);
+        filter: blur(20px);
+        opacity: 0.7;
+        pointer-events: none;
+        z-index: 0;
+        animation: bg-pulse 3.5s ease-in-out infinite;
+    }
+    .char-bg-glow::before,
+    .char-bg-glow::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        background: var(--job-color);
+        opacity: 0.15;
+    }
+    .char-bg-glow::before {
+        width: 80px; height: 80px;
+        top: 20px; left: -20px;
+        filter: blur(15px);
+        animation: orb-drift-a 5s ease-in-out infinite;
+    }
+    .char-bg-glow::after {
+        width: 60px; height: 60px;
+        bottom: 30px; right: -10px;
+        filter: blur(12px);
+        animation: orb-drift-b 4s ease-in-out infinite 1s;
+    }
+
+    /* ---- 职业光环 ---- */
+    .char-aura {
+        position: absolute;
+        top: 10px; left: 50%;
+        transform: translateX(-50%);
+        width: 200px; height: 240px;
+        border-radius: 50%;
+        border: 2px solid rgba(var(--job-color-rgb), 0.35);
+        box-shadow:
+            0 0 20px rgba(var(--job-color-rgb), 0.3),
+            inset 0 0 20px rgba(var(--job-color-rgb), 0.1);
+        animation: aura-breathe 2.5s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 1;
+    }
+    .char-aura::before {
+        content: '';
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        border: 1px solid rgba(var(--job-color-rgb), 0.15);
+        animation: aura-rotate 8s linear infinite;
+    }
+
+    /* ---- 粒子系统 ---- */
+    .char-particles {
+        position: absolute;
+        top: 10px; left: 50%;
+        transform: translateX(-50%);
+        width: 220px; height: 260px;
+        pointer-events: none;
+        z-index: 2;
+    }
+    .char-particle {
+        position: absolute;
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--job-color);
+        box-shadow: 0 0 6px var(--job-color), 0 0 12px rgba(var(--job-color-rgb), 0.5);
+        animation: particle-orbit var(--orbit-dur, 6s) linear infinite;
+        animation-delay: var(--orbit-delay, 0s);
+    }
+    .char-particle:nth-child(1) { --orbit-dur: 5s; --orbit-delay: 0s; width: 7px; height: 7px; }
+    .char-particle:nth-child(2) { --orbit-dur: 7s; --orbit-delay: -2.3s; width: 5px; height: 5px; opacity: 0.7; }
+    .char-particle:nth-child(3) { --orbit-dur: 6s; --orbit-delay: -4s; width: 4px; height: 4px; opacity: 0.5; }
+    .char-particle:nth-child(4) { --orbit-dur: 8s; --orbit-delay: -1.5s; width: 6px; height: 6px; }
+    .char-particle:nth-child(5) { --orbit-dur: 5.5s; --orbit-delay: -3s; width: 5px; height: 5px; opacity: 0.6; }
+    .char-particle:nth-child(6) { --orbit-dur: 7.5s; --orbit-delay: -5s; width: 4px; height: 4px; opacity: 0.4; }
+
+    /* ---- 全身立绘卡片 ---- */
     .char-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 20px;
+        position: relative;
+        z-index: 3;
+        background: linear-gradient(160deg,
+            rgba(19,19,31,0.92) 0%,
+            rgba(8,8,15,0.95) 100%);
+        border: 1px solid rgba(var(--job-color-rgb), 0.3);
+        border-radius: 18px;
+        padding: 24px 20px 20px;
         text-align: center;
+        width: 100%;
+        max-width: 300px;
+        box-shadow:
+            0 0 30px rgba(var(--job-color-rgb), 0.15),
+            0 8px 32px rgba(0,0,0,0.5),
+            inset 0 1px 0 rgba(255,255,255,0.05);
+        overflow: hidden;
+    }
+    .char-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg,
+            transparent 0%,
+            var(--job-color) 30%,
+            var(--job-color) 70%,
+            transparent 100%);
+        animation: level-bar-glow 2s ease-in-out infinite;
+    }
+
+    /* ---- 全身立绘 ---- */
+    .char-portrait-wrap {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 16px;
     }
     .char-portrait {
-        width: 140px;
-        height: 140px;
+        width: 180px;
+        height: 270px;
         object-fit: cover;
+        object-position: center top;
         border-radius: 12px;
-        border: 3px solid var(--gold-dim);
-        margin: 0 auto 16px;
-        animation: breathe 3.5s ease-in-out infinite;
+        border: 2px solid rgba(var(--job-color-rgb), 0.5);
+        box-shadow:
+            0 0 20px rgba(var(--job-color-rgb), 0.25),
+            0 4px 16px rgba(0,0,0,0.4);
+        animation: portrait-breathe 3.5s ease-in-out infinite;
+    }
+    .char-portrait-glow {
+        position: absolute;
+        bottom: -5px; left: 50%;
+        transform: translateX(-50%);
+        width: 160px; height: 30px;
+        background: radial-gradient(ellipse,
+            rgba(var(--job-color-rgb), 0.4) 0%,
+            transparent 70%);
+        filter: blur(8px);
+        animation: glow-flicker 3s ease-in-out infinite;
+    }
+
+    /* ---- 等级光效 ---- */
+    .char-level-badge {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 6px;
+    }
+    .char-level-badge::before {
+        content: '';
+        position: absolute;
+        inset: -4px -8px;
+        border-radius: 8px;
+        background: rgba(var(--job-color-rgb), 0.12);
+        border: 1px solid rgba(var(--job-color-rgb), 0.3);
+        animation: level-badge-pulse 2s ease-in-out infinite;
     }
     .char-name {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: 700;
         margin-bottom: 4px;
+        text-shadow: 0 0 12px rgba(var(--job-color-rgb), 0.4);
     }
     .char-job-label {
         font-size: 14px;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
+        font-weight: 600;
     }
+
+    /* ---- 属性网格 ---- */
     .char-stats-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 8px;
         text-align: left;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
     }
     .char-stat-item {
-        background: var(--bg-void);
-        border: 1px solid var(--border);
+        background: rgba(8,8,15,0.7);
+        border: 1px solid rgba(var(--job-color-rgb), 0.2);
         border-radius: 8px;
         padding: 10px 12px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .char-stat-item:hover {
+        border-color: rgba(var(--job-color-rgb), 0.5);
+        box-shadow: 0 0 8px rgba(var(--job-color-rgb), 0.15);
     }
     .char-stat-name { font-size: 12px; color: var(--text-dim); }
     .char-stat-num {
         font-family: 'Orbitron', monospace;
         font-size: 14px;
         font-weight: 700;
-        color: var(--gold);
+        color: var(--job-color);
     }
+
+    /* ---- 改名按钮 ---- */
     .customize-btn {
         width: 100%;
         padding: 12px;
-        background: var(--bg-void);
-        border: 1px solid var(--border);
+        background: rgba(var(--job-color-rgb), 0.08);
+        border: 1px solid rgba(var(--job-color-rgb), 0.3);
         border-radius: 8px;
         color: var(--text);
         font-size: 13px;
         cursor: pointer;
         transition: all 0.2s;
     }
-    .customize-btn:hover { border-color: var(--gold-dim); color: var(--gold-bright); }
+    .customize-btn:hover {
+        border-color: rgba(var(--job-color-rgb), 0.7);
+        color: var(--job-color);
+        background: rgba(var(--job-color-rgb), 0.15);
+        box-shadow: 0 0 12px rgba(var(--job-color-rgb), 0.2);
+    }
+
+    /* ---- 关键帧 ---- */
+    @keyframes char-breathe {
+        0%, 100% { transform: scale(1) translateY(0); }
+        50% { transform: scale(1.025) translateY(-8px); }
+    }
+    @keyframes bg-pulse {
+        0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+        50% { opacity: 0.85; transform: translateX(-50%) scale(1.08); }
+    }
+    @keyframes orb-drift-a {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(15px, -10px); }
+    }
+    @keyframes orb-drift-b {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(-12px, 8px); }
+    }
+    @keyframes aura-breathe {
+        0%, 100% {
+            opacity: 0.5;
+            transform: translateX(-50%) scale(1);
+            box-shadow: 0 0 20px rgba(var(--job-color-rgb), 0.3), inset 0 0 20px rgba(var(--job-color-rgb), 0.1);
+        }
+        50% {
+            opacity: 0.9;
+            transform: translateX(-50%) scale(1.06);
+            box-shadow: 0 0 40px rgba(var(--job-color-rgb), 0.5), inset 0 0 30px rgba(var(--job-color-rgb), 0.2);
+        }
+    }
+    @keyframes aura-rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    @keyframes particle-orbit {
+        0% { transform: rotate(0deg) translateX(var(--rx, 90px)) rotate(0deg); opacity: var(--op, 0.9); }
+        25% { opacity: calc(var(--op, 0.9) * 0.6); }
+        50% { transform: rotate(180deg) translateX(var(--rx, 90px)) rotate(-180deg); opacity: var(--op, 0.9); }
+        75% { opacity: calc(var(--op, 0.9) * 0.6); }
+        100% { transform: rotate(360deg) translateX(var(--rx, 90px)) rotate(-360deg); opacity: var(--op, 0.9); }
+    }
+    .char-particle:nth-child(1) { --rx: 95px; --ry: 110px; --op: 0.9; top: calc(50% - 3px); left: calc(50% - 3px); }
+    .char-particle:nth-child(2) { --rx: 80px; --ry: 100px; --op: 0.7; top: calc(50% - 2.5px); left: calc(50% - 2.5px); }
+    .char-particle:nth-child(3) { --rx: 105px; --ry: 120px; --op: 0.5; top: calc(50% - 2px); left: calc(50% - 2px); }
+    .char-particle:nth-child(4) { --rx: 75px; --ry: 95px; --op: 0.8; top: calc(50% - 3px); left: calc(50% - 3px); }
+    .char-particle:nth-child(5) { --rx: 100px; --ry: 115px; --op: 0.6; top: calc(50% - 2.5px); left: calc(50% - 2.5px); }
+    .char-particle:nth-child(6) { --rx: 90px; --ry: 108px; --op: 0.4; top: calc(50% - 2px); left: calc(50% - 2px); }
+    @keyframes portrait-breathe {
+        0%, 100% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.03); filter: brightness(1.08); }
+    }
+    @keyframes glow-flicker {
+        0%, 100% { opacity: 0.6; transform: translateX(-50%) scaleX(1); }
+        33% { opacity: 0.8; transform: translateX(-50%) scaleX(1.1); }
+        66% { opacity: 0.5; transform: translateX(-50%) scaleX(0.95); }
+    }
+    @keyframes level-bar-glow {
+        0%, 100% { opacity: 0.7; }
+        50% { opacity: 1; }
+    }
+    @keyframes level-badge-pulse {
+        0%, 100% { opacity: 0.5; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* ---- 职业色变量映射 ---- */
+    .char-screen[data-job="tank"]  { --job-color: #C9A227; --job-color-rgb: 201,162,39; }
+    .char-screen[data-job="healer"] { --job-color: #7EB8E6; --job-color-rgb: 126,184,230; }
+    .char-screen[data-job="rogue"]  { --job-color: #8B5CF6; --job-color-rgb: 139,92,246; }
+    .char-screen[data-job="hunter"] { --job-color: #22C55E; --job-color-rgb: 34,197,94; }
 
     /* ====================================================
        CUSTOMIZE MODAL
@@ -1932,19 +2175,36 @@
     </div>
 
     <!-- ========== CHARACTER SCREEN ========== -->
-    <div class="screen" id="charScreen">
-        <div class="char-screen">
-            <div class="char-card">
-                <img class="char-portrait" id="charPortrait" src="job_tank_new.png" alt="character" />
-                <div class="char-name" id="charName">冒险者</div>
-                <div class="char-job-label" id="charJobLabel" style="color:var(--tank)">坦克 · Lv.1</div>
-                <div class="char-stats-grid">
-                    <div class="char-stat-item"><span class="char-stat-name">攻击</span><span class="char-stat-num" id="charAtk">10</span></div>
-                    <div class="char-stat-item"><span class="char-stat-name">防御</span><span class="char-stat-num" id="charDef">10</span></div>
-                    <div class="char-stat-item"><span class="char-stat-name">生命</span><span class="char-stat-num" id="charHp">100</span></div>
-                    <div class="char-stat-item"><span class="char-stat-name">暴击</span><span class="char-stat-num" id="charCrit">15%</span></div>
+    <div class="screen" id="charScreen" data-job="tank">
+        <div class="char-screen" data-job="tank">
+            <div class="char-wrapper">
+                <div class="char-bg-glow"></div>
+                <div class="char-aura"></div>
+                <div class="char-particles">
+                    <div class="char-particle"></div>
+                    <div class="char-particle"></div>
+                    <div class="char-particle"></div>
+                    <div class="char-particle"></div>
+                    <div class="char-particle"></div>
+                    <div class="char-particle"></div>
                 </div>
-                <button class="customize-btn" onclick="openCustomize()">✏️ 换装 / 改名</button>
+                <div class="char-card">
+                    <div class="char-portrait-wrap">
+                        <img class="char-portrait" id="charPortrait" src="assets/characters/tank_full.png" alt="character" />
+                        <div class="char-portrait-glow"></div>
+                    </div>
+                    <div class="char-level-badge">
+                        <div class="char-name" id="charName">冒险者</div>
+                        <div class="char-job-label" id="charJobLabel">坦克 · Lv.1</div>
+                    </div>
+                    <div class="char-stats-grid">
+                        <div class="char-stat-item"><span class="char-stat-name">攻击</span><span class="char-stat-num" id="charAtk">10</span></div>
+                        <div class="char-stat-item"><span class="char-stat-name">防御</span><span class="char-stat-num" id="charDef">10</span></div>
+                        <div class="char-stat-item"><span class="char-stat-name">生命</span><span class="char-stat-num" id="charHp">100</span></div>
+                        <div class="char-stat-item"><span class="char-stat-name">暴击</span><span class="char-stat-num" id="charCrit">15%</span></div>
+                    </div>
+                    <button class="customize-btn" onclick="openCustomize()">✏️ 换装 / 改名</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1961,7 +2221,7 @@
     <div class="screen" id="shareScreen">
         <div class="title-screen" style="padding-top:20px;">
             <div class="share-card">
-                <img class="share-char-img" id="shareCharImg" src="job_tank_new.png" alt="character" />
+                <img class="share-char-img" id="shareCharImg" src="assets/characters/tank_full.png" alt="character" />
                 <div class="share-job" id="shareJobName" style="color:var(--tank)">坦克</div>
                 <div class="share-level" id="shareLevel">Lv.1 · 幼儿园</div>
                 <div class="share-mbti" id="shareMbti">MBTI: INTJ</div>
@@ -3147,14 +3407,19 @@ function collectMail(id) {
 // ====================================================
 function updateCharacterPanel() {
     const info = JobInfo[gameState.job];
-    const charImg = getCharImage(gameState.mbti, gameState.gender, gameState.level);
+    const charImg = `assets/characters/${gameState.job}_full.png`;
     document.getElementById('charPortrait').src = charImg;
     document.getElementById('charPortrait').onerror = function() {
-        this.src = info.image; this.onerror = null;
+        this.src = `assets/characters/tank_full.png`; this.onerror = null;
     };
     document.getElementById('charName').textContent = gameState.name;
     document.getElementById('charJobLabel').textContent = `${info.name} · Lv.${gameState.level}`;
     document.getElementById('charJobLabel').style.color = info.color;
+    // Sync job color CSS variable via data-job attribute
+    const charScreen = document.getElementById('charScreen');
+    const charScreenInner = charScreen.querySelector('.char-screen');
+    if (charScreenInner) charScreenInner.setAttribute('data-job', gameState.job);
+    charScreen.setAttribute('data-job', gameState.job);
     const stats = calculateStats();
     document.getElementById('charAtk').textContent = stats.atk;
     document.getElementById('charDef').textContent = stats.def;
@@ -3215,9 +3480,8 @@ function renderRankList() {
 // ====================================================
 function showShare() {
     const info = JobInfo[gameState.job];
-    const charImg = getCharImage(gameState.mbti, gameState.gender, gameState.level);
-    document.getElementById('shareCharImg').src = charImg;
-    document.getElementById('shareCharImg').onerror = function() { this.src = info.image; this.onerror = null; };
+    document.getElementById('shareCharImg').src = `assets/characters/${gameState.job}_full.png`;
+    document.getElementById('shareCharImg').onerror = function() { this.src = 'assets/characters/tank_full.png'; this.onerror = null; };
     document.getElementById('shareJobName').textContent = info.name;
     document.getElementById('shareJobName').style.color = info.color;
     document.getElementById('shareLevel').textContent = `Lv.${gameState.level} · ${getStage(gameState.level).name}`;
