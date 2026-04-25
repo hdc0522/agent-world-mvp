@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>装备环绕UI原型</title>
+<title>WoW风格角色面板</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  background: #1a1a2e;
+  background: #0d0d0d;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -19,290 +19,404 @@ body {
 
 .game-container {
   position: relative;
-  width: 375px;
-  height: 667px;
-  background: linear-gradient(180deg, #16213e 0%, #0f3460 50%, #1a1a2e 100%);
-  border-radius: 20px;
+  width: 900px;
+  height: 620px;
+  background: #0a0a14;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 0 60px rgba(79, 172, 254, 0.3);
+  display: flex;
+  box-shadow: 0 0 80px rgba(79, 172, 254, 0.2);
 }
 
-/* === 角色区域 === */
-.character-area {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 200px;
-  height: 280px;
+/* ===================== 左侧：角色3D模型区域 ===================== */
+.left-panel {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.character-body {
-  width: 120px;
-  height: 160px;
+  justify-content: center;
   position: relative;
-  margin-top: 20px;
+  background: linear-gradient(180deg, #12122a 0%, #0a0a18 100%);
 }
 
-.character-body img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  /* 原地抖动动画 */
-  animation: characterIdle 1.2s ease-in-out infinite;
-}
-
-@keyframes characterIdle {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  25% { transform: translateY(-4px) scale(1.02); }
-  50% { transform: translateY(0px) scale(1); }
-  75% { transform: translateY(3px) scale(0.98); }
-}
-
-/* 名字和职业标签 */
-.character-info {
-  text-align: center;
-  margin-top: 8px;
-}
-.character-name {
-  color: #ffd700;
-  font-size: 14px;
-  font-weight: bold;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-}
-.character-class {
-  color: #7ec8e3;
-  font-size: 11px;
-  margin-top: 2px;
-}
-
-/* 角色脚下光圈 */
-.character-glow {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 20px;
-  background: radial-gradient(ellipse, rgba(79,172,254,0.4) 0%, transparent 70%);
-  animation: glowPulse 2s ease-in-out infinite;
-}
-@keyframes glowPulse {
-  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
-  50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
-}
-
-/* === 装备槽位环绕系统 === */
-.equip-ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 340px;
-  height: 340px;
-}
-
-.equip-slot {
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  background: rgba(255,255,255,0.05);
-  border: 2px solid rgba(255,255,255,0.15);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.char-model-area {
+  width: 280px;
+  height: 360px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  position: relative;
 }
 
-.equip-slot:hover {
-  transform: scale(1.15);
-  border-color: #ffd700;
-  background: rgba(255,215,0,0.15);
-  box-shadow: 0 0 15px rgba(255,215,0,0.4);
-  z-index: 10;
-}
-
-.equip-slot.equipped {
-  border-color: #4facfe;
-  background: rgba(79,172,254,0.15);
-}
-
-.equip-slot .slot-icon {
-  font-size: 22px;
-  filter: drop-shadow(0 0 3px rgba(255,255,255,0.5));
-}
-
-.equip-slot .slot-label {
-  position: absolute;
-  bottom: -18px;
-  font-size: 9px;
-  color: rgba(255,255,255,0.5);
-  white-space: nowrap;
-}
-
-/* 槽位位置（围绕角色排列） */
-.slot-head     { top: 0;    left: 50%; transform: translateX(-50%); }
-.slot-helmet   { top: 8px;  left: 50%; transform: translateX(-50%); }
-
-.slot-weapon   { top: 50%;  right: -24px; transform: translateY(-50%); }
-.slot-offhand { top: 50%;  left: -24px;  transform: translateY(-50%); }
-
-.slot-chest   { bottom: 60px; left: 50%;  transform: translateX(-50%); }
-.slot-cloak   { bottom: 30px; left: 50%;  transform: translateX(-50%); }
-
-.slot-gloves  { top: 35%;   right: 10px; }
-.slot-boots   { bottom: 0;  left: 50%;    transform: translateX(-50%); }
-.slot-ring    { top: 35%;   left: 10px; }
-
-/* === 弹出装备面板 === */
-.equip-popup {
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.8);
-  width: 320px;
-  background: rgba(10, 15, 30, 0.95);
-  border: 1px solid rgba(79, 172, 254, 0.3);
-  border-radius: 16px;
-  padding: 16px;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.25s ease;
-  z-index: 100;
-  box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
-}
-
-.equip-popup.active {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) scale(1);
-}
-
-.equip-popup-title {
-  color: #4facfe;
-  font-size: 12px;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-.equip-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.equip-item {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
-  padding: 8px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.equip-item:hover {
-  border-color: #4facfe;
-  background: rgba(79,172,254,0.1);
-}
-
-.equip-item-icon {
-  font-size: 24px;
-  display: block;
+.char-name {
+  color: #ffd700;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Trajan Pro', serif;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
   margin-bottom: 4px;
 }
 
-.equip-item-name {
-  font-size: 10px;
-  color: #ccc;
+.char-title {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  margin-bottom: 16px;
 }
 
-.equip-item.selected {
-  border-color: #ffd700;
-  background: rgba(255,215,0,0.1);
-}
-
-/* 关闭按钮 */
-.popup-close {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  color: rgba(255,255,255,0.4);
-  font-size: 16px;
-  cursor: pointer;
-}
-.popup-close:hover { color: #fff; }
-
-/* === 顶部状态栏 === */
-.top-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+.char-3d {
+  width: 200px;
+  height: 280px;
+  position: relative;
   display: flex;
   align-items: center;
-  padding: 0 16px;
-  justify-content: space-between;
+  justify-content: center;
 }
 
-.back-btn {
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
+.char-3d img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: charIdle 1.4s ease-in-out infinite;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
 }
 
-.top-title {
-  color: rgba(255,255,255,0.7);
-  font-size: 13px;
+@keyframes charIdle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
 }
 
-/* === 角色选择切换 === */
-.char-switcher {
+.char-level {
   position: absolute;
-  bottom: 20px;
+  bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid #ffd700;
+  border-radius: 10px;
+  padding: 2px 12px;
+  color: #ffd700;
+  font-size: 12px;
+  font-weight: bold;
 }
 
-.char-tab {
-  padding: 6px 14px;
-  background: rgba(255,255,255,0.08);
+.char-class-bar {
+  width: 240px;
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+.class-fill {
+  height: 100%;
+  border-radius: 4px;
+  animation: classPulse 3s ease-in-out infinite;
+}
+
+@keyframes classPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* ===================== 中间分隔线 ===================== */
+.divider {
+  width: 2px;
+  background: linear-gradient(180deg, transparent 0%, #3a3a5c 20%, #3a3a5c 80%, transparent 100%);
+  margin: 40px 0;
+}
+
+/* ===================== 右侧：装备面板 ===================== */
+.right-panel {
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px 24px 0;
+}
+
+/* 角色基本信息 */
+.char-info-bar {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.char-info-name {
+  color: #ffd700;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.char-info-class {
+  color: #a0a0c0;
+  font-size: 12px;
+}
+
+.char-info-level {
+  margin-left: auto;
+  color: #7ec8e3;
+  font-size: 12px;
+}
+
+/* 装备网格 - WoW风格两列布局 */
+.equip-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 8px;
+  margin-bottom: 16px;
+}
+
+.equip-slot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.equip-slot:hover {
+  background: rgba(79, 172, 254, 0.1);
+  border-color: rgba(79, 172, 254, 0.3);
+}
+
+.equip-slot.equipped {
+  background: rgba(255, 215, 0, 0.05);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.slot-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(0,0,0,0.4);
   border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 20px;
-  color: rgba(255,255,255,0.5);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.slot-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.slot-type {
+  color: rgba(255,255,255,0.4);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.slot-name {
+  color: #c8c8e8;
   font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slot-name.empty {
+  color: rgba(255,255,255,0.2);
+  font-style: italic;
+}
+
+.slot-ilvl {
+  color: #7ec8e3;
+  font-size: 9px;
+  margin-top: 1px;
+}
+
+/* 主手/副手特殊显示 */
+.slot-mainhand { grid-column: 1; }
+.slot-offhand  { grid-column: 2; }
+.slot-tabard   { grid-column: 1; }
+.slot-shirt    { grid-column: 2; }
+
+/* 三级属性面板 */
+.stats-panel {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.stats-title {
+  color: rgba(255,255,255,0.3);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.stat-label {
+  color: rgba(255,255,255,0.5);
+  font-size: 10px;
+}
+
+.stat-value {
+  color: #e8e8ff;
+  font-size: 11px;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+/* 战斗力条 */
+.power-bar {
+  margin-top: 8px;
+  height: 4px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.power-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+/* 底部装饰边框 */
+.bottom-decoration {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #4facfe 20%, #ffd700 50%, #4facfe 80%, transparent);
+}
+
+/* ===================== 弹出装备详情 ===================== */
+.equip-tooltip {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: rgba(10, 12, 20, 0.97);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 10px;
+  padding: 20px 24px;
+  min-width: 280px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(255,215,0,0.1);
+}
+
+.equip-tooltip.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.tooltip-name {
+  color: #ffd700;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.tooltip-type {
+  color: rgba(255,255,255,0.4);
+  font-size: 11px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.tooltip-stats {
+  margin-bottom: 12px;
+}
+
+.tooltip-stat {
+  color: #7ec8e3;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.tooltip-desc {
+  color: rgba(255,255,255,0.6);
+  font-size: 11px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.tooltip-btn {
+  width: 100%;
+  padding: 8px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 6px;
+  color: #ffd700;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.char-tab.active {
-  background: rgba(79,172,254,0.2);
-  border-color: #4facfe;
-  color: #4facfe;
+.tooltip-btn:hover {
+  background: rgba(255, 215, 0, 0.2);
 }
 
-/* 抖动效果测试按钮 */
-.test-btn {
+.tooltip-close {
   position: absolute;
-  top: 55px;
+  top: 10px;
   right: 12px;
-  padding: 5px 10px;
-  background: rgba(255,215,0,0.15);
-  border: 1px solid rgba(255,215,0,0.4);
-  border-radius: 8px;
-  color: #ffd700;
-  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  font-size: 16px;
   cursor: pointer;
+}
+
+.tooltip-close:hover { color: #fff; }
+
+/* 遮罩 */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 999;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 </style>
 </head>
@@ -310,191 +424,286 @@ body {
 
 <div class="game-container">
 
-  <!-- 顶部状态栏 -->
-  <div class="top-bar">
-    <div class="back-btn">←</div>
-    <div class="top-title">角色装备</div>
-    <div style="width:20px"></div>
-  </div>
+  <!-- 左侧：角色3D模型 -->
+  <div class="left-panel">
+    <div class="char-model-area">
+      <div class="char-name">小杰</div>
+      <div class="char-title">INTJ · 战略大师</div>
+      <div class="char-3d">
+        <img id="charImg" src="mbti_intj_boy_child.png" alt="角色3D模型"
+             onerror="this.style.display='none'">
+        <div class="char-level">Lv.8</div>
+      </div>
+      <div class="char-class-bar">
+        <div class="class-fill" style="width: 65%; background: linear-gradient(90deg, #8B7355, #C4A76B);"></div>
+      </div>
+    </div>
 
-  <!-- 角色区域 -->
-  <div class="character-area">
-    <div class="character-info">
-      <div class="character-name">小杰 INTJ</div>
-      <div class="character-class">Lv.8 战士</div>
-    </div>
-    <div class="character-body">
-      <!-- 角色立绘区域 -->
-      <img id="charImage" src="mbti_intj_boy_child.png" alt="角色立绘" 
-           onerror="this.style.display='none'">
-      <div class="character-glow"></div>
-    </div>
-  </div>
-
-  <!-- 装备环绕环 -->
-  <div class="equip-ring" id="equipRing">
-    <!-- 头部槽位 -->
-    <div class="equip-slot slot-head" data-slot="head" data-label="头部">
-      <span class="slot-icon">🪖</span>
-      <span class="slot-label">头部</span>
-    </div>
-    <!-- 武器槽位 -->
-    <div class="equip-slot slot-weapon equipped" data-slot="weapon" data-label="武器">
-      <span class="slot-icon">⚔️</span>
-      <span class="slot-label">武器</span>
-    </div>
-    <!-- 副手槽位 -->
-    <div class="equip-slot slot-offhand equipped" data-slot="offhand" data-label="副手">
-      <span class="slot-icon">🛡️</span>
-      <span class="slot-label">副手</span>
-    </div>
-    <!-- 胸甲槽位 -->
-    <div class="equip-slot slot-chest equipped" data-slot="chest" data-label="胸甲">
-      <span class="slot-icon">🎽</span>
-      <span class="slot-label">胸甲</span>
-    </div>
-    <!-- 披风槽位 -->
-    <div class="equip-slot slot-cloak" data-slot="cloak" data-label="披风">
-      <span class="slot-icon">🧣</span>
-      <span class="slot-label">披风</span>
-    </div>
-    <!-- 手套槽位 -->
-    <div class="equip-slot slot-gloves" data-slot="gloves" data-label="手套">
-      <span class="slot-icon">🧤</span>
-      <span class="slot-label">手套</span>
-    </div>
-    <!-- 鞋子槽位 -->
-    <div class="equip-slot slot-boots" data-slot="boots" data-label="鞋子">
-      <span class="slot-icon">👟</span>
-      <span class="slot-label">鞋子</span>
-    </div>
-    <!-- 戒指槽位 -->
-    <div class="equip-slot slot-ring" data-slot="ring" data-label="戒指">
-      <span class="slot-icon">💍</span>
-      <span class="slot-label">戒指</span>
+    <!-- 属性雷达/数值 -->
+    <div style="display:flex; gap:20px; margin-top: 8px;">
+      <div style="text-align:center;">
+        <div style="color:#e8e8ff; font-size:14px; font-weight:bold;">2,840</div>
+        <div style="color:rgba(255,255,255,0.3); font-size:9px;">装等</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="color:#e8e8ff; font-size:14px; font-weight:bold;">4,200</div>
+        <div style="color:rgba(255,255,255,0.3); font-size:9px;">秒伤</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="color:#e8e8ff; font-size:14px; font-weight:bold;">12,800</div>
+        <div style="color:rgba(255,255,255,0.3); font-size:9px;">生命值</div>
+      </div>
     </div>
   </div>
 
-  <!-- 装备弹出面板 -->
-  <div class="equip-popup" id="equipPopup">
-    <div class="popup-close" id="popupClose">✕</div>
-    <div class="equip-popup-title" id="popupTitle">选择头部装备</div>
-    <div class="equip-list" id="equipList">
-      <!-- 动态生成 -->
+  <div class="divider"></div>
+
+  <!-- 右侧：装备面板 -->
+  <div class="right-panel">
+
+    <!-- 角色基本信息 -->
+    <div class="char-info-bar">
+      <span class="char-info-name">小杰</span>
+      <span class="char-info-class">战士</span>
+      <span class="char-info-level">Lv.8</span>
     </div>
+
+    <!-- 装备网格 - WoW两列布局 -->
+    <div class="equip-grid">
+
+      <div class="equip-slot equipped" data-slot="head">
+        <div class="slot-icon">🪖</div>
+        <div class="slot-info">
+          <div class="slot-type">头部</div>
+          <div class="slot-name">战士白板盔</div>
+          <div class="slot-ilvl">物品等级 12</div>
+        </div>
+      </div>
+
+      <div class="equip-slot equipped" data-slot="neck">
+        <div class="slot-icon">📿</div>
+        <div class="slot-info">
+          <div class="slot-type">颈部</div>
+          <div class="slot-name">勇气徽章</div>
+          <div class="slot-ilvl">物品等级 15</div>
+        </div>
+      </div>
+
+      <div class="equip-slot equipped" data-slot="shoulder">
+        <div class="slot-icon">🎽</div>
+        <div class="slot-info">
+          <div class="slot-type">肩部</div>
+          <div class="slot-name">见习肩甲</div>
+          <div class="slot-ilvl">物品等级 10</div>
+        </div>
+      </div>
+
+      <div class="equip-slot equipped" data-slot="cloak">
+        <div class="slot-icon">🧣</div>
+        <div class="slot-info">
+          <div class="slot-type">背部</div>
+          <div class="slot-name">新手披风</div>
+          <div class="slot-ilvl">物品等级 8</div>
+        </div>
+      </div>
+
+      <div class="equip-slot equipped" data-slot="chest">
+        <div class="slot-icon">🛡️</div>
+        <div class="slot-info">
+          <div class="slot-type">胸部</div>
+          <div class="slot-name">战士皮甲</div>
+          <div class="slot-ilvl">物品等级 14</div>
+        </div>
+      </div>
+
+      <div class="equip-slot equipped" data-slot="wrist">
+        <div class="slot-icon">⌚</div>
+        <div class="slot-info">
+          <div class="slot-type">腕部</div>
+          <div class="slot-name">历练护腕</div>
+          <div class="slot-ilvl">物品等级 9</div>
+        </div>
+      </div>
+
+      <div class="equip-slot equipped" data-slot="hands">
+        <div class="slot-icon">🧤</div>
+        <div class="slot-info">
+          <div class="slot-type">手部</div>
+          <div class="slot-name">搏击手套</div>
+          <div class="slot-ilvl">物品等级 11</div>
+        </div>
+      </div>
+
+      <div class="equip-slot equipped" data-slot="waist">
+        <div class="slot-icon">🎗️</div>
+        <div class="slot-info">
+          <div class="slot-type">腰部</div>
+          <div class="slot-name">粗制腰带</div>
+          <div class="slot-ilvl">物品等级 7</div>
+        </div>
+      </div>
+
+      <div class="equip-slot equipped" data-slot="legs">
+        <div class="slot-icon">👖</div>
+        <div class="slot-info">
+          <div class="slot-type">腿部</div>
+          <div class="slot-name">战士护腿</div>
+          <div class="slot-ilvl">物品等级 13</div>
+        </div>
+      </div>
+
+      <div class="equip-slot equipped" data-slot="feet">
+        <div class="slot-icon">👢</div>
+        <div class="slot-info">
+          <div class="slot-type">脚部</div>
+          <div class="slot-name">训练长靴</div>
+          <div class="slot-ilvl">物品等级 9</div>
+        </div>
+      </div>
+
+      <div class="equip-slot equipped" data-slot="finger">
+        <div class="slot-icon">💍</div>
+        <div class="slot-info">
+          <div class="slot-type">手指</div>
+          <div class="slot-name">力量指环</div>
+          <div class="slot-ilvl">物品等级 10</div>
+        </div>
+      </div>
+
+      <div class="equip-slot equipped" data-slot="trinket">
+        <div class="slot-icon">🏅</div>
+        <div class="slot-info">
+          <div class="slot-type">饰品</div>
+          <div class="slot-name">战痕勋章</div>
+          <div class="slot-ilvl">物品等级 16</div>
+        </div>
+      </div>
+
+      <!-- 主手和副手分开两列 -->
+      <div class="equip-slot equipped slot-mainhand" data-slot="mainhand">
+        <div class="slot-icon">⚔️</div>
+        <div class="slot-info">
+          <div class="slot-type">主手</div>
+          <div class="slot-name">新手短剑</div>
+          <div class="slot-ilvl">物品等级 12 · 14-22伤害</div>
+        </div>
+      </div>
+
+      <div class="equip-slot slot-offhand" data-slot="offhand">
+        <div class="slot-icon">📦</div>
+        <div class="slot-info">
+          <div class="slot-type">副手</div>
+          <div class="slot-name empty">未装备</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 三维属性 -->
+    <div class="stats-panel">
+      <div class="stats-title">属性</div>
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-icon" style="background:#c44040;">⚔️</div>
+          <span class="stat-label">力量</span>
+          <span class="stat-value">156</span>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon" style="background:#4a7fc4;">🛡️</div>
+          <span class="stat-label">敏捷</span>
+          <span class="stat-value">48</span>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon" style="background:#7ec87e;">💚</div>
+          <span class="stat-label">耐力</span>
+          <span class="stat-value">203</span>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-icon" style="background:#c4a03a;">⭐</div>
+          <span class="stat-label">智力</span>
+          <span class="stat-value">32</span>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon" style="background:#7e54c4;">✨</div>
+          <span class="stat-label">精神</span>
+          <span class="stat-value">41</span>
+        </div>
+      </div>
+      <div class="stats-row" style="margin-top:6px;">
+        <div class="stat-item">
+          <span class="stat-label">暴击</span>
+          <span class="stat-value" style="color:#ffd700;">5.2%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">加速</span>
+          <span class="stat-value" style="color:#4facfe;">8.1%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">精通</span>
+          <span class="stat-value" style="color:#c44bc4;">3.0%</span>
+        </div>
+      </div>
+      <div class="power-bar">
+        <div class="power-fill" style="width: 72%;"></div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- 角色切换 -->
-  <div class="char-switcher">
-    <div class="char-tab active" data-char="intj">INTJ</div>
-    <div class="char-tab" data-char="enfp">ENFP</div>
-    <div class="char-tab" data-char="istp">ISTP</div>
-    <div class="char-tab" data-char="esfj">ESFJ</div>
-  </div>
+  <div class="bottom-decoration"></div>
+</div>
 
+<!-- 弹出详情 -->
+<div class="overlay" id="overlay"></div>
+<div class="equip-tooltip" id="tooltip">
+  <div class="tooltip-close" id="tooltipClose">✕</div>
+  <div class="tooltip-name" id="tooltipName">战士白板盔</div>
+  <div class="tooltip-type" id="tooltipType">头部 · 板甲</div>
+  <div class="tooltip-stats" id="tooltipStats">
+    <div class="tooltip-stat">+24 护甲</div>
+    <div class="tooltip-stat">+12 力量</div>
+    <div class="tooltip-stat">+8 耐力</div>
+  </div>
+  <div class="tooltip-desc">基础战士装备，由新手村铁匠打造。</div>
+  <button class="tooltip-btn">卸下装备</button>
 </div>
 
 <script>
-// 装备数据
-const equipData = {
-  head: [
-    { icon: '🪖', name: '战士头盔' },
-    { icon: '👑', name: '皇家头盔' },
-    { icon: '🎩', name: '魔法帽' },
-  ],
-  weapon: [
-    { icon: '⚔️', name: '短剑' },
-    { icon: '🗡️', name: '匕首' },
-    { icon: '🔪', name: '飞刀' },
-  ],
-  offhand: [
-    { icon: '🛡️', name: '木盾' },
-    { icon: '🛡️', name: '铁盾' },
-    { icon: '📖', name: '魔法书' },
-  ],
-  chest: [
-    { icon: '🎽', name: '布甲' },
-    { icon: '🛡️', name: '皮甲' },
-    { icon: '⚔️', name: '锁甲' },
-  ],
-  cloak: [
-    { icon: '🧣', name: '红色披风' },
-    { icon: '🧣', name: '蓝色披风' },
-  ],
-  gloves: [
-    { icon: '🧤', name: '皮手套' },
-    { icon: '🧤', name: '铁手套' },
-  ],
-  boots: [
-    { icon: '👟', name: '布鞋' },
-    { icon: '👢', name: '皮靴' },
-  ],
-  ring: [
-    { icon: '💍', name: '力量戒指' },
-    { icon: '💎', name: '智慧戒指' },
-  ],
-};
+const tooltip = document.getElementById('tooltip');
+const overlay = document.getElementById('overlay');
 
-// 当前选中的槽位
-let currentSlot = null;
-
-// 点击槽位弹出装备选择面板
 document.querySelectorAll('.equip-slot').forEach(slot => {
   slot.addEventListener('click', () => {
-    const slotType = slot.dataset.slot;
-    currentSlot = slotType;
-    const slotLabel = slot.dataset.label;
+    const slotName = slot.querySelector('.slot-name');
+    const slotType = slot.querySelector('.slot-type');
+    const ilvl = slot.querySelector('.slot-ilvl');
     
-    // 更新面板标题
-    document.getElementById('popupTitle').textContent = `选择${slotLabel}`;
+    if (slotName.classList.contains('empty')) {
+      return;
+    }
     
-    // 渲染装备列表
-    const list = document.getElementById('equipList');
-    list.innerHTML = '';
-    const items = equipData[slotType] || [];
-    items.forEach((item, i) => {
-      const div = document.createElement('div');
-      div.className = 'equip-item';
-      div.innerHTML = `<span class="equip-item-icon">${item.icon}</span><span class="equip-item-name">${item.name}</span>`;
-      div.addEventListener('click', () => {
-        // 选中装备
-        document.querySelectorAll('.equip-item').forEach(e => e.classList.remove('selected'));
-        div.classList.add('selected');
-        // 更新槽位图标
-        slot.querySelector('.slot-icon').textContent = item.icon;
-        slot.classList.add('equipped');
-        // 关闭面板
-        document.getElementById('equipPopup').classList.remove('active');
-      });
-      list.appendChild(div);
-    });
+    document.getElementById('tooltipName').textContent = slotName.textContent;
+    document.getElementById('tooltipType').textContent = slotType.textContent + ' · 板甲';
+    document.getElementById('tooltipStats').innerHTML = `
+      <div class="tooltip-stat">+${Math.floor(Math.random()*20+10)} 力量</div>
+      <div class="tooltip-stat">+${Math.floor(Math.random()*15+5)} 耐力</div>
+    `;
     
-    // 显示面板
-    document.getElementById('equipPopup').classList.add('active');
+    tooltip.classList.add('active');
+    overlay.classList.add('active');
   });
 });
 
-// 关闭面板
-document.getElementById('popupClose').addEventListener('click', () => {
-  document.getElementById('equipPopup').classList.remove('active');
+document.getElementById('tooltipClose').addEventListener('click', () => {
+  tooltip.classList.remove('active');
+  overlay.classList.remove('active');
 });
 
-// 点击外部关闭
-document.addEventListener('click', (e) => {
-  const popup = document.getElementById('equipPopup');
-  const ring = document.getElementById('equipRing');
-  if (!popup.contains(e.target) && !ring.contains(e.target)) {
-    popup.classList.remove('active');
-  }
-});
-
-// 角色切换
-document.querySelectorAll('.char-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.char-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    // 这里可以切换角色立绘
-  });
+overlay.addEventListener('click', () => {
+  tooltip.classList.remove('active');
+  overlay.classList.remove('active');
 });
 </script>
 
