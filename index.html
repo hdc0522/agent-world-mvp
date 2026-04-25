@@ -3,618 +3,929 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Agent World</title>
+    <title>Agent World - 暗黑幻想人生模拟</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* ========== CSS Variables & Reset ========== */
+        /* ========== CSS Variables & Theme ========== */
         :root {
-            --bg-dark: #0d0d0d;
-            --bg-card: #1a1a2e;
-            --bg-card-hover: #252542;
-            --text-primary: #e0e0e0;
-            --text-secondary: #888;
-            --border-color: #333355;
-            
-            /* 职业颜色 */
-            --job-tank: #4a9eff;
-            --job-heal: #50c878;
-            --job-dps: #ff4a4a;
-            
-            /* 装备品质颜色 */
-            --quality-white: #d0d0d0;
-            --quality-green: #50fa7b;
-            --quality-blue: #8be9fd;
-            --quality-purple: #bd93f9;
-            
-            /* 阶段主题色 */
-            --stage-1: #ffcc00;
-            --stage-2: #ff9933;
-            --stage-3: #66ccff;
-            --stage-4: #ff6699;
-            --stage-5: #cc66ff;
-            --stage-6: #ff6666;
+            /* Dark Fantasy Palette */
+            --bg-void: #050508;
+            --bg-abyss: #0a0a10;
+            --bg-shadow: #12121a;
+            --bg-dungeon: #1a1a24;
+            --bg-elevated: #22222e;
+            --bg-card: #1e1e28;
+            --bg-card-hover: #2a2a38;
+
+            /* Metallic & Accents */
+            --gold-dim: #6b5a2e;
+            --gold-muted: #8b7234;
+            --gold-main: #c9a227;
+            --gold-bright: #e8c547;
+            --gold-glow: #ffd700;
+
+            --ember-dim: #4a2520;
+            --ember-main: #8b3a2f;
+            --ember-bright: #c44536;
+
+            --crimson: #8b0000;
+            --blood: #dc143c;
+
+            /* Quality Colors */
+            --quality-white: #b8b8b8;
+            --quality-green: #3dd68c;
+            --quality-blue: #4a9eff;
+            --quality-purple: #b87dd4;
+
+            /* Text */
+            --text-primary: #e8e4d9;
+            --text-secondary: #9a968a;
+            --text-dim: #5a5850;
+
+            /* Job Colors */
+            --job-tank: #5a8fbd;
+            --job-heal: #4aba7a;
+            --job-dps: #c45a5a;
+
+            /* Stage Colors */
+            --stage-1: #d4a54a;
+            --stage-2: #c4783a;
+            --stage-3: #5a9fd4;
+            --stage-4: #d45a8a;
+            --stage-5: #9a5ad4;
+            --stage-6: #d45a5a;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg-dark);
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background: var(--bg-void);
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
-        }
-        
-        /* ========== 像素风装饰 ========== */
-        .pixel-border {
-            border: 4px solid var(--border-color);
-            box-shadow: 
-                inset -4px -4px 0px 0px #222244,
-                inset 4px 4px 0px 0px #444466;
-        }
-        
-        .pixel-btn {
-            background: var(--bg-card);
-            border: 3px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 12px 24px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-            image-rendering: pixelated;
             position: relative;
         }
-        
-        .pixel-btn:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-2px);
+
+        /* ========== Atmospheric Background ========== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(201, 162, 39, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(139, 58, 47, 0.05) 0%, transparent 40%),
+                radial-gradient(ellipse at 20% 90%, rgba(90, 143, 189, 0.03) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
         }
-        
-        .pixel-btn:active {
-            transform: translateY(0);
+
+        /* Vignette Effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%);
+            pointer-events: none;
+            z-index: 1;
         }
-        
-        .pixel-btn.primary {
-            border-color: var(--job-heal);
-            box-shadow: 0 0 10px rgba(80, 200, 120, 0.3);
+
+        /* ========== Typography ========== */
+        .title-font {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 3px;
         }
-        
-        .pixel-btn.tank { border-color: var(--job-tank); }
-        .pixel-btn.heal { border-color: var(--job-heal); }
-        .pixel-btn.dps { border-color: var(--job-dps); }
-        
-        /* ========== 顶部状态栏 ========== */
+
+        .medieval-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0;
+            color: var(--gold-muted);
+        }
+
+        .medieval-divider::before,
+        .medieval-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+        }
+
+        .medieval-divider span {
+            font-size: 12px;
+        }
+
+        /* ========== Top Status Bar ========== */
         .top-bar {
-            background: linear-gradient(180deg, #1a1a2e 0%, #0d0d0d 100%);
-            border-bottom: 2px solid var(--border-color);
-            padding: 12px 16px;
+            background: linear-gradient(180deg, var(--bg-shadow) 0%, var(--bg-void) 100%);
+            border-bottom: 1px solid var(--gold-dim);
+            padding: 10px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.5);
         }
-        
+
+        .top-bar::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-main), transparent);
+        }
+
         .stat-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 2px;
         }
-        
+
         .stat-label {
-            font-size: 10px;
-            color: var(--text-secondary);
+            font-size: 9px;
+            color: var(--text-dim);
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-family: 'Cinzel', serif;
         }
-        
+
         .stat-value {
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 16px;
+            font-weight: 600;
             text-shadow: 0 0 10px currentColor;
         }
-        
-        .level-display {
-            color: var(--stage-1);
-        }
-        
-        .gold-display {
-            color: #ffd700;
-        }
-        
+
+        .level-display { color: var(--gold-main); }
+        .gold-display { color: var(--gold-bright); }
+
         .stage-name {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
         }
-        
-        /* ========== 主容器 ========== */
+
+        /* ========== Main Container ========== */
         .game-container {
             max-width: 480px;
             margin: 0 auto;
             padding: 16px;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
+            position: relative;
+            z-index: 2;
         }
-        
-        /* ========== 屏幕管理 ========== */
+
+        /* ========== Screen Management ========== */
         .screen {
             display: none;
-            animation: fadeIn 0.3s ease;
+            animation: fadeSlideIn 0.4s ease;
         }
-        
+
         .screen.active {
             display: block;
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        /* ========== 欢迎/标题页 ========== */
+
+        /* ========== Title Screen ========== */
         .title-screen {
             text-align: center;
-            padding-top: 60px;
+            padding-top: 40px;
         }
-        
+
+        .game-logo-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
         .game-title {
-            font-size: 48px;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--job-tank), var(--job-heal), var(--job-dps));
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold-main) 50%, var(--gold-muted) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-shadow: none;
-            margin-bottom: 8px;
-            letter-spacing: 4px;
+            letter-spacing: 6px;
+            position: relative;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
-        
+
+        .game-title::before,
+        .game-title::after {
+            content: '◆';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            -webkit-text-fill-color: var(--gold-main);
+        }
+
+        .game-title::before { left: -30px; }
+        .game-title::after { right: -30px; }
+
         .game-subtitle {
             color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 40px;
+            font-size: 13px;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
         }
 
         .game-guide {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 1px solid var(--gold-dim);
             border-radius: 8px;
-            padding: 16px 20px;
-            margin: 0 auto 30px;
+            padding: 20px 24px;
+            margin: 0 auto 24px;
             max-width: 340px;
             text-align: left;
+            position: relative;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.03),
+                0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .game-guide::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 20%;
+            right: 20%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-main), transparent);
         }
 
         .guide-step {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
-            font-size: 14px;
+            margin-bottom: 14px;
+            font-size: 13px;
             color: var(--text-primary);
         }
 
-        .guide-step:last-child {
-            margin-bottom: 0;
-        }
+        .guide-step:last-child { margin-bottom: 0; }
 
         .guide-num {
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--job-tank), var(--job-heal));
-            color: #fff;
+            background: linear-gradient(135deg, var(--gold-main), var(--gold-muted));
+            color: var(--bg-void);
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 12px;
+            margin-right: 14px;
             flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(201, 162, 39, 0.3);
         }
 
         .character-preview {
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
             margin: 0 auto 30px;
-            background: var(--bg-card);
-            border: 4px solid var(--border-color);
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 2px solid var(--gold-dim);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
+            box-shadow:
+                0 0 30px rgba(0,0,0,0.5),
+                inset 0 0 40px rgba(0,0,0,0.3);
         }
-        
+
         .character-preview::before {
             content: '';
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(255,255,255,0.03) 2px,
-                rgba(255,255,255,0.03) 4px
-            );
+            inset: 0;
+            border: 1px solid rgba(201, 162, 39, 0.1);
+            margin: 6px;
         }
-        
+
         .character-icon {
-            font-size: 80px;
-            filter: drop-shadow(0 0 20px currentColor);
+            font-size: 72px;
+            filter: drop-shadow(0 0 15px currentColor);
         }
-        
-        /* ========== 存档预览卡片 ========== */
+
+        /* ========== Save Preview Card ========== */
         .save-preview-card {
-            background: var(--bg-card);
-            border: 3px solid var(--border-color);
-            border-radius: 12px;
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 1px solid var(--gold-dim);
+            border-radius: 8px;
             padding: 14px 16px;
             margin: 0 auto 20px;
             max-width: 340px;
-            display: none;  /* 有存档时才显示 */
+            display: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
+
         .save-preview-card.show { display: block; }
+
         .save-preview-header {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 10px;
         }
-        .save-preview-icon { font-size: 32px; }
+
+        .save-preview-icon { font-size: 28px; }
         .save-preview-info { flex: 1; }
-        .save-preview-job { font-weight: bold; font-size: 14px; }
-        .save-preview-stage { font-size: 12px; color: var(--text-secondary); }
+        .save-preview-job { font-weight: 600; font-size: 14px; color: var(--gold-main); }
+        .save-preview-stage { font-size: 11px; color: var(--text-secondary); }
+
         .save-preview-stats {
             display: flex;
             justify-content: space-around;
-            border-top: 1px solid var(--border-color);
-            padding-top: 8px;
+            border-top: 1px solid var(--gold-dim);
+            padding-top: 10px;
             font-size: 12px;
         }
-        .save-preview-stat { text-align: center; }
-        .save-preview-stat-val { font-weight: bold; color: #ffd700; }
-        .save-preview-stat-label { color: var(--text-secondary); font-size: 10px; }
 
-        /* ========== MTI测试页 ========== */
+        .save-preview-stat { text-align: center; }
+        .save-preview-stat-val { font-weight: 600; color: var(--gold-bright); }
+        .save-preview-stat-label { color: var(--text-dim); font-size: 10px; }
+
+        /* ========== Buttons ========== */
+        .fantasy-btn {
+            background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-dungeon) 100%);
+            border: 1px solid var(--gold-dim);
+            color: var(--text-primary);
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            font-family: inherit;
+        }
+
+        .fantasy-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.1), transparent);
+            transition: left 0.4s ease;
+        }
+
+        .fantasy-btn:hover::before {
+            left: 100%;
+        }
+
+        .fantasy-btn:hover {
+            border-color: var(--gold-main);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .fantasy-btn:active {
+            transform: translateY(0);
+        }
+
+        .fantasy-btn.primary {
+            background: linear-gradient(180deg, var(--gold-main) 0%, var(--gold-muted) 100%);
+            color: var(--bg-void);
+            font-weight: 600;
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 20px rgba(201, 162, 39, 0.2);
+        }
+
+        .fantasy-btn.primary:hover {
+            box-shadow: 0 4px 25px rgba(201, 162, 39, 0.4);
+        }
+
+        .fantasy-btn.tank { border-color: var(--job-tank); }
+        .fantasy-btn.heal { border-color: var(--job-heal); }
+        .fantasy-btn.dps { border-color: var(--job-dps); }
+
+        .fantasy-btn.small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        /* ========== Quiz Screen ========== */
         .quiz-container {
-            background: var(--bg-card);
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 1px solid var(--gold-dim);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3);
         }
-        
+
         .quiz-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
-        
+
         .quiz-progress {
             display: flex;
             gap: 8px;
         }
-        
+
         .progress-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: var(--border-color);
+            background: var(--bg-void);
+            border: 1px solid var(--gold-dim);
             transition: all 0.3s;
         }
-        
+
         .progress-dot.active {
-            background: var(--job-heal);
-            box-shadow: 0 0 10px var(--job-heal);
+            background: var(--gold-main);
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 10px var(--gold-main);
         }
-        
+
         .progress-dot.completed {
-            background: var(--job-heal);
+            background: var(--gold-muted);
+            border-color: var(--gold-main);
         }
-        
+
+        .quiz-num {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-family: 'Cinzel', serif;
+        }
+
         .quiz-question {
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 18px;
+            font-weight: 500;
             margin-bottom: 24px;
-            line-height: 1.5;
+            line-height: 1.6;
+            color: var(--text-primary);
         }
-        
+
         .quiz-options {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-        
+
         .quiz-option {
-            background: var(--bg-dark);
-            border: 2px solid var(--border-color);
+            background: var(--bg-shadow);
+            border: 1px solid var(--gold-dim);
             border-radius: 8px;
             padding: 16px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
-        
+
         .quiz-option:hover {
-            border-color: var(--job-heal);
-            background: var(--bg-card-hover);
+            border-color: var(--gold-main);
+            background: var(--bg-elevated);
+            transform: translateX(4px);
         }
-        
+
         .quiz-option.selected {
-            border-color: var(--job-heal);
-            background: rgba(80, 200, 120, 0.1);
+            border-color: var(--gold-main);
+            background: rgba(201, 162, 39, 0.1);
         }
-        
+
         .option-letter {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: var(--border-color);
+            background: var(--bg-dungeon);
+            border: 1px solid var(--gold-dim);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 13px;
             flex-shrink: 0;
+            color: var(--gold-main);
         }
-        
+
         .option-text {
             flex: 1;
+            font-size: 14px;
         }
-        
-        /* ========== 外观选择页 ========== */
-        .appearance-container {
-            padding: 16px 0;
+
+        /* ========== Confirm Screen ========== */
+        .confirm-container {
+            text-align: center;
+            padding: 20px 0;
         }
-        
-        .appearance-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+
+        .confirm-header {
             margin-bottom: 20px;
         }
-        
-        .appearance-title {
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-        }
-        
-        .appearance-subtitle {
-            text-align: center;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            font-size: 14px;
-        }
-        
-        .appearance-subtitle span {
-            font-weight: bold;
-            color: var(--text-primary);
-        }
-        
-        .appearance-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-        
-        .appearance-card {
-            background: var(--bg-card);
-            border: 3px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-        }
-        
-        .appearance-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--text-secondary);
-            transform: translateY(-2px);
-        }
-        
-        .appearance-card.selected {
-            border-color: var(--job-heal);
-            background: rgba(80, 200, 120, 0.1);
-            box-shadow: 0 0 15px rgba(80, 200, 120, 0.3);
-        }
-        
-        .appearance-card.selected::after {
-            content: '✓';
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 20px;
-            height: 20px;
-            background: var(--job-heal);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+
+        .confirm-subtitle {
             font-size: 12px;
-            color: #fff;
-            font-weight: bold;
-        }
-        
-        .appearance-icon {
-            font-size: 48px;
+            color: var(--text-dim);
             margin-bottom: 8px;
-            display: block;
+            letter-spacing: 2px;
         }
-        
-        .appearance-name {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 4px;
+
+        .confirm-mbti {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--gold-main);
+            font-family: 'Cinzel', serif;
+            letter-spacing: 4px;
+            text-shadow: 0 0 30px rgba(201, 162, 39, 0.3);
         }
-        
-        .appearance-desc {
-            font-size: 11px;
+
+        .confirm-trait {
+            font-size: 16px;
             color: var(--text-secondary);
-            line-height: 1.4;
+            margin-top: 8px;
         }
-        
-        .appearance-confirm {
-            text-align: center;
+
+        .confirm-divider {
+            color: var(--text-dim);
+            font-size: 11px;
+            margin: 20px 0;
+            letter-spacing: 1px;
         }
-        
-        .appearance-confirm .pixel-btn {
-            min-width: 200px;
+
+        .confirm-result {
+            margin: 20px 0;
         }
-        
-        /* ========== 角色创建完成页 ========== */
+
+        .confirm-job-icon {
+            font-size: 64px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+
+        .confirm-job-name {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
+            margin-bottom: 8px;
+        }
+
+        .confirm-job-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--bg-void);
+        }
+
+        .confirm-desc {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin: 20px 0;
+            line-height: 1.7;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .confirm-tips {
+            margin: 20px 0;
+        }
+
+        .tip-box {
+            background: var(--bg-shadow);
+            border: 1px solid var(--gold-dim);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: left;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .tip-title {
+            font-size: 12px;
+            color: var(--gold-main);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .tip-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            margin-top: 24px;
+        }
+
+        /* ========== Result Screen ========== */
         .result-container {
             text-align: center;
             padding: 20px 0;
         }
-        
-        .result-title {
-            font-size: 14px;
-            color: var(--text-secondary);
+
+        .result-title-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
             margin-bottom: 8px;
         }
-        
+
         .result-job {
             font-size: 36px;
-            font-weight: bold;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
             margin-bottom: 8px;
-            text-shadow: 0 0 20px currentColor;
+            text-shadow: 0 0 30px currentColor;
         }
-        
+
         .result-level {
-            font-size: 24px;
+            font-size: 14px;
             color: var(--text-secondary);
-            margin-bottom: 30px;
+            margin-bottom: 24px;
+            letter-spacing: 1px;
         }
-        
+
         .result-character {
-            width: 240px;
-            height: 240px;
-            margin: 0 auto 30px;
-            background: var(--bg-card);
-            border: 4px solid var(--border-color);
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 2px solid var(--gold-dim);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
+            box-shadow:
+                0 0 40px rgba(0,0,0,0.5),
+                inset 0 0 60px rgba(0,0,0,0.4);
         }
-        
-        .result-character::after {
+
+        .result-character::before {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.5));
+            inset: 0;
+            border: 1px solid rgba(201, 162, 39, 0.15);
+            margin: 8px;
         }
 
         .result-char-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 8px;
-            position: relative;
-            z-index: 1;
+            border-radius: 10px;
         }
 
         .job-badge {
             position: absolute;
-            bottom: 10px;
+            bottom: 12px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 6px 16px;
+            padding: 5px 14px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
             z-index: 1;
+            color: var(--bg-void);
         }
-        
+
         .job-desc {
             color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 30px;
-            line-height: 1.6;
+            font-size: 13px;
+            margin-bottom: 24px;
+            line-height: 1.7;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        
-        /* ========== 挂机页面 ========== */
+
+        .share-section {
+            margin-top: 24px;
+        }
+
+        .share-preview {
+            margin-top: 16px;
+        }
+
+        .share-preview canvas {
+            border-radius: 8px;
+            border: 1px solid var(--gold-dim);
+            max-width: 100%;
+        }
+
+        /* ========== Appearance Screen ========== */
+        .appearance-container {
+            padding: 16px 0;
+        }
+
+        .appearance-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .appearance-title {
+            font-size: 18px;
+            font-weight: 600;
+            font-family: 'Cinzel', serif;
+            text-align: center;
+        }
+
+        .appearance-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .appearance-subtitle span {
+            font-weight: 600;
+            color: var(--gold-main);
+        }
+
+        .appearance-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .appearance-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 1px solid var(--gold-dim);
+            border-radius: 10px;
+            padding: 16px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+        }
+
+        .appearance-card:hover {
+            border-color: var(--gold-main);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .appearance-card.selected {
+            border-color: var(--gold-main);
+            background: rgba(201, 162, 39, 0.1);
+            box-shadow: 0 0 20px rgba(201, 162, 39, 0.15);
+        }
+
+        .appearance-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 18px;
+            height: 18px;
+            background: var(--gold-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--bg-void);
+            font-weight: bold;
+        }
+
+        .appearance-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+            display: block;
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        .appearance-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .appearance-desc {
+            font-size: 10px;
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        .appearance-confirm {
+            text-align: center;
+        }
+
+        /* ========== Idle Screen ========== */
         .idle-container {
             text-align: center;
             padding: 20px 0;
         }
-        
+
         .idle-character {
-            width: 180px;
-            height: 180px;
+            width: 160px;
+            height: 160px;
             margin: 0 auto 20px;
-            background: var(--bg-card);
-            border: 4px solid var(--border-color);
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 2px solid var(--gold-dim);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
+            box-shadow:
+                0 0 30px rgba(0,0,0,0.4),
+                inset 0 0 40px rgba(0,0,0,0.3);
         }
-        
+
+        .idle-character::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(201, 162, 39, 0.1);
+            margin: 6px;
+            border-radius: 8px;
+        }
+
         .idle-character .job-icon {
-            width: 140px;
-            height: 140px;
+            width: 130px;
+            height: 130px;
             object-fit: cover;
             border-radius: 10px;
-            animation: float 3s ease-in-out infinite;
+            animation: idleFloat 3s ease-in-out infinite;
         }
-        
-        @keyframes float {
+
+        @keyframes idleFloat {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-8px); }
         }
-        
+
         .idle-status {
             margin-bottom: 20px;
         }
-        
+
         .idle-level {
             font-size: 28px;
-            font-weight: bold;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
             margin-bottom: 4px;
         }
-        
+
         .idle-stage {
             color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
         }
-        
+
         .idle-exp-bar {
             width: 100%;
-            max-width: 300px;
-            height: 20px;
-            background: var(--bg-dark);
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
+            max-width: 280px;
+            height: 16px;
+            background: var(--bg-void);
+            border: 1px solid var(--gold-dim);
+            border-radius: 8px;
             margin: 0 auto;
             overflow: hidden;
             position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
-        
+
         .idle-exp-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--job-heal), #80ffaa);
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, var(--gold-muted), var(--gold-main), var(--gold-bright));
+            transition: width 0.4s ease;
             position: relative;
+            border-radius: 7px;
         }
-        
+
         .idle-exp-fill::after {
             content: '';
             position: absolute;
@@ -622,266 +933,249 @@
             left: 0;
             right: 0;
             height: 50%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
         }
-        
+
         .idle-exp-text {
-            font-size: 12px;
-            color: var(--text-secondary);
+            font-size: 11px;
+            color: var(--text-dim);
             margin-top: 8px;
         }
-        
-        .idle-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-        
+
         .wait-options {
             display: flex;
             gap: 12px;
             justify-content: center;
             margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
         .wait-hint {
             text-align: center;
-            font-size: 12px;
-            color: var(--text-secondary);
+            font-size: 11px;
+            color: var(--text-dim);
             margin-bottom: 12px;
         }
 
         .reward-preview {
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .reward-item {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
-            background: var(--bg-dark);
-            padding: 4px 10px;
-            border-radius: 12px;
+            background: var(--bg-shadow);
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--gold-dim);
         }
-        
+
         .wait-btn {
-            padding: 16px 24px;
-            font-size: 14px;
+            padding: 14px 20px;
+            font-size: 13px;
         }
-        
+
         .wait-btn span {
             display: block;
-            font-size: 11px;
+            font-size: 10px;
             opacity: 0.7;
-            margin-top: 4px;
+            margin-top: 3px;
         }
 
-        /* ========== 换装/改名弹窗 ========== */
-        .customize-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
-            z-index: 300;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .customize-modal.show { display: flex; }
-        .customize-content {
-            background: var(--bg-card);
-            border: 4px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            max-width: 380px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .customize-title {
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .customize-section { display: flex; flex-direction: column; gap: 8px; }
-        .customize-label { font-size: 14px; color: var(--text-secondary); }
-        .pixel-input {
-            background: var(--bg-dark);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            padding: 10px 12px;
-            font-size: 14px;
-            width: 100%;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-        .pixel-input:focus { outline: none; border-color: var(--job-dps); }
-        .customize-skins {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-        .skin-card {
-            background: var(--bg-dark);
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            padding: 8px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-        }
-        .skin-card:hover { border-color: var(--job-dps); transform: translateY(-2px); }
-        .skin-card.selected { border-color: var(--job-heal); background: var(--bg-card-hover); }
-        .skin-card-img {
-            width: 100%;
-            aspect-ratio: 3/4;
-            object-fit: cover;
-            border-radius: 6px;
-            display: block;
-        }
-        .skin-card-name { font-size: 11px; margin-top: 4px; color: var(--text-secondary); }
-        .customize-preview {
-            display: flex;
-            justify-content: center;
-        }
-        .preview-img {
-            height: 160px;
-            width: auto;
-            border-radius: 12px;
-            border: 2px solid var(--border-color);
-            object-fit: cover;
-        }
-        .customize-actions { display: flex; gap: 10px; justify-content: center; }
-
-        /* ========== 副本界面 ========== */
+        /* ========== Dungeon UI ========== */
         .dungeon-btn {
-            margin-top: 8px;
-            background: var(--job-dps);
-            border-color: var(--job-dps);
+            background: linear-gradient(180deg, var(--ember-main) 0%, var(--ember-dim) 100%);
+            border-color: var(--ember-bright);
         }
+
+        .dungeon-btn:hover {
+            box-shadow: 0 4px 20px rgba(139, 58, 47, 0.4);
+        }
+
         .dungeon-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 12px 16px;
-            background: var(--bg-card);
-            border-bottom: 2px solid var(--border-color);
+            background: linear-gradient(180deg, var(--bg-shadow) 0%, var(--bg-void) 100%);
+            border-bottom: 1px solid var(--gold-dim);
         }
+
         .dungeon-title {
-            font-size: 18px;
-            color: var(--text-primary);
-            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Cinzel', serif;
         }
+
         .dungeon-power {
-            font-size: 14px;
-            color: var(--job-dps);
+            font-size: 12px;
+            color: var(--ember-bright);
             display: flex;
             align-items: center;
             gap: 4px;
         }
+
         .dungeon-list {
             padding: 16px;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
+
         .dungeon-card {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 1px solid var(--gold-dim);
+            border-radius: 10px;
             padding: 16px;
             cursor: pointer;
-            transition: all 150ms;
+            transition: all 0.2s;
         }
+
         .dungeon-card:hover:not(.locked) {
-            border-color: var(--job-heal);
+            border-color: var(--gold-main);
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
+
         .dungeon-card.locked {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
         }
+
         .dungeon-card-header {
             display: flex;
             align-items: center;
             gap: 12px;
             margin-bottom: 8px;
         }
-        .dungeon-card-icon { font-size: 32px; }
-        .dungeon-card-name { font-size: 18px; font-weight: bold; }
+
+        .dungeon-card-icon { font-size: 28px; }
+
+        .dungeon-card-name {
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Cinzel', serif;
+        }
+
         .dungeon-card-desc {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
             margin-bottom: 8px;
+            line-height: 1.5;
         }
+
         .dungeon-card-meta {
             display: flex;
             gap: 16px;
-            font-size: 12px;
-            color: var(--text-secondary);
+            font-size: 11px;
+            color: var(--text-dim);
         }
-        .dungeon-card-meta .locked-tag { color: #ff4d4f; }
 
-        /* ========== 副本战斗界面 ========== */
+        .dungeon-card-meta .locked-tag { color: var(--blood); }
+
+        /* ========== Battle Screen ========== */
         .dungeon-battle-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 12px 16px;
-            background: var(--bg-card);
-            border-bottom: 2px solid var(--border-color);
+            background: linear-gradient(180deg, var(--bg-shadow) 0%, var(--bg-void) 100%);
+            border-bottom: 1px solid var(--gold-dim);
         }
+
         .battle-info { display: flex; flex-direction: column; }
-        .battle-dungeon-name { font-size: 16px; font-weight: bold; }
-        .battle-floor-tag { font-size: 12px; color: var(--text-secondary); }
+
+        .battle-dungeon-name {
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Cinzel', serif;
+        }
+
+        .battle-floor-tag { font-size: 11px; color: var(--text-dim); }
+
         .battle-arena {
-            padding: 24px 16px;
+            padding: 30px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            min-height: 180px;
+            position: relative;
         }
+
         .battle-player, .battle-enemy {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             flex: 1;
+            position: relative;
         }
+
         .player-hp-bar, .enemy-hp-bar {
             width: 100%;
-            height: 12px;
-            background: var(--bg-dark);
-            border-radius: 9999px;
+            max-width: 120px;
+            height: 10px;
+            background: var(--bg-void);
+            border: 1px solid var(--gold-dim);
+            border-radius: 5px;
             overflow: hidden;
         }
-        .hp-fill { height: 100%; background: #10B981; transition: width 0.3s; }
-        .hp-fill.enemy-fill { background: #EF4444; }
-        .player-hp-text, .enemy-hp-text { font-size: 12px; color: var(--text-secondary); }
-        .enemy-name { font-size: 16px; font-weight: bold; color: #EF4444; }
+
+        .hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--job-heal), #6fcf8a);
+            transition: width 0.3s;
+            border-radius: 4px;
+        }
+
+        .hp-fill.enemy-fill {
+            background: linear-gradient(90deg, var(--ember-dim), var(--ember-bright));
+        }
+
+        .player-hp-text, .enemy-hp-text {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .enemy-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ember-bright);
+            font-family: 'Cinzel', serif;
+        }
+
         .battle-waves {
             text-align: center;
-            font-size: 14px;
-            color: var(--text-secondary);
+            font-size: 12px;
+            color: var(--text-dim);
             padding: 8px;
+            letter-spacing: 1px;
         }
+
         .battle-log {
             padding: 12px 16px;
-            min-height: 100px;
-            max-height: 150px;
+            min-height: 90px;
+            max-height: 130px;
             overflow-y: auto;
+            background: var(--bg-shadow);
+            border: 1px solid var(--gold-dim);
+            border-radius: 8px;
+            margin: 0 16px;
         }
-        .battle-log p { margin: 4px 0; font-size: 12px; color: var(--text-secondary); }
-        .battle-log .log-damage { color: #EF4444; }
-        .battle-log .log-heal { color: #10B981; }
+
+        .battle-log p {
+            margin: 4px 0;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .battle-log .log-damage { color: var(--blood); }
+        .battle-log .log-heal { color: var(--job-heal); }
+
         .battle-actions {
             padding: 12px 16px;
             display: flex;
@@ -889,88 +1183,73 @@
             justify-content: center;
         }
 
-        /* ========== 副本结算界面 ========== */
-        .result-container {
-            padding: 24px 16px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .result-title { font-size: 24px; margin: 0; }
-        .result-rewards {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            font-size: 16px;
-        }
-        .result-reward-item { display: flex; align-items: center; gap: 4px; }
-        .result-detail { font-size: 12px; color: var(--text-secondary); }
-
-        /* ========== 倒计时界面 ========== */
+        /* ========== Countdown Screen ========== */
         .countdown-container {
-            padding: 40px 20px;
+            padding: 50px 20px;
+            text-align: center;
         }
-        
+
         .countdown-circle {
             width: 200px;
             height: 200px;
             margin: 0 auto 30px;
             position: relative;
         }
-        
+
         .countdown-ring {
             width: 100%;
             height: 100%;
             border-radius: 50%;
             background: conic-gradient(
-                var(--job-heal) 0deg,
-                var(--border-color) 0deg
+                var(--gold-main) 0deg,
+                var(--gold-dim) 0deg
             );
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: none;
         }
-        
+
         .countdown-ring.active {
             animation: countdownRotate var(--wait-time)s linear forwards;
         }
-        
+
         @keyframes countdownRotate {
-            from { background: conic-gradient(var(--job-heal) 360deg, var(--border-color) 360deg); }
-            to { background: conic-gradient(var(--job-heal) 0deg, var(--border-color) 0deg); }
+            from { background: conic-gradient(var(--gold-main) 360deg, var(--gold-dim) 360deg); }
+            to { background: conic-gradient(var(--gold-main) 0deg, var(--gold-dim) 0deg); }
         }
-        
+
         .countdown-inner {
             width: 170px;
             height: 170px;
-            background: var(--bg-dark);
+            background: var(--bg-void);
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
         }
-        
+
         .countdown-time {
-            font-size: 48px;
-            font-weight: bold;
-            font-family: monospace;
+            font-size: 52px;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
+            color: var(--gold-main);
         }
-        
+
         .countdown-label {
-            font-size: 12px;
-            color: var(--text-secondary);
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
         }
-        
+
         .countdown-tip {
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
             margin-bottom: 20px;
         }
-        
-        /* ========== 收获弹窗 ========== */
+
+        /* ========== Reward Modal ========== */
         .reward-modal {
             display: none;
             position: fixed;
@@ -978,90 +1257,94 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             z-index: 200;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
-        
+
         .reward-modal.show {
             display: flex;
             animation: fadeIn 0.3s ease;
         }
-        
+
         .reward-content {
-            background: var(--bg-card);
-            border: 4px solid var(--border-color);
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 2px solid var(--gold-main);
             border-radius: 16px;
             padding: 30px;
-            max-width: 360px;
+            max-width: 340px;
             width: 100%;
             text-align: center;
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow:
+                0 0 40px rgba(201, 162, 39, 0.2),
+                inset 0 1px 0 rgba(255,255,255,0.03);
         }
-        
-        @keyframes popIn {
-            from { transform: scale(0.8); opacity: 0; }
+
+        @keyframes modalPop {
+            from { transform: scale(0.85); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
-        
+
         .reward-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #ffd700;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
+            margin-bottom: 24px;
+            color: var(--gold-bright);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
         }
-        
+
         .reward-items {
             display: flex;
             justify-content: center;
             gap: 30px;
             margin-bottom: 20px;
         }
-        
-        .reward-item {
+
+        .reward-item-display {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
         }
-        
-        .reward-icon {
-            font-size: 36px;
-        }
-        
+
+        .reward-icon { font-size: 32px; }
+
         .reward-value {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
         }
-        
+
         .reward-equipment {
-            background: var(--bg-dark);
-            border: 2px solid var(--border-color);
+            background: var(--bg-void);
+            border: 1px solid var(--gold-dim);
             border-radius: 8px;
-            padding: 16px;
+            padding: 14px;
             margin-bottom: 20px;
         }
-        
+
         .equipment-name {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
         }
-        
+
         .equipment-stats {
-            font-size: 14px;
+            font-size: 12px;
             color: var(--text-secondary);
         }
-        
+
         .reward-buttons {
             display: flex;
             gap: 12px;
             justify-content: center;
         }
-        
-        /* ========== 升级弹窗 ========== */
+
+        /* ========== Level Up Modal ========== */
         .levelup-modal {
             display: none;
             position: fixed;
@@ -1069,253 +1352,68 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             z-index: 250;
             align-items: center;
             justify-content: center;
         }
-        
-        .levelup-modal.show {
-            display: flex;
-        }
-        
+
+        .levelup-modal.show { display: flex; }
+
         .levelup-content {
             text-align: center;
             position: relative;
         }
-        
+
         .levelup-text {
-            font-size: 48px;
-            font-weight: bold;
-            color: #ffd700;
-            text-shadow: 0 0 30px #ffd700;
+            font-size: 44px;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
+            color: var(--gold-bright);
+            text-shadow: 0 0 40px var(--gold-glow);
             animation: levelUp 0.5s ease-out;
         }
-        
+
         @keyframes levelUp {
             0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.15); }
             100% { transform: scale(1); opacity: 1; }
         }
-        
+
         .levelup-detail {
-            font-size: 24px;
+            font-size: 22px;
+            font-family: 'Cinzel', serif;
             color: var(--text-primary);
             margin-top: 10px;
         }
-        
+
         .particle {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #ffd700;
+            width: 8px;
+            height: 8px;
+            background: var(--gold-bright);
             border-radius: 50%;
             animation: particleExplode 1s ease-out forwards;
         }
-        
+
         @keyframes particleExplode {
             0% { transform: translate(0, 0) scale(1); opacity: 1; }
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
-        /* ========== 爽感增强 ========== */
-
-        /* 敌人受击抖动 */
-        @keyframes enemyShake {
-            0%   { transform: translateX(0); }
-            15%  { transform: translateX(-12px) rotate(-3deg); }
-            30%  { transform: translateX(10px) rotate(2deg); }
-            45%  { transform: translateX(-8px) rotate(-1deg); }
-            60%  { transform: translateX(6px); }
-            80%  { transform: translateX(-3px); }
-            100% { transform: translateX(0); }
-        }
-        .enemy-hit { animation: enemyShake 0.4s ease-out; }
-
-        /* 玩家受击抖动 */
-        @keyframes playerShake {
-            0%   { transform: translateX(0); filter: brightness(1); }
-            20%  { transform: translateX(-6px); filter: brightness(1.5) hue-rotate(10deg); }
-            40%  { transform: translateX(5px); filter: brightness(1.2); }
-            60%  { transform: translateX(-3px); }
-            80%  { transform: translateX(2px); filter: brightness(1.1); }
-            100% { transform: translateX(0); filter: brightness(1); }
-        }
-        .player-hit { animation: playerShake 0.35s ease-out; }
-
-        /* 伤害飘字 */
-        @keyframes floatUp {
-            0%   { opacity: 1; transform: translateY(0) scale(1); }
-            20%  { transform: translateY(-10px) scale(1.2); }
-            100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
-        }
-        .damage-text {
-            position: absolute;
-            font-weight: bold;
-            font-size: 22px;
-            color: #ff4444;
-            text-shadow: 0 0 8px #ff0000, 2px 2px 0 #330000;
-            pointer-events: none;
-            animation: floatUp 0.9s ease-out forwards;
-            z-index: 200;
-            white-space: nowrap;
-        }
-        .damage-text.crit {
-            font-size: 30px;
-            color: #ffdd00;
-            text-shadow: 0 0 12px #ffaa00, 2px 2px 0 #663300;
-        }
-        .damage-text.heal {
-            color: #44ff88;
-            text-shadow: 0 0 8px #00ff66, 2px 2px 0 #003322;
-        }
-
-        /* 暴击星星特效 */
-        @keyframes starBurst {
-            0%   { opacity: 0; transform: scale(0) rotate(0deg); }
-            50%  { opacity: 1; transform: scale(1.2) rotate(180deg); }
-            100% { opacity: 0; transform: scale(0.5) rotate(360deg); }
-        }
-        .crit-star {
-            position: absolute;
-            font-size: 28px;
-            animation: starBurst 0.6s ease-out forwards;
-            pointer-events: none;
-            z-index: 201;
-        }
-
-        /* 角色呼吸待机动画 */
-        @keyframes charBreathe {
-            0%   { transform: scaleY(1) translateY(0); }
-            50%  { transform: scaleY(1.015) translateY(-2px); }
-            100% { transform: scaleY(1) translateY(0); }
-        }
-        .char-breathe {
-            animation: charBreathe 3s ease-in-out infinite;
-            transform-origin: bottom center;
-        }
-
-        /* 升级金色光环 */
-        @keyframes goldPulse {
-            0%   { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
-            50%  { box-shadow: 0 0 0 20px rgba(255, 215, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
-        }
-        .levelup-glow {
-            animation: goldPulse 0.8s ease-out;
-            border-color: #ffd700 !important;
-        }
-
-        /* 按钮点击反馈 */
-        .pixel-btn:active {
-            transform: scale(0.95) translateY(1px) !important;
-        }
-
-        /* 装备获得闪烁 */
-        @keyframes equipGlow {
-            0%   { background: rgba(255, 215, 0, 0.3); }
-            50%  { background: rgba(255, 215, 0, 0.6); }
-            100% { background: rgba(255, 215, 0, 0.3); }
-        }
-        .reward-equip-flash {
-            animation: equipGlow 0.5s ease-in-out 3;
-        }
-
-        /* 经验条增加闪烁 */
-        @keyframes expFlash {
-            0%   { filter: brightness(1); }
-            25%  { filter: brightness(1.8); }
-            50%  { filter: brightness(1.3); }
-            75%  { filter: brightness(1.6); }
-            100% { filter: brightness(1); }
-        }
-        .exp-flash {
-            animation: expFlash 0.4s ease-out;
-        }
-
-        /* ========== 装备面板 ========== */
-        .equipment-panel {
-            margin-top: 30px;
-        }
-        
-        .panel-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .equipment-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .equipment-item {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .equipment-item:hover {
-            background: var(--bg-card-hover);
-        }
-
-        .equipment-item.equipped {
-            border-color: var(--job-heal);
-            opacity: 0.7;
-        }
-
-        .equipment-item.equipped:hover {
-            opacity: 1;
-        }
-        
-        .equipment-icon {
-            font-size: 28px;
-            flex-shrink: 0;
-        }
-        
-        .equipment-info {
-            flex: 1;
-            text-align: left;
-        }
-        
-        .equipment-name {
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        
-        .equipment-props {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-        
-        .quality-white { color: var(--quality-white); }
-        .quality-green { color: var(--quality-green); }
-        .quality-blue { color: var(--quality-blue); }
-        .quality-purple { color: var(--quality-purple); }
-
-        /* ========== 角色详情面板 ========== */
+        /* ========== Character Screen ========== */
         .character-screen {
             padding: 16px 0;
-            position: relative;
         }
 
         .character-card {
-            background: var(--bg-card);
-            border: 4px solid var(--border-color);
-            border-radius: 16px;
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 2px solid var(--gold-dim);
+            border-radius: 14px;
             padding: 20px;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3);
         }
 
         .character-card::before {
@@ -1324,111 +1422,174 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 100px;
-            background: linear-gradient(180deg, rgba(74, 158, 255, 0.1), transparent);
+            height: 80px;
+            background: linear-gradient(180deg, rgba(201, 162, 39, 0.05), transparent);
             pointer-events: none;
         }
 
         .character-header {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
+            gap: 14px;
+            margin-bottom: 16px;
             position: relative;
         }
 
         .character-portrait {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             object-fit: cover;
-            border: 3px solid var(--border-color);
-            border-radius: 12px;
+            border: 2px solid var(--gold-dim);
+            border-radius: 10px;
             flex-shrink: 0;
         }
 
-        .character-info {
-            flex: 1;
-        }
+        .character-info { flex: 1; }
 
         .character-name {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 4px;
+            font-size: 18px;
+            font-weight: 600;
+            font-family: 'Cinzel', serif;
+            margin-bottom: 3px;
         }
 
         .character-job {
-            font-size: 14px;
+            font-size: 12px;
             color: var(--text-secondary);
         }
 
         .character-level {
-            font-size: 14px;
-            color: var(--text-secondary);
+            font-size: 12px;
+            color: var(--gold-main);
+            letter-spacing: 1px;
         }
 
         .character-visual {
             position: relative;
             width: 100%;
-            height: 160px;
+            height: 150px;
             border-radius: 8px;
             overflow: hidden;
-            margin: 10px 0;
-            background: var(--bg-dark);
+            margin: 12px 0;
+            background: var(--bg-void);
         }
-        .equip-overlay {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
+
         .char-full-img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
+
         .equip-layer {
             position: absolute;
             inset: 0;
             pointer-events: none;
         }
+
         .equip-badge {
             position: absolute;
             transform: translate(-50%, -50%);
-            font-size: 20px;
-            background: rgba(0,0,0,0.6);
+            font-size: 18px;
+            background: rgba(0,0,0,0.7);
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--gold-dim);
         }
+
         .stat-chart-wrap {
-            background: var(--bg-dark);
+            background: var(--bg-void);
             border-radius: 8px;
-            padding: 8px;
-            margin: 8px 0;
+            padding: 10px;
+            margin: 10px 0;
         }
+
         .stat-chart-title {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+            letter-spacing: 1px;
         }
+
         #statChart {
             display: block;
             width: 100%;
-            height: 80px;
+            height: 70px;
         }
 
-        /* 装备槽位区域 */
+        /* ========== Stats Section ========== */
+        .stats-section {
+            margin-top: 16px;
+        }
+
+        .stats-title {
+            font-size: 13px;
+            color: var(--gold-main);
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .stat-icon {
+            font-size: 14px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .stat-name {
+            font-size: 12px;
+            width: 40px;
+            color: var(--text-secondary);
+        }
+
+        .stat-bar-container {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-void);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .stat-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+
+        .stat-bar.hp { background: linear-gradient(90deg, var(--blood), #ff6b6b); }
+        .stat-bar.atk { background: linear-gradient(90deg, var(--ember-dim), var(--ember-bright)); }
+        .stat-bar.def { background: linear-gradient(90deg, var(--job-tank), #7ab8e8); }
+        .stat-bar.str, .stat-bar.agi, .stat-bar.int, .stat-bar.sta {
+            background: linear-gradient(90deg, var(--quality-purple), #d4a5e8);
+        }
+
+        .stat-value {
+            font-size: 12px;
+            font-weight: 600;
+            width: 36px;
+            text-align: right;
+            color: var(--gold-main);
+        }
+
+        /* ========== Equipment Section ========== */
         .equipment-section {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .equipment-section-title {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
+            font-size: 12px;
+            color: var(--gold-main);
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -1436,13 +1597,13 @@
         .equipment-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 10px;
         }
 
         .equipment-slot {
             aspect-ratio: 1;
-            background: var(--bg-dark);
-            border: 2px solid var(--border-color);
+            background: var(--bg-void);
+            border: 1px solid var(--gold-dim);
             border-radius: 8px;
             display: flex;
             flex-direction: column;
@@ -1450,13 +1611,13 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
+            min-height: 65px;
             position: relative;
-            min-height: 70px;
         }
 
         .equipment-slot:hover {
-            border-color: var(--job-heal);
-            background: var(--bg-card-hover);
+            border-color: var(--gold-main);
+            background: var(--bg-shadow);
         }
 
         .equipment-slot.filled {
@@ -1464,28 +1625,29 @@
         }
 
         .equipment-slot.filled:hover {
-            border-color: var(--job-dps);
+            border-color: var(--blood);
         }
 
         .slot-icon {
-            font-size: 24px;
-            margin-bottom: 4px;
+            font-size: 22px;
+            margin-bottom: 3px;
         }
 
         .slot-empty-icon {
-            font-size: 20px;
-            opacity: 0.3;
+            font-size: 18px;
+            opacity: 0.25;
         }
 
         .slot-label {
-            font-size: 10px;
-            color: var(--text-secondary);
+            font-size: 9px;
+            color: var(--text-dim);
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .slot-item-name {
-            font-size: 11px;
-            font-weight: bold;
+            font-size: 10px;
+            font-weight: 600;
             text-align: center;
             padding: 0 4px;
             overflow: hidden;
@@ -1499,537 +1661,742 @@
         .slot-quality-blue { color: var(--quality-blue); }
         .slot-quality-purple { color: var(--quality-purple); }
 
-        .equipment-slot.equipped {
-            border-color: var(--quality-green);
-            background: rgba(80, 250, 123, 0.05);
+        /* ========== Equipment Panel ========== */
+        .equipment-panel {
+            margin-top: 24px;
         }
 
-        .equipment-slot.equipped .slot-label {
-            display: none;
-        }
-
-        /* ========== 装备穿戴动效 ========== */
-        @keyframes equip-flash {
-            0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.9); }
-            30%  { box-shadow: 0 0 20px 8px rgba(255,255,255,0.6); }
-            60%  { box-shadow: 0 0 35px 15px rgba(255,255,100,0.4); }
-            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
-        }
-        @keyframes equip-particle {
-            0%   { opacity: 1; transform: translate(0,0) scale(1); }
-            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); }
-        }
-        @keyframes stat-bump {
-            0%   { opacity: 1; transform: translateY(0) scale(1); }
-            40%  { transform: translateY(-18px) scale(1.35); }
-            100% { opacity: 0; transform: translateY(-32px) scale(1); }
-        }
-        @keyframes mailPopupIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        @keyframes mailPopupOut {
-            from { opacity: 1; transform: translateX(-50%) translateY(0); }
-            to   { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-        }
-        .equipment-slot.flash {
-            animation: equip-flash 0.6s ease-out forwards;
-        }
-        .equip-particle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #fff;
-            pointer-events: none;
-            animation: equip-particle 0.7s ease-out forwards;
-        }
-        .stat-bump {
-            position: absolute;
-            font-size: 12px;
-            font-weight: bold;
-            pointer-events: none;
-            animation: stat-bump 0.9s ease-out forwards;
-            white-space: nowrap;
-        }
-
-        .equip-option {
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Cinzel', serif;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+        }
+
+        .equipment-list {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
-            padding: 12px;
-            background: var(--bg-dark);
-            border: 2px solid var(--border-color);
+        }
+
+        .equipment-item {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 1px solid var(--gold-dim);
             border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 8px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             transition: all 0.2s;
+            cursor: pointer;
         }
 
-        .equip-option:hover {
-            border-color: var(--job-heal);
-            background: var(--bg-card-hover);
+        .equipment-item:hover {
+            border-color: var(--gold-main);
+            transform: translateX(3px);
         }
 
-        .eq-stats {
+        .equipment-item.equipped {
+            border-color: var(--quality-green);
+            opacity: 0.7;
+        }
+
+        .equipment-item.equipped:hover {
+            opacity: 1;
+        }
+
+        .equipment-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .equipment-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .equipment-name {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .equipment-props {
             font-size: 11px;
             color: var(--text-secondary);
-            margin-left: auto;
         }
 
-        /* ========== 装备对比 ========== */
-        #compareSection {
-            display: none;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
+        .quality-white { color: var(--quality-white); }
+        .quality-green { color: var(--quality-green); }
+        .quality-blue { color: var(--quality-blue); }
+        .quality-purple { color: var(--quality-purple); }
+
+        /* ========== Set Bonus ========== */
+        .set-bonus {
+            background: var(--bg-shadow);
+            border: 1px solid var(--gold-dim);
             border-radius: 8px;
-            padding: 12px;
-            margin-top: 12px;
-            font-size: 13px;
-        }
-        .compare-title { font-weight: bold; color: var(--text); margin-bottom: 8px; text-align: center; }
-        .compare-row { display: flex; justify-content: space-between; padding: 3px 0; }
-        .compare-label { color: var(--text-secondary); }
-        .compare-same { color: var(--text-secondary); }
-        .compare-new { font-weight: bold; }
-        .compare-diff.positive { color: #4ade80; }
-        .compare-diff.negative { color: #f87171; }
-
-        /* 属性面板 */
-        .stats-section {
-            background: var(--bg-dark);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
+            padding: 14px;
+            margin-top: 16px;
         }
 
-        .stats-title {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            text-transform: uppercase;
+        .set-bonus-title {
+            font-size: 12px;
+            color: var(--gold-main);
+            margin-bottom: 10px;
+            font-weight: 600;
             letter-spacing: 1px;
         }
 
-        .stat-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .stat-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .stat-icon {
-            width: 24px;
-            font-size: 14px;
-            text-align: center;
-            margin-right: 8px;
-        }
-
-        .stat-name {
-            width: 50px;
+        .set-bonus-item {
             font-size: 12px;
-            color: var(--text-secondary);
+            color: var(--text-dim);
+            margin-bottom: 6px;
         }
 
-        .stat-bar-container {
-            flex: 1;
-            height: 16px;
-            background: var(--bg-card);
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            margin-right: 8px;
+        .set-bonus-item.active {
+            color: var(--quality-green);
         }
 
-        .stat-bar {
-            height: 100%;
-            border-radius: 8px;
-            transition: width 0.3s ease;
-            position: relative;
-        }
-
-        .stat-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
+        /* ========== Bottom Navigation ========== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
             left: 0;
             right: 0;
-            height: 50%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(0deg, var(--bg-void) 0%, var(--bg-shadow) 100%);
+            border-top: 1px solid var(--gold-dim);
+            display: none;
+            z-index: 100;
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
         }
 
-        .stat-bar.hp { background: linear-gradient(90deg, #ff4a4a, #ff8080); }
-        .stat-bar.atk { background: linear-gradient(90deg, #ff9933, #ffcc66); }
-        .stat-bar.def { background: linear-gradient(90deg, #4a9eff, #80ccff); }
-        .stat-bar.str { background: linear-gradient(90deg, #ff6666, #ff9999); }
-        .stat-bar.agi { background: linear-gradient(90deg, #66ff66, #99ff99); }
-        .stat-bar.int { background: linear-gradient(90deg, #6666ff, #9999ff); }
-        .stat-bar.sta { background: linear-gradient(90deg, #ffcc00, #ffdd55); }
-
-        .stat-value {
-            font-size: 12px;
-            font-weight: bold;
-            min-width: 40px;
-            text-align: right;
-        }
-
-        /* 背包选中态 */
-        .equipment-item.equipped {
-            opacity: 0.5;
-            position: relative;
-        }
-
-        .equipment-item.equipped::after {
-            content: '已装备';
+        .bottom-nav::before {
+            content: '';
             position: absolute;
-            top: 8px;
-            right: 8px;
-            background: var(--job-heal);
-            color: #fff;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
+            top: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-main), transparent);
         }
 
-        .equipment-item.clickable:hover {
-            border-color: var(--job-heal);
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 10px;
             cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
         }
 
-        /* 装备选择弹窗 */
-        /* ========== 装备对比 ========== */
-        .compare-section {
-            background: var(--bg-dark);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
+        .nav-item.active {
+            color: var(--gold-main);
         }
-        .compare-title {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-        .compare-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 3px 0;
-            font-size: 13px;
-        }
-        .compare-label { color: var(--text-secondary); }
-        .compare-old { color: #ff6b6b; text-decoration: line-through; }
-        .compare-new { color: #51cf66; font-weight: bold; }
-        .compare-same { color: var(--text-secondary); }
-        .compare-arrow { color: var(--text-secondary); font-size: 11px; }
-        .compare-diff { font-size: 11px; }
-        .compare-diff.positive { color: #51cf66; }
-        .compare-diff.negative { color: #ff6b6b; }
 
-        /* ========== 邮件系统 ========== */
-        .mail-badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: #ff4d4f;
-            color: #fff;
-            font-size: 10px;
-            font-weight: bold;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: sans-serif;
+        .nav-icon {
+            font-size: 22px;
         }
+
+        /* ========== Mail System ========== */
         .mail-modal {
             display: none;
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: rgba(0,0,0,0.85);
-            z-index: 350;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .mail-modal.show { display: flex; }
-        .mail-content {
-            background: var(--bg-card);
-            border: 4px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            width: 100%;
-            max-width: 380px;
-            max-height: 75vh;
-            overflow-y: auto;
-        }
-        .mail-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .mail-title { font-size: 18px; font-weight: bold; }
-        .mail-close { background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; }
-        .mail-list { display: flex; flex-direction: column; gap: 10px; }
-        .mail-item {
-            background: var(--bg-dark);
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            padding: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .mail-item:hover { border-color: var(--job-heal); }
-        .mail-item.unread { border-left: 4px solid #ffd700; }
-        .mail-item-title { font-weight: bold; margin-bottom: 4px; }
-        .mail-item-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
-        .mail-item-reward { font-size: 12px; color: #ffd700; }
-        .mail-item-time { font-size: 10px; color: var(--text-secondary); margin-top: 4px; }
-        .mail-empty { text-align: center; color: var(--text-secondary); padding: 40px 0; }
-
-        /* ========== 装备选择 ========== */
-        .equip-select-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
             z-index: 300;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
 
-        .equip-select-modal.show {
+        .mail-modal.show { display: flex; }
+
+        .mail-content {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 2px solid var(--gold-dim);
+            border-radius: 12px;
+            max-width: 380px;
+            width: 100%;
+            max-height: 80vh;
+            overflow: hidden;
             display: flex;
+            flex-direction: column;
         }
 
-        .equip-select-content {
-            background: var(--bg-card);
-            border: 4px solid var(--border-color);
-            border-radius: 16px;
+        .mail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid var(--gold-dim);
+        }
+
+        .mail-title {
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Cinzel', serif;
+        }
+
+        .mail-close {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .mail-close:hover { color: var(--text-primary); }
+
+        #mailListContent {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .mail-empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-dim);
+        }
+
+        .mail-list {
+            padding: 12px;
+        }
+
+        .mail-item {
+            background: var(--bg-shadow);
+            border: 1px solid var(--gold-dim);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mail-item:hover {
+            border-color: var(--gold-main);
+        }
+
+        .mail-item.unread {
+            border-left: 3px solid var(--gold-main);
+        }
+
+        .mail-item-title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: var(--gold-main);
+        }
+
+        .mail-item-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .mail-item-reward {
+            font-size: 11px;
+            color: var(--gold-bright);
+            margin-bottom: 4px;
+        }
+
+        .mail-item-time {
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        .mail-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 18px;
+            height: 18px;
+            background: var(--blood);
+            border-radius: 9px;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        /* ========== Equip Select Modal ========== */
+        .equip-select-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
-            max-width: 360px;
+        }
+
+        .equip-select-modal.show { display: flex; }
+
+        .equip-select-content {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 2px solid var(--gold-dim);
+            border-radius: 12px;
+            max-width: 380px;
             width: 100%;
             max-height: 80vh;
             overflow-y: auto;
+            padding: 20px;
         }
 
         .equip-select-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Cinzel', serif;
             text-align: center;
+            margin-bottom: 16px;
         }
+
+        .compare-section {
+            background: var(--bg-void);
+            border: 1px solid var(--gold-dim);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .compare-title {
+            font-size: 12px;
+            color: var(--gold-main);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .compare-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .compare-label { color: var(--text-secondary); }
+        .compare-same { color: var(--text-dim); }
+        .compare-new { color: var(--text-primary); }
+        .compare-diff.positive { color: var(--quality-green); }
+        .compare-diff.negative { color: var(--blood); }
 
         .equip-select-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 16px;
         }
 
-        .equip-select-item {
-            background: var(--bg-dark);
-            border: 2px solid var(--border-color);
+        .equip-option {
+            background: var(--bg-shadow);
+            border: 1px solid var(--gold-dim);
             border-radius: 8px;
             padding: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .equip-select-item:hover {
-            border-color: var(--job-heal);
-            background: var(--bg-card-hover);
+        .equip-option:hover {
+            border-color: var(--gold-main);
         }
 
-        .equip-select-item-icon {
-            font-size: 24px;
+        .eq-stats {
+            font-size: 10px;
+            color: var(--text-dim);
         }
 
-        .equip-select-item-info {
-            flex: 1;
-        }
-
-        .equip-select-item-name {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .equip-select-item-stats {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-        
-        /* 套装提示 */
-        .set-bonus {
-            background: linear-gradient(135deg, rgba(189, 147, 249, 0.1), rgba(80, 200, 120, 0.1));
-            border: 2px solid var(--quality-purple);
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 16px;
-            text-align: left;
-        }
-        
-        .set-bonus-title {
-            font-weight: bold;
-            color: var(--quality-purple);
-            margin-bottom: 8px;
-        }
-        
-        .set-bonus-item {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-        
-        .set-bonus-item.active {
-            color: var(--quality-green);
-        }
-        
-        /* ========== 底部导航 ========== */
-        .bottom-nav {
+        /* ========== Customize Modal ========== */
+        .customize-modal {
+            display: none;
             position: fixed;
-            bottom: 0;
+            top: 0;
             left: 0;
             right: 0;
-            background: var(--bg-card);
-            border-top: 2px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 0;
-            z-index: 100;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
-        
-        .nav-item {
+
+        .customize-modal.show { display: flex; }
+
+        .customize-content {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+            border: 2px solid var(--gold-dim);
+            border-radius: 14px;
+            padding: 20px;
+            max-width: 360px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
+            gap: 16px;
+        }
+
+        .customize-title {
+            font-size: 18px;
+            font-weight: 600;
+            font-family: 'Cinzel', serif;
+            text-align: center;
+        }
+
+        .customize-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .customize-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .fantasy-input {
+            background: var(--bg-void);
+            border: 1px solid var(--gold-dim);
+            border-radius: 6px;
+            color: var(--text-primary);
+            padding: 10px 12px;
+            font-size: 14px;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .fantasy-input:focus {
+            outline: none;
+            border-color: var(--gold-main);
+        }
+
+        .customize-skins {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .skin-card {
+            background: var(--bg-void);
+            border: 1px solid var(--gold-dim);
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .skin-card:hover {
+            border-color: var(--gold-main);
+            transform: translateY(-2px);
+        }
+
+        .skin-card.selected {
+            border-color: var(--gold-main);
+            background: rgba(201, 162, 39, 0.1);
+        }
+
+        .skin-card-img {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            border-radius: 5px;
+            display: block;
+        }
+
+        .skin-card-name {
+            font-size: 10px;
+            margin-top: 4px;
+            color: var(--text-secondary);
+        }
+
+        .customize-preview {
+            display: flex;
+            justify-content: center;
+        }
+
+        .preview-img {
+            height: 140px;
+            width: auto;
+            border-radius: 10px;
+            border: 1px solid var(--gold-dim);
+            object-fit: cover;
+        }
+
+        .customize-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        /* ========== Animation Effects ========== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Enemy hit shake */
+        @keyframes enemyShake {
+            0%   { transform: translateX(0); }
+            15%  { transform: translateX(-10px) rotate(-2deg); }
+            30%  { transform: translateX(8px) rotate(1.5deg); }
+            45%  { transform: translateX(-6px) rotate(-1deg); }
+            60%  { transform: translateX(5px); }
+            80%  { transform: translateX(-3px); }
+            100% { transform: translateX(0); }
+        }
+
+        .enemy-hit { animation: enemyShake 0.35s ease-out; }
+
+        /* Player hit shake */
+        @keyframes playerShake {
+            0%   { transform: translateX(0); filter: brightness(1); }
+            20%  { transform: translateX(-5px); filter: brightness(1.4); }
+            40%  { transform: translateX(4px); filter: brightness(1.2); }
+            60%  { transform: translateX(-3px); }
+            80%  { transform: translateX(2px); }
+            100% { transform: translateX(0); filter: brightness(1); }
+        }
+
+        .player-hit { animation: playerShake 0.3s ease-out; }
+
+        /* Damage float text */
+        @keyframes floatUp {
+            0%   { opacity: 1; transform: translateY(0) scale(1); }
+            20%  { transform: translateY(-8px) scale(1.15); }
+            100% { opacity: 0; transform: translateY(-50px) scale(0.8); }
+        }
+
+        .damage-text {
+            position: absolute;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--blood);
+            text-shadow: 0 0 8px rgba(220, 20, 60, 0.5), 1px 1px 0 #330000;
+            pointer-events: none;
+            animation: floatUp 0.85s ease-out forwards;
+            z-index: 200;
+            white-space: nowrap;
+        }
+
+        .damage-text.crit {
+            font-size: 28px;
+            color: var(--gold-bright);
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.6), 1px 1px 0 #664400;
+        }
+
+        .damage-text.heal {
+            color: var(--quality-green);
+            text-shadow: 0 0 8px rgba(61, 214, 140, 0.5), 1px 1px 0 #003322;
+        }
+
+        /* Crit stars */
+        @keyframes starBurst {
+            0%   { opacity: 0; transform: scale(0) rotate(0deg); }
+            50%  { opacity: 1; transform: scale(1.1) rotate(180deg); }
+            100% { opacity: 0; transform: scale(0.5) rotate(360deg); }
+        }
+
+        .crit-star {
+            position: absolute;
+            font-size: 24px;
+            animation: starBurst 0.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 201;
+        }
+
+        /* Level up glow */
+        @keyframes goldPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.6); }
+            50%  { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+
+        .levelup-glow {
+            animation: goldPulse 0.7s ease-out;
+        }
+
+        /* Equip flash */
+        @keyframes equipGlow {
+            0%   { background: rgba(201, 162, 39, 0.3); }
+            50%  { background: rgba(201, 162, 39, 0.5); }
+            100% { background: rgba(201, 162, 39, 0.3); }
+        }
+
+        .reward-equip-flash {
+            animation: equipGlow 0.4s ease-in-out 3;
+        }
+
+        /* Exp flash */
+        @keyframes expFlash {
+            0%   { filter: brightness(1); }
+            25%  { filter: brightness(1.6); }
+            50%  { filter: brightness(1.2); }
+            75%  { filter: brightness(1.4); }
+            100% { filter: brightness(1); }
+        }
+
+        .exp-flash {
+            animation: expFlash 0.35s ease-out;
+        }
+
+        /* Flash effect for equip */
+        @keyframes flash {
+            0%   { box-shadow: 0 0 0 0 rgba(201, 162, 39, 0.8); }
+            100% { box-shadow: 0 0 0 15px rgba(201, 162, 39, 0); }
+        }
+
+        .flash {
+            animation: flash 0.5s ease-out;
+        }
+
+        /* Equip particle */
+        .equip-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFade 0.7s ease-out forwards;
+        }
+
+        @keyframes particleFade {
+            0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+        }
+
+        /* Stat bump */
+        .stat-bump {
+            position: absolute;
+            font-size: 11px;
+            font-weight: 600;
+            animation: bumpFade 0.9s ease-out forwards;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        @keyframes bumpFade {
+            0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+        }
+
+        /* Mail popup */
+        @keyframes mailPopupIn {
+            from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        @keyframes mailPopupOut {
+            from { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+        }
+
+        /* Result screen */
+        .result-title {
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
+            margin-bottom: 16px;
+        }
+
+        .result-rewards {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .result-reward-item {
+            display: flex;
             align-items: center;
             gap: 4px;
-            padding: 8px 16px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            background: none;
+        }
+
+        .result-detail {
             font-size: 12px;
+            color: var(--text-dim);
+            margin-bottom: 16px;
         }
-        
-        .nav-item:hover, .nav-item.active {
-            color: var(--job-heal);
-        }
-        
-        .nav-icon {
-            font-size: 24px;
-        }
-        
-        /* ========== 分享卡 ========== */
-        .share-section {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-        }
-        
-        #shareCanvas {
-            display: none;
-        }
-        
-        .share-preview {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-        
-        .share-preview canvas {
-            width: 100%;
-            height: auto;
-            border-radius: 4px;
-        }
-        
-        /* ========== 响应式 ========== */
-        @media (max-width: 480px) {
-            .game-title {
-                font-size: 36px;
-            }
-            
-            .character-preview, .result-character {
-                width: 180px;
-                height: 180px;
-            }
-            
-            .idle-character {
-                width: 150px;
-                height: 150px;
-            }
-        }
-        
-        /* ========== 工具类 ========== */
-        .hidden { display: none !important; }
-        .text-center { text-align: center; }
-        .mt-20 { margin-top: 20px; }
-        .mb-20 { margin-bottom: 20px; }
+
+        /* Utility */
+        .mt-20 { margin-top: 16px; }
     </style>
 </head>
 <body>
-    <!-- ========== 顶部状态栏 ========== -->
-    <div class="top-bar" id="topBar" style="display: none;">
+    <!-- ========== Top Status Bar ========== -->
+    <div class="top-bar">
         <div class="stat-item">
             <span class="stat-label">等级</span>
             <span class="stat-value level-display" id="topLevel">1</span>
         </div>
         <div class="stat-item">
             <span class="stat-label">阶段</span>
-            <span class="stat-value stage-name" id="topStage">幼儿园</span>
+            <span class="stage-name" id="topStage">幼儿园</span>
         </div>
         <div class="stat-item">
             <span class="stat-label">金币</span>
             <span class="stat-value gold-display" id="topGold">0</span>
         </div>
-        <button class="pixel-btn small" onclick="openMail()" style="padding: 4px 10px; position: relative;">
-            📬
+        <button class="nav-item" onclick="openMail()" style="position:relative;padding:4px 8px;">
+            <span class="nav-icon">📬</span>
             <span id="mailBadgeCount" class="mail-badge" style="display:none">0</span>
         </button>
     </div>
 
-    <!-- ========== 主容器 ========== -->
+    <!-- ========== Main Container ========== -->
     <div class="game-container">
-        
-        <!-- 标题页 -->
+        <!-- Title Screen -->
         <div class="screen active" id="titleScreen">
             <div class="title-screen">
-                <h1 class="game-title">AGENT WORLD</h1>
-                <p class="game-subtitle">25岁人生模拟器</p>
+                <div class="game-logo-wrapper">
+                    <h1 class="game-title title-font">AGENT WORLD</h1>
+                </div>
+                <p class="game-subtitle">暗黑幻想 · 人生模拟</p>
 
                 <div class="game-guide">
                     <div class="guide-step">
                         <span class="guide-num">1</span>
-                        <span class="guide-text">完成MTI性格测试，找到你的职业</span>
+                        <span class="guide-text">完成MTI性格测试，找到你的命运职业</span>
                     </div>
                     <div class="guide-step">
                         <span class="guide-num">2</span>
-                        <span class="guide-text">挂机等待，获得经验、金币、装备</span>
+                        <span class="guide-text">挂机修炼，汲取经验与宝藏</span>
                     </div>
                     <div class="guide-step">
                         <span class="guide-num">3</span>
-                        <span class="guide-text">升级成长，从幼儿园一路玩到25岁</span>
+                        <span class="guide-text">从幼儿园历炼至25岁巅峰</span>
                     </div>
                     <div class="guide-step">
                         <span class="guide-num">4</span>
-                        <span class="guide-text">收集装备，组队副本，分享炫耀</span>
+                        <span class="guide-text">收集传说装备，征服副本秘境</span>
                     </div>
                 </div>
 
-                <!-- 存档预览卡片 -->
+                <!-- Save Preview -->
                 <div class="save-preview-card" id="savePreviewCard">
                     <div class="save-preview-header">
                         <span class="save-preview-icon" id="savePreviewIcon">🛡️</span>
@@ -2055,15 +2422,15 @@
                 </div>
 
                 <div class="character-preview">
-                    <span class="character-icon" style="color: var(--job-tank);">🛡️</span>
+                    <span class="character-icon" id="titleCharIcon" style="color: var(--job-tank);">🛡️</span>
                 </div>
 
-                <button class="pixel-btn primary" onclick="startQuiz()">开始测试</button>
-                <button class="pixel-btn" style="margin-left: 12px;" onclick="loadGame()">继续游戏</button>
+                <button class="fantasy-btn primary" onclick="startQuiz()">开始测试</button>
+                <button class="fantasy-btn" style="margin-left: 12px;" onclick="loadGame()">继续游戏</button>
             </div>
         </div>
-        
-        <!-- MTI测试页 -->
+
+        <!-- Quiz Screen -->
         <div class="screen" id="quizScreen">
             <div class="quiz-container">
                 <div class="quiz-header">
@@ -2073,27 +2440,25 @@
                         <div class="progress-dot" id="dot3"></div>
                         <div class="progress-dot" id="dot4"></div>
                     </div>
-                    <span id="quizNum">1/4</span>
+                    <span class="quiz-num" id="quizNum">1 / 4</span>
                 </div>
-                
+
                 <div class="quiz-question" id="quizQuestion"></div>
-                
                 <div class="quiz-options" id="quizOptions"></div>
             </div>
-            
-            <button class="pixel-btn" onclick="goBack('titleScreen')">返回</button>
+            <button class="fantasy-btn" onclick="goBack('titleScreen')">返回</button>
         </div>
-        
-        <!-- 职业确认引导页 -->
+
+        <!-- Confirm Screen -->
         <div class="screen" id="confirmScreen">
             <div class="confirm-container">
                 <div class="confirm-header">
                     <p class="confirm-subtitle">你的性格类型是</p>
-                    <h2 class="confirm-mbti" id="confirmMbti">INTJ</h2>
+                    <h2 class="confirm-mbti title-font" id="confirmMbti">INTJ</h2>
                     <p class="confirm-trait" id="confirmTrait">战略型思想家</p>
                 </div>
 
-                <div class="confirm-divider">↓ 根据你的性格，最适合你的职业是 ↓</div>
+                <div class="medieval-divider"><span>◆ 根据你的性格，最适合你的职业是 ◆</span></div>
 
                 <div class="confirm-result">
                     <div class="confirm-job-icon" id="confirmIcon">🛡️</div>
@@ -2107,24 +2472,24 @@
 
                 <div class="confirm-tips">
                     <div class="tip-box">
-                        <p class="tip-title">🎮 坦克职业特点</p>
+                        <p class="tip-title">🎮 职业特点</p>
                         <p class="tip-text" id="confirmJobTips">• HP极高，防御最强<br>• 优先承受伤害保护队友<br>• 装备以板甲+盾牌为主</p>
                     </div>
                 </div>
 
                 <div class="confirm-buttons">
-                    <button class="pixel-btn primary" onclick="confirmJob()">✅ 确认职业，进入游戏</button>
-                    <button class="pixel-btn" onclick="restartQuiz()">🔄 重新测试</button>
+                    <button class="fantasy-btn primary" onclick="confirmJob()">✅ 确认职业，进入游戏</button>
+                    <button class="fantasy-btn" onclick="restartQuiz()">🔄 重新测试</button>
                 </div>
             </div>
         </div>
 
-        <!-- 结果页 -->
+        <!-- Result Screen -->
         <div class="screen" id="resultScreen">
             <div class="result-container">
-                <p class="result-title">你的职业是</p>
+                <p class="result-title-label">你的职业是</p>
                 <h2 class="result-job" id="resultJob">坦克</h2>
-                <p class="result-level" id="resultLevel">Lv.1 启蒙阶段</p>
+                <p class="result-level" id="resultLevel">Lv.1 · 启蒙阶段</p>
 
                 <div class="result-character">
                     <img class="result-char-img" id="resultIcon" src="job_tank_new.png" alt="character" />
@@ -2135,45 +2500,43 @@
                     你是坚实的守护者，擅长保护队友免受伤害。
                 </p>
 
-                <button class="pixel-btn primary" onclick="startGame()">进入游戏</button>
+                <button class="fantasy-btn primary" onclick="startGame()">进入游戏</button>
 
                 <div class="share-section">
-                    <button class="pixel-btn" onclick="generateShareCard()">📤 生成分享卡</button>
+                    <button class="fantasy-btn" onclick="generateShareCard()">📤 生成分享卡</button>
                     <div class="share-preview" id="sharePreview" style="display: none;">
                         <canvas id="shareCanvas" width="1200" height="630"></canvas>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- 外观选择页 -->
+
+        <!-- Appearance Screen -->
         <div class="screen" id="appearanceScreen">
             <div class="appearance-container">
                 <div class="appearance-header">
-                    <button class="pixel-btn" onclick="goBack('resultScreen')">← 返回</button>
+                    <button class="fantasy-btn small" onclick="goBack('resultScreen')">← 返回</button>
                     <h2 class="appearance-title">选择你的外观</h2>
-                    <div style="width: 80px;"></div>
+                    <div style="width: 70px;"></div>
                 </div>
-                
+
                 <p class="appearance-subtitle">为你的 <span id="appearJobName">坦克</span> 选择一个造型</p>
-                
-                <div class="appearance-cards" id="appearanceCards">
-                    <!-- 动态生成 -->
-                </div>
-                
+
+                <div class="appearance-cards" id="appearanceCards"></div>
+
                 <div class="appearance-confirm">
-                    <button class="pixel-btn primary" id="confirmAppearanceBtn" onclick="confirmAppearance()" disabled>✅ 确认外观</button>
+                    <button class="fantasy-btn primary" id="confirmAppearanceBtn" onclick="confirmAppearance()" disabled>✅ 确认外观</button>
                 </div>
             </div>
         </div>
-        
-        <!-- 挂机主页 -->
+
+        <!-- Idle Screen -->
         <div class="screen" id="idleScreen">
             <div class="idle-container">
                 <div class="idle-character">
-                    <img class="job-icon char-breathe" id="idleIcon" src="job_tank_new.png" alt="character" />
+                    <img class="job-icon" id="idleIcon" src="job_tank_new.png" alt="character" />
                 </div>
-                
+
                 <div class="idle-status">
                     <div class="idle-level" id="idleLevel">Lv.1</div>
                     <div class="idle-stage" id="idleStage">幼儿园 · 启蒙阶段</div>
@@ -2182,36 +2545,35 @@
                     </div>
                     <p class="idle-exp-text" id="expText">0 / 100 经验</p>
                 </div>
-                
+
                 <div class="wait-options">
-                    <button class="pixel-btn wait-btn tank" onclick="startWait(30)">
+                    <button class="fantasy-btn wait-btn tank" onclick="startWait(30)">
                         ⏱️ 短等待
                         <span>30秒</span>
                     </button>
-                    <button class="pixel-btn wait-btn heal" onclick="startWait(120)">
+                    <button class="fantasy-btn wait-btn heal" onclick="startWait(120)">
                         ⏱️ 长等待
                         <span>120秒</span>
                     </button>
                 </div>
 
-                <div class="wait-hint">
-                    <span>⏳ 挂机期间可切换到其他应用，时间到回来收菜</span>
-                </div>
+                <p class="wait-hint">⏳ 挂机期间可切换到其他应用，时间到回来收菜</p>
+
                 <div class="reward-preview">
                     <span class="reward-item">✨ 经验+<span id="previewExp">?</span></span>
                     <span class="reward-item">💰 金币+<span id="previewGold">?</span></span>
                     <span class="reward-item">📦 装备概率掉落</span>
                 </div>
-                
-                <button class="pixel-btn" onclick="showPanel('equipment')">🎒 背包</button>
-                <button class="pixel-btn dungeon-btn" onclick="showScreen('dungeonSelectScreen')">🏰 进入副本</button>
+
+                <button class="fantasy-btn" onclick="showPanel('equipment')">🎒 背包</button>
+                <button class="fantasy-btn dungeon-btn" onclick="showScreen('dungeonSelectScreen')" style="margin-left:12px;">🏰 进入副本</button>
             </div>
         </div>
 
-        <!-- 副本选择界面 -->
+        <!-- Dungeon Select Screen -->
         <div class="screen" id="dungeonSelectScreen">
             <div class="dungeon-header">
-                <button class="pixel-btn" onclick="showScreen('idleScreen')">← 返回</button>
+                <button class="fantasy-btn small" onclick="showScreen('idleScreen')">← 返回</button>
                 <h2 class="dungeon-title">🏰 选择副本</h2>
                 <div class="dungeon-power">
                     <span>⚔️ 战力</span>
@@ -2221,14 +2583,14 @@
             <div class="dungeon-list" id="dungeonList"></div>
         </div>
 
-        <!-- 副本战斗界面 -->
+        <!-- Dungeon Battle Screen -->
         <div class="screen" id="dungeonBattleScreen">
             <div class="dungeon-battle-header">
                 <div class="battle-info">
                     <span class="battle-dungeon-name" id="battleDungeonName">幽影森林</span>
                     <span class="battle-floor-tag" id="battleFloorTag">第 1 层</span>
                 </div>
-                <button class="pixel-btn" onclick="showScreen('idleScreen')">× 退出</button>
+                <button class="fantasy-btn small" onclick="showScreen('idleScreen')">× 退出</button>
             </div>
             <div class="battle-arena" id="battleArena">
                 <div class="battle-player" id="battlePlayer">
@@ -2245,33 +2607,33 @@
                     <div class="enemy-hp-text" id="enemyHpText">❤️ 50 / 50</div>
                 </div>
             </div>
-            <div class="battle-waves" id="battleWaves">
+            <div class="battle-waves">
                 <span>波次 <span id="currentWave">1</span> / <span id="totalWaves">3</span></span>
             </div>
             <div class="battle-log" id="battleLog">
                 <p class="log-tip">⚔️ 自动战斗中...</p>
             </div>
             <div class="battle-actions" id="battleActions">
-                <button class="pixel-btn heal-btn" id="healBtn" onclick="dungeonHeal()" style="display:none">💚 治疗 (30金币)</button>
+                <button class="fantasy-btn heal" id="healBtn" onclick="dungeonHeal()" style="display:none">💚 治疗 (30金币)</button>
             </div>
         </div>
 
-        <!-- 副本结算界面 -->
+        <!-- Dungeon Result Screen -->
         <div class="screen" id="dungeonResultScreen">
             <div class="result-container">
                 <h2 class="result-title" id="resultTitle">🎉 副本通关！</h2>
                 <div class="result-rewards" id="resultRewards"></div>
                 <div class="result-detail" id="resultDetail"></div>
-                <button class="pixel-btn" onclick="showScreen('idleScreen'); updateIdleUI();">返回挂机</button>
-                <button class="pixel-btn heal-btn" id="nextFloorBtn" onclick="dungeonNextFloor()">→ 下一层</button>
+                <button class="fantasy-btn" onclick="showScreen('idleScreen'); updateIdleUI();">返回挂机</button>
+                <button class="fantasy-btn heal" id="nextFloorBtn" onclick="dungeonNextFloor()">→ 下一层</button>
             </div>
         </div>
 
-        <!-- 倒计时页 -->
+        <!-- Countdown Screen -->
         <div class="screen" id="countdownScreen">
             <div class="countdown-container">
-                <p class="countdown-tip">挂机中...请稍候</p>
-                
+                <p class="countdown-tip">挂机修炼中...</p>
+
                 <div class="countdown-circle">
                     <div class="countdown-ring" id="countdownRing">
                         <div class="countdown-inner">
@@ -2280,12 +2642,12 @@
                         </div>
                     </div>
                 </div>
-                
-                <button class="pixel-btn" onclick="cancelWait()">取消挂机</button>
+
+                <button class="fantasy-btn" onclick="cancelWait()">取消挂机</button>
             </div>
         </div>
-        
-        <!-- 角色详情面板 -->
+
+        <!-- Character Screen -->
         <div class="screen" id="characterScreen">
             <div class="character-screen">
                 <div class="character-card">
@@ -2296,16 +2658,14 @@
                             <div class="character-job" id="charJob">坦克系</div>
                             <div class="character-level" id="charLevel">Lv.1 幼儿园</div>
                         </div>
-                        <button class="pixel-btn small" onclick="openCustomize()" style="margin-left: auto; font-size: 11px; padding: 4px 10px;">✏️ 换装/改名</button>
+                        <button class="fantasy-btn small" onclick="openCustomize()" style="margin-left:auto;">✏️ 换装</button>
                     </div>
 
-                    <div class="character-visual" id="charVisual">
-                        <!-- 装备图标叠加层（动态渲染）-->
-                    </div>
+                    <div class="character-visual" id="charVisual"></div>
 
                     <div class="stat-chart-wrap">
                         <div class="stat-chart-title">📊 属性成长曲线</div>
-                        <canvas id="statChart" width="320" height="80"></canvas>
+                        <canvas id="statChart" width="320" height="70"></canvas>
                     </div>
 
                     <div class="equipment-section">
@@ -2399,11 +2759,11 @@
                     </div>
                 </div>
 
-                <button class="pixel-btn mt-20" onclick="showPanel('idle')">返回</button>
+                <button class="fantasy-btn mt-20" onclick="showPanel('idle')">返回</button>
             </div>
         </div>
 
-        <!-- 装备面板 -->
+        <!-- Equipment Screen -->
         <div class="screen" id="equipmentScreen">
             <div class="equipment-panel">
                 <div class="panel-title">
@@ -2412,8 +2772,8 @@
                 </div>
 
                 <div class="equipment-list" id="equipmentList">
-                    <p style="color: var(--text-secondary); text-align: center; padding: 40px;">
-                        暂无装备<br>挂机即可获得装备
+                    <p style="color: var(--text-dim); text-align: center; padding: 40px;">
+                        暂无装备<br><br><span style="font-size:12px;">挂机即可获得装备</span>
                     </p>
                 </div>
 
@@ -2422,42 +2782,41 @@
                     <div id="setBonusContent"></div>
                 </div>
 
-                <button class="pixel-btn mt-20" onclick="showPanel('idle')">返回</button>
+                <button class="fantasy-btn mt-20" onclick="showPanel('idle')">返回</button>
             </div>
         </div>
-
     </div>
-    
-    <!-- ========== 收获弹窗 ========== -->
+
+    <!-- ========== Reward Modal ========== -->
     <div class="reward-modal" id="rewardModal">
         <div class="reward-content">
             <h3 class="reward-title">✨ 收菜成功!</h3>
-            
+
             <div class="reward-items">
-                <div class="reward-item">
+                <div class="reward-item-display">
                     <span class="reward-icon">⭐</span>
                     <span class="reward-value" id="rewardExp">+50</span>
-                    <span style="font-size: 12px; color: var(--text-secondary);">经验</span>
+                    <span style="font-size: 11px; color: var(--text-dim);">经验</span>
                 </div>
-                <div class="reward-item">
+                <div class="reward-item-display">
                     <span class="reward-icon">💰</span>
                     <span class="reward-value" id="rewardGold">+20</span>
-                    <span style="font-size: 12px; color: var(--text-secondary);">金币</span>
+                    <span style="font-size: 11px; color: var(--text-dim);">金币</span>
                 </div>
             </div>
-            
-            <div class="reward-equipment" id="rewardEquipment">
+
+            <div class="reward-equipment" id="rewardEquipment" style="display:none;">
                 <div class="equipment-name" id="rewardEquipName">木剑</div>
                 <div class="equipment-stats" id="rewardEquipStats">ATK +5</div>
             </div>
-            
+
             <div class="reward-buttons">
-                <button class="pixel-btn primary" onclick="closeReward()">收下</button>
+                <button class="fantasy-btn primary" onclick="closeReward()">收下</button>
             </div>
         </div>
     </div>
-    
-    <!-- ========== 升级弹窗 ========== -->
+
+    <!-- ========== Level Up Modal ========== -->
     <div class="levelup-modal" id="levelupModal">
         <div class="levelup-content">
             <div class="levelup-text">等级提升!</div>
@@ -2465,7 +2824,7 @@
         </div>
     </div>
 
-    <!-- ========== 底部导航 ========== -->
+    <!-- ========== Bottom Nav ========== -->
     <nav class="bottom-nav" id="bottomNav" style="display: none;">
         <button class="nav-item active" onclick="showPanel('idle')">
             <span class="nav-icon">🏠</span>
@@ -2485,7 +2844,7 @@
         </button>
     </nav>
 
-    <!-- ========== 邮件系统 ========== -->
+    <!-- ========== Mail Modal ========== -->
     <div class="mail-modal" id="mailModal">
         <div class="mail-content">
             <div class="mail-header">
@@ -2496,31 +2855,29 @@
         </div>
     </div>
 
-    <!-- ========== 装备选择弹窗 ========== -->
+    <!-- ========== Equip Select Modal ========== -->
     <div class="equip-select-modal" id="equipSelectModal">
         <div class="equip-select-content">
             <div class="equip-select-title" id="equipSelectTitle">选择装备</div>
             <div class="compare-section" id="compareSection" style="display:none"></div>
             <div class="equip-select-list" id="equipSelectList"></div>
-            <button class="pixel-btn" onclick="closeEquipSelect()">关闭</button>
+            <button class="fantasy-btn" onclick="closeEquipSelect()">关闭</button>
         </div>
     </div>
 
-    <!-- ========== 换装/改名弹窗 ========== -->
+    <!-- ========== Customize Modal ========== -->
     <div class="customize-modal" id="customizeModal">
         <div class="customize-content">
             <div class="customize-title">✏️ 换装/改名</div>
 
             <div class="customize-section">
                 <div class="customize-label">👤 改名</div>
-                <input class="pixel-input" id="customizeNameInput" type="text" placeholder="输入你的名字" maxlength="12" />
+                <input class="fantasy-input" id="customizeNameInput" type="text" placeholder="输入你的名字" maxlength="12" />
             </div>
 
             <div class="customize-section">
                 <div class="customize-label">🎨 外观</div>
-                <div class="customize-skins" id="customizeSkins">
-                    <!-- 动态生成 -->
-                </div>
+                <div class="customize-skins" id="customizeSkins"></div>
             </div>
 
             <div class="customize-preview" id="customizePreview">
@@ -2528,14 +2885,14 @@
             </div>
 
             <div class="customize-actions">
-                <button class="pixel-btn" onclick="closeCustomize()">取消</button>
-                <button class="pixel-btn primary" onclick="confirmCustomize()">确认</button>
+                <button class="fantasy-btn" onclick="closeCustomize()">取消</button>
+                <button class="fantasy-btn primary" onclick="confirmCustomize()">确认</button>
             </div>
         </div>
     </div>
 
     <script>
-        /* ========== 游戏数据 ========== */
+        /* ========== Game Data ========== */
         const QuizData = [
             {
                 question: "当你面对压力时，你倾向？",
@@ -2627,13 +2984,13 @@
             purple: { name: "传说", color: "var(--quality-purple)", chance: 0.05, stats: [30, 50] }
         };
 
-        /* ========== 副本系统数据 ========== */
+        /* ========== Dungeon Data ========== */
         const DungeonInfo = [
-            { id: 1,  name: "幽影森林",   icon: "🌲", floors: 5,  minLevel: 3,  color: "#4ade80", desc: "迷雾笼罩的古森林，藏着初级装备" },
-            { id: 2,  name: "迷雾沼泽",   icon: "🪨", floors: 5,  minLevel: 6,  color: "#a78bfa", desc: "剧毒瘴气弥漫，经验收益翻倍" },
-            { id: 3,  name: "灰烬盆地",   icon: "🔥", floors: 5,  minLevel: 11, color: "#fb923c", desc: "燃烧的废墟，稀有装备高概率掉落" },
-            { id: 4,  name: "裂谷遗迹",   icon: "⚡", floors: 5,  minLevel: 16, color: "#f472b6", desc: "远古文明遗迹，BOSS层奖励惊人" },
-            { id: 5,  name: "永夜要塞",   icon: "🌙", floors: 5,  minLevel: 21, color: "#38bdf8", desc: "终极挑战，25级满级玩家的圣地" }
+            { id: 1, name: "幽影森林", icon: "🌲", floors: 5, minLevel: 3, color: "#4ade80", desc: "迷雾笼罩的古森林，藏着初级装备" },
+            { id: 2, name: "迷雾沼泽", icon: "🪨", floors: 5, minLevel: 6, color: "#a78bfa", desc: "剧毒瘴气弥漫，经验收益翻倍" },
+            { id: 3, name: "灰烬盆地", icon: "🔥", floors: 5, minLevel: 11, color: "#fb923c", desc: "燃烧的废墟，稀有装备高概率掉落" },
+            { id: 4, name: "裂谷遗迹", icon: "⚡", floors: 5, minLevel: 16, color: "#f472b6", desc: "远古文明遗迹，BOSS层奖励惊人" },
+            { id: 5, name: "永夜要塞", icon: "🌙", floors: 5, minLevel: 21, color: "#38bdf8", desc: "终极挑战，25级满级玩家的圣地" }
         ];
 
         function getDungeonInfo(id) {
@@ -2657,17 +3014,17 @@
 
         const StatTypes = ["HP", "ATK", "DEF"];
 
-        /* ========== 游戏状态 ========== */
+        /* ========== Game State ========== */
         const ALL_MBTIS = ['intj','intp','entj','entp','infj','infp','enfj','enfp','istj','isfj','estj','esfj','istp','isfp','estp','esfp'];
         const GENDERS = ['boy', 'girl'];
 
         function getAgeStage(level) {
-            if (level <= 5)  return 0; // 幼儿
-            if (level <= 10) return 1; // 童年
-            if (level <= 13) return 2; // 少年
-            if (level <= 17) return 3; // 青年
-            if (level <= 21) return 4; // 中年
-            return 5;                  // 博士
+            if (level <= 5) return 0;
+            if (level <= 10) return 1;
+            if (level <= 13) return 2;
+            if (level <= 17) return 3;
+            if (level <= 21) return 4;
+            return 5;
         }
 
         function getCharImage(mbti, gender, level) {
@@ -2689,8 +3046,8 @@
             exp: 0,
             gold: 0,
             job: null,
-            mbti: null,      // e.g. 'intj'
-            gender: null,   // 'boy' or 'girl'
+            mbti: null,
+            gender: null,
             equipment: [],
             equipmentSlots: { weapon1: null, weapon2: null, armor1: null, armor2: null, accessory1: null, accessory2: null },
             createdAt: null,
@@ -2709,25 +3066,19 @@
             interval: null
         };
 
-        /* ========== 核心函数 ========== */
-        
-        // 切换页面显示
+        /* ========== Core Functions ========== */
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
-            // 进入副本选择界面时渲染列表
             if (screenId === 'dungeonSelectScreen') renderDungeonList();
         }
 
-        // 返回按钮
         function goBack(screenId) {
             showScreen(screenId);
         }
 
-        // 显示面板（底部导航用）
         function showPanel(panel) {
             if (panel === 'idle') {
-                // 如果正在倒计时中，恢复倒计时界面而不是主页
                 if (waitState.interval !== null && waitState.remaining > 0) {
                     restoreCountdown();
                 } else {
@@ -2747,17 +3098,16 @@
             updateNav(panel);
         }
 
-        // 更新底部导航状态
         function updateNav(panel) {
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if (panel === 'idle') {
                 document.querySelectorAll('.nav-item')[0].classList.add('active');
             } else if (panel === 'equipment') {
-                document.querySelectorAll('.nav-item')[1].classList.add('active');
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
             }
         }
 
-        /* ========== MTI测试 ========== */
+        /* ========== MTI Quiz ========== */
         function startQuiz() {
             quizState = { current: 0, answers: [] };
             renderQuiz();
@@ -2766,12 +3116,12 @@
 
         function renderQuiz() {
             const q = QuizData[quizState.current];
-            document.getElementById('quizNum').textContent = `${quizState.current + 1}/4`;
+            document.getElementById('quizNum').textContent = `${quizState.current + 1} / 4`;
             document.getElementById('quizQuestion').textContent = q.question;
-            
+
             const optionsEl = document.getElementById('quizOptions');
             optionsEl.innerHTML = '';
-            
+
             const letters = ['A', 'B', 'C'];
             q.options.forEach((opt, i) => {
                 const btn = document.createElement('div');
@@ -2783,8 +3133,7 @@
                 btn.onclick = () => selectOption(i, opt.type);
                 optionsEl.appendChild(btn);
             });
-            
-            // 更新进度点
+
             for (let i = 1; i <= 4; i++) {
                 const dot = document.getElementById('dot' + i);
                 dot.classList.remove('active', 'completed');
@@ -2798,13 +3147,11 @@
 
         function selectOption(index, type) {
             quizState.answers.push(type);
-            
-            // 高亮选中项
+
             document.querySelectorAll('.quiz-option').forEach((opt, i) => {
                 opt.classList.toggle('selected', i === index);
             });
-            
-            // 延迟进入下一题
+
             setTimeout(() => {
                 quizState.current++;
                 if (quizState.current < 4) {
@@ -2833,7 +3180,6 @@
             document.getElementById('resultJob').textContent = info.name;
             document.getElementById('resultJob').style.color = info.color;
 
-            // 显示真实角色图
             const charImg = getCharImage(gameState.mbti, gameState.gender, gameState.level);
             const resultIcon = document.getElementById('resultIcon');
             resultIcon.src = charImg;
@@ -2846,36 +3192,38 @@
             document.getElementById('resultBadge').style.background = info.color;
             document.getElementById('jobDesc').textContent = info.desc;
 
-            // 显示MBTI
             document.getElementById('resultLevel').textContent =
                 `${gameState.mbti.toUpperCase()} · ${gameState.gender === 'boy' ? '男' : '女'}`;
 
             showScreen('resultScreen');
         }
 
-        /* ========== 职业确认页 ========== */
+        function restartQuiz() {
+            startQuiz();
+        }
+
+        /* ========== Job Confirm ========== */
         function fillConfirmScreen(job) {
             const jobInfo = JobInfo[job];
             const traitMap = {
                 tank: '坚定守护者',
-                heal:  '温暖治愈者',
-                dps:   '无畏冒险家'
+                heal: '温暖治愈者',
+                dps: '无畏冒险家'
             };
-            // 根据职业生成假的 MBTI（展示用）
             const mbtiMap = {
                 tank: 'ISTJ',
                 heal: 'INFP',
-                dps:  'ESTP'
+                dps: 'ESTP'
             };
             const descMap = {
                 tank: '你是坚实的守护者，擅长保护队友免受伤害。你的稳定和可靠是团队最坚实的后盾。',
                 heal: '你是温暖的光，擅长治愈队友的心灵与伤口。你的存在让整个队伍充满希望。',
-                dps:  '你是战场上的利刃，擅长快速击败敌人。你的勇气和决心无人能挡。'
+                dps: '你是战场上的利刃，擅长快速击败敌人。你的勇气和决心无人能挡。'
             };
             const tipsMap = {
-                tank: '• HP极高，防御最强\n• 优先承受伤害保护队友\n• 装备以板甲+盾牌为主',
-                heal: '• 治疗能力出众，护盾强大\n• 辅助增益为主，续航能力强\n• 装备以法袍+圣器为主',
-                dps:  '• 攻击力爆发最高\n• 暴击率高，输出节奏快\n• 装备以轻甲+双武器为主'
+                tank: '• HP极高，防御最强<br>• 优先承受伤害保护队友<br>• 装备以板甲+盾牌为主',
+                heal: '• 治疗能力出众，护盾强大<br>• 辅助增益为主，续航能力强<br>• 装备以法袍+圣器为主',
+                dps: '• 攻击力爆发最高<br>• 暴击率高，输出节奏快<br>• 装备以轻甲+双武器为主'
             };
 
             document.getElementById('confirmMbti').textContent = mbtiMap[job];
@@ -2891,11 +3239,10 @@
         }
 
         function confirmJob() {
-            // 直接进入结果页展示角色图，不再经过外观选择
             finishQuiz();
         }
 
-        /* ========== 外观选择 ========== */
+        /* ========== Appearance ========== */
         const AppearanceData = {
             tank: [
                 { id: 'tank1', icon: '🛡️', name: '守护者', desc: '经典防护造型，坚不可摧' },
@@ -2918,47 +3265,45 @@
             const info = JobInfo[job];
             document.getElementById('appearJobName').textContent = info.name;
             document.getElementById('appearJobName').style.color = info.color;
-            
+
             const cardsContainer = document.getElementById('appearanceCards');
             cardsContainer.innerHTML = '';
-            
+
             const appearances = AppearanceData[job];
             appearances.forEach(app => {
                 const card = document.createElement('div');
                 card.className = 'appearance-card';
                 card.onclick = () => selectAppearance(app.id);
                 card.innerHTML = `
-                    <span class="appearance-icon">${app.icon}</span>
+                    <span class="appearance-icon" style="color:${info.color}">${app.icon}</span>
                     <div class="appearance-name">${app.name}</div>
                     <div class="appearance-desc">${app.desc}</div>
                 `;
                 card.dataset.id = app.id;
                 cardsContainer.appendChild(card);
             });
-            
+
             gameState.appearance = null;
             document.getElementById('confirmAppearanceBtn').disabled = true;
         }
 
         function selectAppearance(id) {
             gameState.appearance = id;
-            
+
             document.querySelectorAll('.appearance-card').forEach(card => {
                 card.classList.toggle('selected', card.dataset.id === id);
             });
-            
+
             document.getElementById('confirmAppearanceBtn').disabled = false;
         }
 
         function confirmAppearance() {
             if (!gameState.appearance) return;
-            
-            // 找到选中的外观信息
+
             const job = gameState.job;
             const appearances = AppearanceData[job];
             const selectedApp = appearances.find(a => a.id === gameState.appearance);
-            
-            // 更新结果页显示
+
             const info = JobInfo[job];
             document.getElementById('resultJob').textContent = info.name;
             document.getElementById('resultJob').style.color = info.color;
@@ -2970,7 +3315,7 @@
             showScreen('resultScreen');
         }
 
-        /* ========== 游戏开始 ========== */
+        /* ========== Game Start ========== */
         function startGame() {
             saveGame();
             updateTopBar();
@@ -3001,6 +3346,8 @@
                 document.getElementById('savePreviewGold').textContent = data.gold ?? 0;
                 document.getElementById('savePreviewEquip').textContent = data.equipment ? data.equipment.length : 0;
                 document.getElementById('savePreviewMail').textContent = data.mails ? data.mails.length : 0;
+                document.getElementById('titleCharIcon').textContent = info.icon;
+                document.getElementById('titleCharIcon').style.color = info.color;
                 card.classList.add('show');
             } catch (e) {
                 card.classList.remove('show');
@@ -3025,7 +3372,7 @@
             }
         }
 
-        /* ========== UI更新 ========== */
+        /* ========== UI Updates ========== */
         function updateTopBar() {
             document.getElementById('topLevel').textContent = gameState.level;
             document.getElementById('topGold').textContent = gameState.gold;
@@ -3038,7 +3385,6 @@
             const info = JobInfo[job];
             const stage = getStage(gameState.level);
 
-            // 显示真实角色图
             const el = document.getElementById('idleIcon');
             if (gameState.mbti && gameState.gender) {
                 el.src = getCharImage(gameState.mbti, gameState.gender, gameState.level);
@@ -3059,7 +3405,6 @@
             document.getElementById('expFill').style.width = expPercent + '%';
             document.getElementById('expText').textContent = `${gameState.exp} / ${expNeeded} 经验`;
 
-            // 更新奖励预览（根据当前等级估算）
             const shortExp = 10 + gameState.level * 3;
             const longExp = 30 + gameState.level * 8;
             const shortGold = 5 + gameState.level * 2;
@@ -3080,35 +3425,32 @@
         }
 
         function restoreCountdown() {
-            // 恢复倒计时界面，保持interval继续运行
             showScreen('countdownScreen');
             document.getElementById('countdownTime').textContent = waitState.remaining;
             const ring = document.getElementById('countdownRing');
-            // 重新设置动画：从当前剩余时间的位置继续
             ring.style.animation = 'none';
             ring.offsetHeight;
             ring.style.animation = `countdownRotate ${waitState.duration}s linear forwards`;
-            // interval已经在运行，不需要重启
         }
 
-        /* ========== 挂机系统 ========== */
+        /* ========== Idle System ========== */
         function startWait(seconds) {
             waitState.duration = seconds;
             waitState.remaining = seconds;
-            
+
             document.getElementById('countdownTime').textContent = seconds;
-            
+
             const ring = document.getElementById('countdownRing');
             ring.style.animation = 'none';
-            ring.offsetHeight; // 触发重排
+            ring.offsetHeight;
             ring.style.animation = `countdownRotate ${seconds}s linear forwards`;
-            
+
             showScreen('countdownScreen');
-            
+
             waitState.interval = setInterval(() => {
                 waitState.remaining--;
                 document.getElementById('countdownTime').textContent = waitState.remaining;
-                
+
                 if (waitState.remaining <= 0) {
                     clearInterval(waitState.interval);
                     finishWait();
@@ -3125,35 +3467,29 @@
         }
 
         function finishWait() {
-            // 计算奖励
             const baseExp = 20 + gameState.level * 5;
             const baseGold = 10 + gameState.level * 2;
-            
-            // 随机装备
+
             const equipment = generateEquipment();
-            
-            // 更新状态
+
             gameState.exp += baseExp;
             gameState.gold += baseGold;
             if (gameState.equipment.length >= 10) {
                 gameState.equipment.pop();
             }
             gameState.equipment.unshift(equipment);
-            
-            // 检查升级
+
             let leveledUp = false;
             while (gameState.exp >= gameState.level * 100) {
                 gameState.exp -= gameState.level * 100;
                 gameState.level++;
                 leveledUp = true;
             }
-            
+
             saveGame();
 
-            // 发邮件通知
             sendMail('🎁 挂机奖励', `挂机${waitState.duration}秒归来`, { exp: baseExp, gold: baseGold, equip: equipment });
 
-            // 显示奖励
             document.getElementById('rewardExp').textContent = `+${baseExp}`;
             document.getElementById('rewardGold').textContent = `+${baseGold}`;
             document.getElementById('rewardEquipName').textContent = equipment.name;
@@ -3165,7 +3501,6 @@
             void document.getElementById('rewardEquipment').offsetWidth;
             document.getElementById('rewardEquipment').classList.add('reward-equip-flash');
 
-            // 经验条闪烁
             const expFill = document.getElementById('expFill');
             if (expFill) {
                 expFill.classList.remove('exp-flash');
@@ -3173,12 +3508,10 @@
                 expFill.classList.add('exp-flash');
             }
 
-            const modal = document.getElementById('rewardModal');
-            modal.classList.add('show');
+            document.getElementById('rewardModal').classList.add('show');
 
             if (leveledUp) {
                 sendMail('🎉 升级了！', `恭喜达到 Lv.${gameState.level}！`, {});
-                // 角色图金色光环
                 const idleIcon = document.getElementById('idleIcon');
                 if (idleIcon) {
                     idleIcon.classList.remove('levelup-glow');
@@ -3195,9 +3528,8 @@
             showScreen('idleScreen');
         }
 
-        /* ========== 装备系统 ========== */
+        /* ========== Equipment ========== */
         function generateEquipment() {
-            // 随机品质
             const rand = Math.random();
             let quality = 'white';
             let cumulative = 0;
@@ -3208,15 +3540,12 @@
                     break;
                 }
             }
-            
-            // 随机类型
+
             const type = EquipmentTypes[Math.floor(Math.random() * EquipmentTypes.length)];
-            
-            // 随机前缀（基于等级）
+
             const prefixIndex = Math.min(Math.floor((gameState.level - 1) / 5), EquipmentPrefixes.length - 1);
             const prefix = EquipmentPrefixes[prefixIndex];
-            
-            // 随机属性
+
             const cfg = QualityConfig[quality];
             const statCount = quality === 'purple' ? 3 : (quality === 'blue' ? 2 : 1);
             const stats = [];
@@ -3230,7 +3559,7 @@
                 const value = Math.floor(Math.random() * (cfg.stats[1] - cfg.stats[0] + 1)) + cfg.stats[0];
                 stats.push({ type: statType, value });
             }
-            
+
             return {
                 id: Date.now(),
                 name: `${prefix}${type}`,
@@ -3243,17 +3572,17 @@
         function updateEquipmentUI() {
             const list = document.getElementById('equipmentList');
             document.getElementById('equipCount').textContent = `${gameState.equipment.length}/10 件装备`;
-            
+
             if (gameState.equipment.length === 0) {
                 list.innerHTML = `
-                    <p style="color: var(--text-secondary); text-align: center; padding: 40px;">
-                        暂无装备<br>挂机即可获得装备
+                    <p style="color: var(--text-dim); text-align: center; padding: 40px;">
+                        暂无装备<br><br><span style="font-size:12px;">挂机即可获得装备</span>
                     </p>
                 `;
                 document.getElementById('setBonus').style.display = 'none';
                 return;
             }
-            
+
             list.innerHTML = gameState.equipment.map(eq => {
                 const q = QualityConfig[eq.quality];
                 const isEquipped = Object.values(gameState.equipmentSlots).some(e => e && e.id === eq.id);
@@ -3268,8 +3597,7 @@
                     </div>
                 `;
             }).join('');
-            
-            // 检查套装效果
+
             checkSetBonus();
         }
 
@@ -3286,35 +3614,32 @@
             const uniqueTypes = [...new Set(types)];
             const setBonus = document.getElementById('setBonus');
             const content = document.getElementById('setBonusContent');
-            
+
             let bonusHTML = '';
-            
-            // 2件套
+
             if (uniqueTypes.length >= 2) {
                 const bonus2 = gameState.level * 5;
                 bonusHTML += `<div class="set-bonus-item active">✅ 2件套: 全属性 +${bonus2}</div>`;
             } else {
                 bonusHTML += `<div class="set-bonus-item">⬜ 2件套: 收集2种不同装备解锁</div>`;
             }
-            
-            // 4件套
+
             if (uniqueTypes.length >= 4) {
                 const bonus4 = gameState.level * 10;
                 bonusHTML += `<div class="set-bonus-item active">✅ 4件套: 全属性 +${bonus4}</div>`;
             } else {
                 bonusHTML += `<div class="set-bonus-item">⬜ 4件套: 收集4种不同装备解锁</div>`;
             }
-            
+
             content.innerHTML = bonusHTML;
             setBonus.style.display = uniqueTypes.length >= 2 ? 'block' : 'none';
         }
 
-        /* ========== 升级动画 ========== */
+        /* ========== Level Up Animation ========== */
         function showLevelUp() {
             const modal = document.getElementById('levelupModal');
             document.getElementById('levelupDetail').textContent = `Lv.${gameState.level}`;
-            
-            // 粒子效果
+
             const content = modal.querySelector('.levelup-content');
             for (let i = 0; i < 20; i++) {
                 const particle = document.createElement('div');
@@ -3327,17 +3652,16 @@
                 particle.style.top = '50%';
                 content.appendChild(particle);
             }
-            
+
             modal.classList.add('show');
-            
+
             setTimeout(() => {
                 modal.classList.remove('show');
-                // 移除粒子
                 content.querySelectorAll('.particle').forEach(p => p.remove());
             }, 2000);
         }
 
-        /* ========== 副本系统 ========== */
+        /* ========== Dungeon System ========== */
         function renderDungeonList() {
             const list = document.getElementById('dungeonList');
             const power = calculateStats().ATK + calculateStats().DEF;
@@ -3367,7 +3691,6 @@
 
         function startDungeon(dungeonId) {
             const d = getDungeonInfo(dungeonId);
-            // 初始化副本状态：从未通关过的层开始
             if (!gameState.dungeonState || gameState.dungeonState.dungeonId !== dungeonId) {
                 gameState.dungeonState = {
                     dungeonId,
@@ -3396,7 +3719,6 @@
                 interval: null
             };
 
-            // 更新UI
             document.getElementById('battleDungeonName').textContent = d.icon + ' ' + d.name;
             document.getElementById('battleFloorTag').textContent = `第 ${floor} / ${d.floors} 层`;
             document.getElementById('currentWave').textContent = 1;
@@ -3406,11 +3728,9 @@
             document.getElementById('enemyHpFill').style.width = '100%';
             document.getElementById('battleLog').innerHTML = '<p class="log-tip">⚔️ 自动战斗中...</p>';
 
-            // 显示敌人
             spawnEnemy();
             showScreen('dungeonBattleScreen');
 
-            // 开始自动战斗
             gameState.dungeonState.interval = setInterval(dungeonTick, 1000);
         }
 
@@ -3430,9 +3750,7 @@
             document.getElementById('enemyHpText').textContent = `❤️ ${enemyHp} / ${enemyHp}`;
         }
 
-        /* ========== 副本战斗 ========== */
-
-        // 飘字效果
+        /* ========== Battle ========== */
         function showDamageText(targetId, text, type) {
             const el = document.getElementById(targetId);
             if (!el) return;
@@ -3446,7 +3764,6 @@
             setTimeout(() => span.remove(), 950);
         }
 
-        // 暴击星星
         function showCritStars(targetId) {
             const el = document.getElementById(targetId);
             if (!el) return;
@@ -3463,28 +3780,25 @@
             }
         }
 
-        // 元素抖动
         function shakeElement(id, className) {
             const el = document.getElementById(id);
             if (!el) return;
             el.classList.remove(className);
-            void el.offsetWidth; // reflow
+            void el.offsetHeight;
             el.classList.add(className);
-            setTimeout(() => el.classList.remove(className), 450);
+            setTimeout(() => el.classList.remove(className), 400);
         }
 
         function dungeonTick() {
             const s = gameState.dungeonState;
             if (s.battleOver) return;
 
-            // 玩家攻击
             playerAttackEnemy();
             if (s.enemyHp <= 0) {
                 enemyDefeated();
                 return;
             }
 
-            // 敌人攻击
             enemyAttackPlayer();
             if (s.hp <= 0) {
                 dungeonFail();
@@ -3494,7 +3808,6 @@
 
         function playerAttackEnemy() {
             const s = gameState.dungeonState;
-            // 15% 暴击率，暴击伤害 × 2
             const isCrit = Math.random() < 0.15;
             const baseDmg = Math.max(1, s.playerAtk - Math.floor(s.enemyMaxHp * 0.1));
             const dmg = isCrit ? baseDmg * 2 : baseDmg;
@@ -3504,7 +3817,6 @@
             document.getElementById('enemyHpText').textContent = `❤️ ${s.enemyHp} / ${s.enemyMaxHp}`;
             const logText = isCrit ? `⚔️ 暴击！造成了 ${dmg} 点伤害` : `⚔️ 你造成了 ${dmg} 点伤害`;
             addBattleLog(logText, 'damage');
-            // 爽感
             shakeElement('battleEnemy', 'enemy-hit');
             showDamageText('battleEnemy', (isCrit ? dmg + '!' : dmg), isCrit ? 'crit' : '');
             if (isCrit) showCritStars('battleEnemy');
@@ -3518,11 +3830,9 @@
             document.getElementById('playerHpFill').style.width = pct + '%';
             document.getElementById('playerHpText').textContent = `❤️ ${s.hp} / ${s.maxHp}`;
             addBattleLog(`👹 敌人造成了 ${dmg} 点伤害`, 'damage');
-            // 爽感：玩家受击抖动+红字
             shakeElement('battlePlayer', 'player-hit');
             showDamageText('battlePlayer', dmg, '');
 
-            // HP低于30%显示治疗按钮
             const healBtn = document.getElementById('healBtn');
             if (pct < 30) {
                 healBtn.style.display = 'block';
@@ -3543,12 +3853,10 @@
             addBattleLog(`✅ 击败了敌人！`, 'heal');
 
             if (s.wave < s.totalWaves) {
-                // 还有下一波
                 s.wave++;
                 document.getElementById('currentWave').textContent = s.wave;
                 spawnEnemy();
             } else {
-                // 通关本层
                 clearInterval(s.interval);
                 s.battleOver = true;
                 setTimeout(() => showDungeonResult(), 800);
@@ -3568,7 +3876,6 @@
             document.getElementById('playerHpText').textContent = `❤️ ${s.hp} / ${s.maxHp}`;
             document.getElementById('healBtn').style.display = 'none';
             addBattleLog(`💚 恢复了 ${Math.floor(s.maxHp * 0.5)} HP！`, 'heal');
-            // 治疗飘字
             const healAmt = Math.floor(s.maxHp * 0.5);
             showDamageText('battlePlayer', '+' + healAmt, 'heal');
             saveGame();
@@ -3582,7 +3889,7 @@
             setTimeout(() => {
                 showScreen('dungeonResultScreen');
                 document.getElementById('resultTitle').textContent = '💀 挑战失败';
-                document.getElementById('resultTitle').style.color = 'var(--color-danger)';
+                document.getElementById('resultTitle').style.color = 'var(--blood)';
                 document.getElementById('resultRewards').innerHTML = `
                     <div class="result-reward-item">💰 金币 -30（治疗消耗）</div>
                 `;
@@ -3596,8 +3903,6 @@
             const rewards = getDungeonRewards(dungeonId, floor);
             const isLastFloor = floor >= gameState.dungeonState.totalFloors;
 
-            // 发放奖励
-            // 经验结算
             let leveledUp = false;
             gameState.exp += rewards.exp;
             while (gameState.exp >= gameState.level * 100) {
@@ -3627,12 +3932,13 @@
             }
 
             if (isLastFloor) {
-                sendMail('🏆 副本通关！', `通关「${dungeonId}」全${gameState.dungeonState.totalFloors}层`, { exp: 0, gold: rewards.gold * 2, equip: equipDrop });
+                const d = getDungeonInfo(dungeonId);
+                sendMail('🏆 副本通关！', `通关「${d.name}」全${gameState.dungeonState.totalFloors}层`, { exp: 0, gold: rewards.gold * 2, equip: equipDrop });
             }
 
             showScreen('dungeonResultScreen');
             document.getElementById('resultTitle').textContent = isLastFloor ? '🏆 副本通关！' : `✅ 第 ${floor} 层通关！`;
-            document.getElementById('resultTitle').style.color = 'var(--color-success)';
+            document.getElementById('resultTitle').style.color = 'var(--quality-green)';
             let html = `
                 <div class="result-reward-item">✨ 经验 +${rewards.exp}</div>
                 <div class="result-reward-item">💰 金币 +${rewards.gold}</div>
@@ -3644,7 +3950,6 @@
             document.getElementById('resultRewards').innerHTML = html;
             document.getElementById('resultDetail').textContent = `下一层奖励更高，是否继续？`;
 
-            // 只有未通关才能继续
             document.getElementById('nextFloorBtn').style.display = isLastFloor ? 'none' : 'inline-block';
             saveGame();
         }
@@ -3655,7 +3960,7 @@
             startDungeonFloor();
         }
 
-        /* ========== 存档系统 ========== */
+        /* ========== Save System ========== */
         function saveGame() {
             localStorage.setItem('agentWorldGame', JSON.stringify(gameState));
         }
@@ -3665,22 +3970,20 @@
             location.reload();
         }
 
-        /* ========== 邮件系统 ========== */
+        /* ========== Mail System ========== */
         function sendMail(title, desc, rewards) {
             gameState.mails.unshift({
                 id: Date.now(),
                 title,
                 desc,
-                rewards,  // { exp, gold, equip }
+                rewards,
                 read: false,
                 time: Date.now(),
                 collected: false
             });
-            // 最多保留50封
             if (gameState.mails.length > 50) gameState.mails.pop();
             updateMailBadge();
             saveGame();
-            // 有奖励时自动弹出通知
             if (rewards.exp || rewards.gold || rewards.equip) {
                 showMailPopup(title, desc, rewards);
             }
@@ -3688,7 +3991,6 @@
 
         let mailPopupTimer = null;
         function showMailPopup(title, desc, rewards) {
-            // 移除旧弹窗
             const old = document.getElementById('mailPopup');
             if (old) old.remove();
             if (mailPopupTimer) clearTimeout(mailPopupTimer);
@@ -3702,14 +4004,14 @@
                 transform: translateX(-50%);
                 width: 90%;
                 max-width: 360px;
-                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-                border: 3px solid #ffd700;
+                background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-shadow) 100%);
+                border: 2px solid var(--gold-main);
                 border-radius: 12px;
                 padding: 14px 16px;
                 z-index: 500;
                 cursor: pointer;
                 animation: mailPopupIn 0.3s ease;
-                box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);
+                box-shadow: 0 4px 20px rgba(201, 162, 39, 0.2);
             `;
 
             const rewardText = [];
@@ -3721,9 +4023,9 @@
                 <div style="display:flex;align-items:center;gap:10px;">
                     <span style="font-size:28px;">📬</span>
                     <div style="flex:1;min-width:0;">
-                        <div style="font-weight:bold;font-size:14px;color:#ffd700;margin-bottom:2px;">${title}</div>
+                        <div style="font-weight:bold;font-size:14px;color:var(--gold-main);margin-bottom:2px;">${title}</div>
                         <div style="font-size:12px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${desc}</div>
-                        <div style="font-size:12px;color:#ffd700;margin-top:4px;">${rewardText.join(' · ')}</div>
+                        <div style="font-size:12px;color:var(--gold-bright);margin-top:4px;">${rewardText.join(' · ')}</div>
                     </div>
                     <span style="font-size:18px;color:#666;">✕</span>
                 </div>
@@ -3766,7 +4068,7 @@
         function renderMailList() {
             const list = document.getElementById('mailListContent');
             if (gameState.mails.length === 0) {
-                list.innerHTML = '<div class="mail-empty">📭 暂无邮件<br><br><span style="font-size:12px;color:var(--text-secondary)">升级和通关会收到邮件通知</span></div>';
+                list.innerHTML = '<div class="mail-empty">📭 暂无邮件<br><br><span style="font-size:12px;color:var(--text-dim)">升级和通关会收到邮件通知</span></div>';
                 return;
             }
             list.innerHTML = '<div class="mail-list">' + gameState.mails.map(m => `
@@ -3798,7 +4100,6 @@
                 saveGame();
                 renderMailList();
             }
-            // 弹出领取确认
             if (!mail.collected && (mail.rewards.exp || mail.rewards.gold || mail.rewards.equip)) {
                 collectMail(id);
             }
@@ -3822,22 +4123,20 @@
             renderMailList();
         }
 
-        /* ========== 装备对比 ========== */
-        // 选中装备时高亮显示穿上后的属性变化
+        /* ========== Equip Compare ========== */
         function highlightEquipOption(eqId, slot) {
             document.querySelectorAll('.equip-option').forEach(el => el.style.borderColor = '');
             const el = document.querySelector(`[data-eqid="${eqId}"]`);
-            if (el) el.style.borderColor = 'var(--job-heal)';
+            if (el) el.style.borderColor = 'var(--gold-main)';
         }
 
         function renderCompare(eqId, slot) {
             const compareEl = document.getElementById('compareSection');
-            const eq = gameState.equipment.find(e => e.id === eqId);
+            const eq = gameState.equipment.find(e => e.id == eqId);
             if (!eq) { compareEl.style.display = 'none'; return; }
 
             const currentEquipped = gameState.equipmentSlots[slot];
             const oldStats = calculateStatsWithout(eq, slot);
-            const tempSlot = { ...gameState.equipmentSlots, [slot]: eq };
             const newStats = calculateStatsWith(slot, eq);
 
             const statLabels = { HP: '生命', ATK: '攻击', DEF: '防御', STR: '力量', AGI: '敏捷', INT: '智力', STA: '体力' };
@@ -3881,7 +4180,15 @@
 
         function calculateStatsWith(slot, eq) {
             const stats = calculateStatsWithout(eq, slot);
-            if (eq) eq.stats.forEach(s => { if (s.type === 'HP') stats.HP += s.value; if (s.type === 'ATK') stats.ATK += s.value; if (s.type === 'DEF') stats.DEF += s.value; if (s.type === 'STR') stats.STR += s.value; if (s.type === 'AGI') stats.AGI += s.value; if (s.type === 'INT') stats.INT += s.value; if (s.type === 'STA') stats.STA += s.value; });
+            if (eq) eq.stats.forEach(s => {
+                if (s.type === 'HP') stats.HP += s.value;
+                if (s.type === 'ATK') stats.ATK += s.value;
+                if (s.type === 'DEF') stats.DEF += s.value;
+                if (s.type === 'STR') stats.STR += s.value;
+                if (s.type === 'AGI') stats.AGI += s.value;
+                if (s.type === 'INT') stats.INT += s.value;
+                if (s.type === 'STA') stats.STA += s.value;
+            });
             return stats;
         }
 
@@ -3889,23 +4196,20 @@
             document.getElementById('compareSection').style.display = 'none';
         }
 
-        /* ========== 角色面板 ========== */
+        /* ========== Character Panel ========== */
         function updateCharacterPanel() {
             const job = JobInfo[gameState.job] || { name: '未知', icon: '❓', color: '#888', badge: '?' };
             const stage = getStageInfo(gameState.level);
 
-            // B1: 角色立绘图片 + 装备图标叠加层
-            // 显示真实角色图
             if (gameState.mbti && gameState.gender) {
                 document.getElementById('charPortrait').src = getCharImage(gameState.mbti, gameState.gender, gameState.level);
             } else {
                 document.getElementById('charPortrait').src = job.image || 'job_tank.png';
             }
-            document.getElementById('charName').textContent = gameState.playerName || job.name;
+            document.getElementById('charName').textContent = gameState.name || job.name;
             document.getElementById('charJob').textContent = job.badge;
             document.getElementById('charLevel').textContent = `Lv.${gameState.level} ${stage.name}`;
 
-            // B1: 装备可视化 — 在 charVisual 里渲染装备图标叠加
             const charVisual = document.getElementById('charVisual');
             const equipSlotMap = {
                 weapon1: { icon: '⚔️', label: '武1', x: '10%',  y: '20%' },
@@ -3927,7 +4231,6 @@
             equipHTML += `</div></div>`;
             charVisual.innerHTML = equipHTML;
 
-            // 更新装备槽位
             const slots = ['weapon1','weapon2','armor1','armor2','accessory1','accessory2'];
             const slotLabels = ['武器','武器2','防具','防具2','饰品','饰品2'];
             const slotIcons = { weapon1:'⚔️', weapon2:'⚔️', armor1:'🦺', armor2:'🦺', accessory1:'💍', accessory2:'💍' };
@@ -3938,22 +4241,20 @@
                 if (eq) {
                     el.innerHTML = `
                         <span class="slot-icon quality-${eq.quality}">${getEquipIcon(eq.type)}</span>
-                        <span class="slot-name quality-${eq.quality}">${eq.name}</span>
+                        <span class="slot-item-name quality-${eq.quality}">${eq.name}</span>
                     `;
-                    el.classList.add('equipped');
+                    el.classList.add('filled');
                 } else {
                     el.innerHTML = `
                         <span class="slot-empty-icon">${slotIcons[slot]}</span>
                         <span class="slot-label">${slotLabels[i]}</span>
                     `;
-                    el.classList.remove('equipped');
+                    el.classList.remove('filled');
                 }
             });
 
-            // 计算属性
             const stats = calculateStats();
 
-            // 更新属性条
             const maxHP = 300, maxATK = 200, maxDEF = 250, maxSub = 80;
             document.getElementById('barHP').style.width = Math.min(stats.HP / maxHP * 100, 100) + '%';
             document.getElementById('barATK').style.width = Math.min(stats.ATK / maxATK * 100, 100) + '%';
@@ -3970,7 +4271,6 @@
             document.getElementById('statINT').textContent = stats.INT;
             document.getElementById('statSTA').textContent = stats.STA;
 
-            // B2: 属性成长曲线 Canvas
             drawStatChart();
         }
 
@@ -3981,13 +4281,13 @@
             const W = canvas.width, H = canvas.height;
             const stats = calculateStats();
             const attrs = [
-                { name: 'HP', val: stats.HP, max: 300, color: '#e74c3c' },
-                { name: 'ATK', val: stats.ATK, max: 200, color: '#e67e22' },
-                { name: 'DEF', val: stats.DEF, max: 250, color: '#3498db' },
-                { name: 'STR', val: stats.STR, max: 80, color: '#9b59b6' },
-                { name: 'AGI', val: stats.AGI, max: 80, color: '#2ecc71' },
-                { name: 'INT', val: stats.INT, max: 80, color: '#f1c40f' },
-                { name: 'STA', val: stats.STA, max: 80, color: '#1abc9c' }
+                { name: 'HP', val: stats.HP, max: 300, color: '#dc143c' },
+                { name: 'ATK', val: stats.ATK, max: 200, color: '#c44536' },
+                { name: 'DEF', val: stats.DEF, max: 250, color: '#5a8fbd' },
+                { name: 'STR', val: stats.STR, max: 80, color: '#b87dd4' },
+                { name: 'AGI', val: stats.AGI, max: 80, color: '#3dd68c' },
+                { name: 'INT', val: stats.INT, max: 80, color: '#e8c547' },
+                { name: 'STA', val: stats.STA, max: 80, color: '#4aba7a' }
             ];
             const barW = W / attrs.length - 4;
             ctx.clearRect(0, 0, W, H);
@@ -3997,7 +4297,7 @@
                 const y = H - 20 - barH;
                 ctx.fillStyle = a.color;
                 ctx.fillRect(x, y, barW, barH);
-                ctx.fillStyle = '#e0e0e0';
+                ctx.fillStyle = '#e8e4d9';
                 ctx.font = '9px monospace';
                 ctx.textAlign = 'center';
                 ctx.fillText(a.name, x + barW/2, H - 6);
@@ -4040,17 +4340,16 @@
             };
         }
 
-        // 点击装备槽位
+        /* ========== Equipment Slots ========== */
         let currentSlot = null;
+
         function clickSlot(slot) {
             currentSlot = slot;
             const eq = gameState.equipmentSlots[slot];
 
             if (eq) {
-                // 槽位有装备 → 卸下
                 unequipItem(slot);
             } else {
-                // 槽位为空 → 从背包选一件
                 openEquipSelect(slot);
             }
         }
@@ -4069,7 +4368,6 @@
             const slotType = slot.startsWith('weapon') ? 'weapon' :
                              slot.startsWith('armor')   ? 'armor'   : 'accessory';
 
-            // 按类型筛选背包里的装备
             const typeMap = {
                 weapon: ['剑', '盾'],
                 armor:  ['护甲', '头盔', '护靴', '披风', '护腕'],
@@ -4078,7 +4376,7 @@
             const allowed = typeMap[slotType] || [];
 
             const candidates = gameState.equipment.filter(eq =>
-                allowed.includes(eq.type) && !Object.values(gameState.equipmentSlots).find(e => e && e.id === eq.id)
+                allowed.includes(eq.type) && !Object.values(gameState.equipmentSlots).find(e => e && e.id == eq.id)
             );
 
             if (candidates.length === 0) {
@@ -4107,15 +4405,12 @@
             resetCompare();
         }
 
-        // 从背包点击装备 → 弹出选择装备栏位界面
         function openEquipFromBag(eqId) {
-            const eq = gameState.equipment.find(e => e.id === eqId);
+            const eq = gameState.equipment.find(e => e.id == eqId);
             if (!eq) return;
 
-            // 判断该装备已装备的位置
-            const equippedSlot = Object.entries(gameState.equipmentSlots).find(([, e]) => e && e.id === eqId);
+            const equippedSlot = Object.entries(gameState.equipmentSlots).find(([, e]) => e && e.id == eqId);
             if (equippedSlot) {
-                // 已装备 → 卸下
                 const [slot] = equippedSlot;
                 gameState.equipmentSlots[slot] = null;
                 saveGame();
@@ -4124,7 +4419,6 @@
                 return;
             }
 
-            // 未装备 → 判断类型，给出对应槽位选择
             const slotType = eq.type === '剑' || eq.type === '盾' ? 'weapon' :
                              eq.type === '戒指' ? 'accessory' : 'armor';
             const slotMap = {
@@ -4134,29 +4428,24 @@
             };
             const candidates = slotMap[slotType] || [];
 
-            // 找空槽位
             const emptySlot = candidates.find(s => !gameState.equipmentSlots[s]);
             if (emptySlot) {
-                // 只有一个空槽，直接穿上
                 equipToSlot(eqId, emptySlot);
             } else {
-                // 两个槽都满了，让用户选
                 openEquipSelect(candidates[0]);
             }
         }
 
-        /* ========== 换装/改名 ========== */
-        let customizeSelected = null; // 当前选中的外观
+        /* ========== Customize ========== */
+        let customizeSelected = null;
 
         function openCustomize() {
             const job = gameState.job;
             const jobInfo = JobInfo[job];
             customizeSelected = gameState.appearance;
 
-            // 填充名字
             document.getElementById('customizeNameInput').value = gameState.name || '';
 
-            // 渲染外观皮肤列表（当前职业的AppearanceData）
             const skins = AppearanceData[job] || [];
             const container = document.getElementById('customizeSkins');
             container.innerHTML = '';
@@ -4172,19 +4461,12 @@
                     customizeSelected = skin.id;
                     document.querySelectorAll('.skin-card').forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
-                    // 更新预览图：当前职业立绘（暂用职业图作为主视觉）
                     document.getElementById('previewImg').src = jobInfo.image || '';
                 };
                 container.appendChild(card);
             });
 
-            // 设置预览图
-            const currentSkin = skins.find(s => s.id === customizeSelected);
             document.getElementById('previewImg').src = jobInfo.image || '';
-            if (currentSkin) {
-                document.getElementById('previewImg').alt = currentSkin.name;
-            }
-
             document.getElementById('customizeModal').classList.add('show');
         }
 
@@ -4193,10 +4475,8 @@
         }
 
         function confirmCustomize() {
-            // 保存名字
             const newName = document.getElementById('customizeNameInput').value.trim();
             if (newName) gameState.name = newName;
-            // 保存外观
             if (customizeSelected) gameState.appearance = customizeSelected;
 
             saveGame();
@@ -4206,11 +4486,10 @@
         }
 
         function equipToSlot(eqId, slot) {
-            const idx = gameState.equipment.findIndex(eq => eq.id === eqId);
+            const idx = gameState.equipment.findIndex(eq => eq.id == eqId);
             if (idx === -1) return;
             const eq = gameState.equipment.splice(idx, 1)[0];
 
-            // 记录穿戴前的属性
             const oldStats = calculateStats();
 
             gameState.equipmentSlots[slot] = eq;
@@ -4219,24 +4498,21 @@
             updateCharacterPanel();
             updateEquipmentUI();
 
-            // === 装备穿戴动效 ===
             const slotEl = document.getElementById('slot-' + slot);
             const newStats = calculateStats();
             const changedStats = [];
             ['hp','atk','def','str','agi','int','sta'].forEach((s, i) => {
-                const oldVal = [oldStats.hp, oldStats.atk, oldStats.def, oldStats.str, oldStats.agi, oldStats.int, oldStats.sta][i];
-                const newVal = [newStats.hp, newStats.atk, newStats.def, newStats.str, newStats.agi, newStats.int, newStats.sta][i];
+                const oldVal = [oldStats.HP, oldStats.ATK, oldStats.DEF, oldStats.STR, oldStats.AGI, oldStats.INT, oldStats.STA][i];
+                const newVal = [newStats.HP, newStats.ATK, newStats.DEF, newStats.STR, newStats.AGI, newStats.INT, newStats.STA][i];
                 const diff = newVal - oldVal;
-                if (diff > 0) changedStats.push({ label: s.toUpperCase(), diff, color: ['#ff4d4f','#ff7d00','#52c41a','#13c2c2','#722ed1','#eb2f96','#faad14'][i] });
+                if (diff > 0) changedStats.push({ label: ['HP','ATK','DEF','STR','AGI','INT','STA'][i], diff, color: ['#dc143c','#c44536','#5a8fbd','#b87dd4','#3dd68c','#e8c547','#4aba7a'][i] });
             });
 
-            // 1) 闪光
             slotEl.classList.remove('flash');
-            void slotEl.offsetWidth; // reflow 触发重绘
+            void slotEl.offsetHeight;
             slotEl.classList.add('flash');
             setTimeout(() => slotEl.classList.remove('flash'), 700);
 
-            // 2) 粒子散射
             const colors = ['#fff','#ffd700','#ff69b4','#00ffff','#98fb98'];
             for (let i = 0; i < 12; i++) {
                 const p = document.createElement('div');
@@ -4253,11 +4529,8 @@
                 setTimeout(() => p.remove(), 750);
             }
 
-            // 3) 属性数字跳动
             const statLabels = { hp:'生命', atk:'攻击', def:'防御', str:'力量', agi:'敏捷', int:'智力', sta:'体力' };
             changedStats.forEach((s, i) => {
-                const bar = slotEl.closest('.character-panel').querySelector(`[data-stat="${s.label.toLowerCase()}"]`) ||
-                            slotEl.closest('.eq-info') || slotEl;
                 const bump = document.createElement('div');
                 bump.className = 'stat-bump';
                 bump.textContent = `+${s.diff} ${statLabels[s.label.toLowerCase()]}`;
@@ -4271,61 +4544,51 @@
             });
         }
 
-        /* ========== 分享卡 ========== */
+        /* ========== Share Card ========== */
         function generateShareCard() {
             const canvas = document.getElementById('shareCanvas');
             const ctx = canvas.getContext('2d');
-            
-            // 背景
+
             const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
-            gradient.addColorStop(0, '#1a1a2e');
-            gradient.addColorStop(1, '#0d0d0d');
+            gradient.addColorStop(0, '#0a0a10');
+            gradient.addColorStop(1, '#12121a');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, 1200, 630);
-            
-            // 边框装饰
-            ctx.strokeStyle = '#333355';
-            ctx.lineWidth = 8;
+
+            ctx.strokeStyle = '#6b5a2e';
+            ctx.lineWidth = 6;
             ctx.strokeRect(20, 20, 1160, 590);
-            
-            // 标题
-            ctx.fillStyle = '#e0e0e0';
-            ctx.font = 'bold 48px sans-serif';
+
+            ctx.fillStyle = '#e8e4d9';
+            ctx.font = 'bold 48px Cinzel, serif';
             ctx.textAlign = 'center';
             ctx.fillText('AGENT WORLD', 600, 100);
-            
-            // 职业图标
+
             const info = JobInfo[gameState.job];
             ctx.font = '120px sans-serif';
             ctx.fillText(info.icon, 600, 280);
-            
-            // 职业名称
+
             ctx.fillStyle = info.color;
-            ctx.font = 'bold 72px sans-serif';
+            ctx.font = 'bold 72px Cinzel, serif';
             ctx.fillText(info.name, 600, 380);
-            
-            // 等级
+
             const stage = getStage(gameState.level);
-            ctx.fillStyle = '#e0e0e0';
+            ctx.fillStyle = '#e8e4d9';
             ctx.font = '36px sans-serif';
             ctx.fillText(`Lv.${gameState.level} · ${stage.name}`, 600, 440);
-            
-            // 经验
+
             const expNeeded = gameState.level * 100;
-            ctx.fillStyle = '#888';
+            ctx.fillStyle = '#9a968a';
             ctx.font = '28px sans-serif';
             ctx.fillText(`总经验: ${gameState.exp + (gameState.level - 1) * gameState.level * 100} | 金币: ${gameState.gold}`, 600, 500);
-            
-            // 装备数量
+
             ctx.fillText(`收集装备: ${gameState.equipment.length}件`, 600, 550);
-            
-            // 显示预览
+
             document.getElementById('sharePreview').style.display = 'block';
             canvas.style.display = 'block';
-            
-            // 下载按钮
+
             const downloadBtn = document.createElement('button');
-            downloadBtn.className = 'pixel-btn primary';
+            downloadBtn.className = 'fantasy-btn primary';
             downloadBtn.style.marginTop = '16px';
             downloadBtn.textContent = '📥 下载分享卡';
             downloadBtn.onclick = () => {
@@ -4334,6 +4597,9 @@
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             };
+            const existingBtn = document.getElementById('downloadShareBtn');
+            if (existingBtn) existingBtn.remove();
+            downloadBtn.id = 'downloadShareBtn';
             document.getElementById('sharePreview').appendChild(downloadBtn);
         }
 
@@ -4341,9 +4607,8 @@
             generateShareCard();
         }
 
-        /* ========== 初始化 ========== */
+        /* ========== Init ========== */
         document.addEventListener('DOMContentLoaded', () => {
-            // 渲染标题页存档预览
             renderTitleSavePreview();
         });
     </script>
