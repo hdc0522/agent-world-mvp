@@ -5040,6 +5040,43 @@ function openRuneSelect(slotIdx) {
 // ====================================================
 let battleBuffs = { stun: 0, poison: 0, rage: 0 };
 
+function addBattleLog(text, type) {
+    const log = document.getElementById('battleLog');
+    if (!log) return;
+    const entry = document.createElement('div');
+    entry.className = 'battle-log-entry ' + type;
+    entry.textContent = text;
+    log.appendChild(entry);
+    log.scrollTop = log.scrollHeight;
+}
+
+function exitDungeon() {
+    if (dungeonState) dungeonState.active = false;
+    document.getElementById('battleLog').innerHTML = '';
+    document.getElementById('battleEndArea').classList.add('hidden');
+    document.getElementById('battleActions').classList.remove('hidden');
+    showScreen('idleScreen');
+}
+
+function showDungeonResult(won) {
+    const endArea = document.getElementById('battleEndArea');
+    const endText = document.getElementById('battleEndText');
+    const nextBtn = document.getElementById('battleNextBtn');
+    if (!endArea) return;
+    endArea.classList.remove('hidden');
+    document.getElementById('battleActions').classList.add('hidden');
+    if (won) {
+        endText.textContent = '🎉 胜利！';
+        endText.style.color = '#FFD700';
+        nextBtn.style.display = '';
+        nextBtn.textContent = dungeonState.floor >= dungeonState.maxFloor ? '领取奖励' : '下一层';
+    } else {
+        endText.textContent = '💀 战败...';
+        endText.style.color = '#FF4444';
+        nextBtn.style.display = 'none';
+    }
+}
+
 function startDungeon(id) {
     dungeonState.dungeonId = id;
     dungeonState.floor = 1;
@@ -5047,8 +5084,8 @@ function startDungeon(id) {
     const stats = calculateStats();
     dungeonState.playerHp = stats.hp;
     dungeonState.playerMaxHp = stats.hp;
-    startDungeonFloor();
     showScreen('dungeonBattleScreen');
+    startDungeonFloor();
 }
 
 function startDungeonFloor() {
