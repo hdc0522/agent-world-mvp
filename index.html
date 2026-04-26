@@ -2113,7 +2113,130 @@
     .text-tank { color: var(--tank); }
     .text-dps { color: var(--dps); }
     .text-gold { color: var(--gold); }
-    </style>
+    .gold-text { color: var(--gold); font-weight: 700; }
+
+    /* ====================================================
+       TALENT SCREEN
+    ==================================================== */
+    .talent-screen { padding: 16px; max-width: 480px; margin: 0 auto; }
+    .talent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .talent-title { font-size: 18px; font-weight: 700; color: var(--gold); }
+    .talent-points-info { font-size: 13px; color: var(--text-dim); }
+    .talent-trees { display: flex; flex-direction: column; gap: 12px; }
+    .talent-tree { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+    .talent-tree-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 15px; font-weight: 600; }
+    .talent-tree-tiers { display: flex; gap: 6px; flex-wrap: wrap; }
+    .talent-node { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: all 0.2s; border: 2px solid var(--border); background: var(--bg-void); position: relative; }
+    .talent-node.locked { opacity: 0.4; cursor: not-allowed; }
+    .talent-node.purchased { background: var(--bg-elevated); }
+    .talent-node.can-buy { animation: glow-pulse 1.5s infinite; cursor: pointer; }
+    .talent-node-tooltip { position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%); background: var(--bg-void); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font-size: 11px; white-space: nowrap; z-index: 100; pointer-events: none; display: none; }
+    .talent-node:hover .talent-node-tooltip { display: block; }
+
+    /* ====================================================
+       QUEST SCREEN
+    ==================================================== */
+    .quest-screen { padding: 16px; max-width: 480px; margin: 0 auto; }
+    .quest-header { margin-bottom: 12px; }
+    .quest-title { font-size: 16px; font-weight: 700; color: var(--gold); }
+    .quest-refresh-hint { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    .quest-list { display: flex; flex-direction: column; gap: 8px; }
+    .quest-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .quest-item.completed { opacity: 0.6; border-color: var(--heal); }
+    .quest-item.collected { opacity: 0.4; }
+    .quest-info { flex: 1; }
+    .quest-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .quest-desc { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+    .quest-progress { font-size: 11px; color: var(--gold); margin-top: 3px; }
+    .quest-reward-btn { padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; border: none; font-weight: 600; }
+    .quest-reward-btn.done { background: var(--heal); color: #000; }
+    .quest-reward-btn.pending { background: var(--border); color: var(--text-dim); cursor: not-allowed; }
+    .quest-divider { height: 1px; background: var(--border); margin: 16px 0; }
+    .title-list { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
+    .title-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 12px; }
+    .title-item.locked { opacity: 0.4; }
+    .title-item.unlocked { border-color: var(--gold); }
+    .title-item.active { background: var(--bg-elevated); }
+    .title-name { color: var(--gold); font-weight: 600; }
+    .title-desc { color: var(--text-dim); font-size: 11px; margin-top: 1px; }
+
+    /* ====================================================
+       RUNE SCREEN
+    ==================================================== */
+    .rune-screen { padding: 16px; max-width: 480px; margin: 0 auto; }
+    .rune-header { margin-bottom: 12px; }
+    .rune-title { font-size: 18px; font-weight: 700; color: var(--purple); }
+    .rune-slots { display: flex; justify-content: center; gap: 10px; margin-bottom: 16px; }
+    .rune-slot { width: 56px; height: 56px; border-radius: 10px; border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 22px; background: var(--bg-card); transition: all 0.2s; position: relative; }
+    .rune-slot.locked { opacity: 0.3; cursor: not-allowed; }
+    .rune-slot.filled { border-style: solid; }
+    .rune-slot-hint { position: absolute; bottom: -18px; font-size: 9px; color: var(--text-dim); white-space: nowrap; }
+    .rune-list-title { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+    .rune-list { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    .rune-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: all 0.2s; }
+    .rune-item:hover { background: var(--bg-elevated); }
+    .rune-item-icon { font-size: 18px; }
+    .rune-item-name { font-size: 9px; color: var(--text-dim); text-align: center; }
+
+    /* ====================================================
+       SIGN-IN MODAL
+    ==================================================== */
+    .signin-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .signin-modal.show { display: flex; }
+    .signin-content { background: var(--bg-card); border: 1px solid var(--gold); border-radius: 16px; padding: 24px; width: 90%; max-width: 360px; text-align: center; }
+    .signin-title { font-size: 18px; font-weight: 700; color: var(--gold); margin-bottom: 4px; }
+    .signin-streak { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; }
+    .signin-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 16px; }
+    .signin-day { background: var(--bg-void); border: 1px solid var(--border); border-radius: 6px; padding: 6px 2px; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .signin-day.today { border-color: var(--gold); background: var(--bg-elevated); }
+    .signin-day.signed { border-color: var(--heal); background: rgba(61,214,140,0.1); }
+    .signin-day .day-label { color: var(--text-dim); }
+    .signin-day .day-reward { color: var(--gold); font-size: 9px; }
+
+    /* ====================================================
+       QUEST REWARD MODAL
+    ==================================================== */
+    .quest-reward-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .quest-reward-modal.show { display: flex; }
+    .quest-reward-content { background: var(--bg-card); border: 1px solid var(--heal); border-radius: 16px; padding: 24px; width: 80%; max-width: 320px; text-align: center; }
+    .quest-reward-title { font-size: 18px; font-weight: 700; color: var(--heal); margin-bottom: 12px; }
+    .quest-reward-info { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+
+    /* ====================================================
+       ENHANCED BATTLE
+    ==================================================== */
+    .battle-btn { min-height: 48px; font-size: 14px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; }
+    .battle-btn:active { transform: scale(0.95); }
+    .battle-btn.attack { background: linear-gradient(135deg, #C44536, #8B2500); color: #fff; }
+    .battle-btn.heal { background: linear-gradient(135deg, #3DD68C, #1a7a4a); color: #fff; }
+    .battle-btn.special { background: linear-gradient(135deg, #B87DD4, #7B2D9E); color: #fff; }
+    .battle-btn.stunned { background: var(--border) !important; color: var(--text-dim) !important; cursor: not-allowed; animation: none !important; }
+    .enemy-skill-banner { background: rgba(220,53,69,0.15); border: 1px solid rgba(220,53,69,0.4); border-radius: 8px; padding: 8px 12px; margin: 4px 0; font-size: 13px; color: #ff6b6b; text-align: center; animation: fadeIn 0.3s; }
+    .poison-effect { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,128,0,0.2); border-radius: inherit; pointer-events: none; animation: poison-pulse 1s infinite; }
+    @keyframes poison-pulse { 0%,100%{opacity:0.3} 50%{opacity:0.7} }
+    .rage-effect { animation: rage-glow 0.5s infinite alternate; }
+    @keyframes rage-glow { from{filter:brightness(1)} to{filter:brightness(1.4) sepia(0.3)} }
+    .battle-status-buffs { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+    .buff-badge { font-size: 10px; padding: 2px 5px; border-radius: 4px; background: var(--bg-elevated); color: var(--text-dim); }
+    .buff-badge.stun { background: rgba(255,200,0,0.2); color: #ffc800; }
+    .buff-badge.poison { background: rgba(0,128,0,0.3); color: #00ff00; }
+    .buff-badge.rage { background: rgba(255,80,0,0.3); color: #ff6000; }
+
+    /* ====================================================
+       AUDIO BUTTON
+    ==================================================== */
+    .audio-toggle { position: fixed; top: 60px; right: 8px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; z-index: 500; transition: all 0.2s; }
+    .audio-toggle:hover { background: var(--bg-elevated); }
+    .audio-toggle.muted { opacity: 0.5; }
+
+    /* ====================================================
+       CHARACTER EXTRA BUTTONS
+    ==================================================== */
+    .char-extra-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
+    .char-extra-btn { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 4px; font-size: 11px; cursor: pointer; color: var(--text); transition: all 0.2s; text-align: center; }
+    .char-extra-btn:hover { background: var(--bg-elevated); border-color: var(--gold); color: var(--gold); }
+
+     </style>
 </head>
 <body>
 
@@ -2406,6 +2529,7 @@
                         <div class="char-stat-item"><span class="char-stat-name">防御</span><span class="char-stat-num" id="charDef">10</span></div>
                         <div class="char-stat-item"><span class="char-stat-name">生命</span><span class="char-stat-num" id="charHp">100</span></div>
                         <div class="char-stat-item"><span class="char-stat-name">暴击</span><span class="char-stat-num" id="charCrit">15%</span></div>
+                        <div class="char-stat-item"><span class="char-stat-name">闪避</span><span class="char-stat-num" id="charDodge">0%</span></div>
                     </div>
                     <div class="equip-preview-row" id="equipPreviewRow">
                         <div class="equip-preview-slot" id="equipPreview_weapon" title="武器">?</div>
@@ -2416,6 +2540,12 @@
                         <div class="equip-preview-slot" id="equipPreview_pants" title="护腿">?</div>
                     </div>
                     <button class="customize-btn" onclick="openCustomize()">✏️ 换装 / 改名</button>
+                    <div class="char-extra-btns">
+                        <button class="char-extra-btn" onclick="showPanel('talent')">🌟 天赋</button>
+                        <button class="char-extra-btn" onclick="showPanel('quest')">📜 任务</button>
+                        <button class="char-extra-btn" onclick="showPanel('rune')">🔮 符文</button>
+                        <button class="char-extra-btn" onclick="showSignInModal()">📅 签到</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2470,6 +2600,65 @@
         <span>排行</span>
     </button>
 </nav>
+
+<!-- ========== TALENT SCREEN ========== -->
+<div class="screen" id="talentScreen">
+    <div class="talent-screen">
+        <div class="talent-header">
+            <div class="talent-title">🌟 天赋系统</div>
+            <div class="talent-points-info">可用天赋点: <span id="talentPointsAvail" class="gold-text">0</span></div>
+        </div>
+        <div class="talent-trees" id="talentTrees"></div>
+        <button class="dungeon-back-btn" onclick="showPanel('character')">← 返回角色</button>
+    </div>
+</div>
+
+<!-- ========== QUEST SCREEN ========== -->
+<div class="screen" id="questScreen">
+    <div class="quest-screen">
+        <div class="quest-header">
+            <div class="quest-title">📜 每日任务</div>
+            <div class="quest-refresh-hint">每日凌晨重置</div>
+        </div>
+        <div class="quest-list" id="questList"></div>
+        <div class="quest-divider"></div>
+        <div class="quest-title" style="font-size:14px;margin-bottom:8px;">🏅 称号列表</div>
+        <div class="title-list" id="titleList"></div>
+        <button class="dungeon-back-btn" onclick="showPanel('idle')">← 返回主页</button>
+    </div>
+</div>
+
+<!-- ========== RUNE SCREEN ========== -->
+<div class="screen" id="runeScreen">
+    <div class="rune-screen">
+        <div class="rune-header">
+            <div class="rune-title">🔮 符文系统</div>
+        </div>
+        <div class="rune-slots" id="runeSlots"></div>
+        <div class="rune-list-title">可镶嵌符文</div>
+        <div class="rune-list" id="runeList"></div>
+        <button class="dungeon-back-btn" onclick="showPanel('character')">← 返回角色</button>
+    </div>
+</div>
+
+<!-- ========== SIGN-IN MODAL ========== -->
+<div class="signin-modal" id="signinModal">
+    <div class="signin-content">
+        <div class="signin-title">📅 每日签到</div>
+        <div class="signin-streak">连续签到 <span id="signinStreak" class="gold-text">0</span> 天</div>
+        <div class="signin-grid" id="signinGrid"></div>
+        <button class="fantasy-btn primary" onclick="closeSignin()">收下奖励</button>
+    </div>
+</div>
+
+<!-- ========== QUEST REWARD MODAL ========== -->
+<div class="quest-reward-modal" id="questRewardModal">
+    <div class="quest-reward-content">
+        <div class="quest-reward-title">🎯 任务完成！</div>
+        <div class="quest-reward-info" id="questRewardInfo"></div>
+        <button class="fantasy-btn primary" onclick="closeQuestReward()">领取</button>
+    </div>
+</div>
 
 <!-- Reward Modal -->
 <div class="reward-modal" id="rewardModal">
@@ -2753,6 +2942,217 @@ const DungeonData = [
 const EnemyNames = ["史莱姆", "哥布林", "骷髅战士", "暗影猎手", "熔岩巨人", "冰霜巨龙", "虚空魔神"];
 
 // ====================================================
+// TALENT SYSTEM
+// ====================================================
+const TalentTrees = {
+    attack: {
+        name: "攻击",
+        icon: "⚔️",
+        color: "#C44536",
+        tiers: [
+            { key: "atk_1", name: "利刃", desc: "攻击 +5", effect: { atk: 5 }, cost: 1 },
+            { key: "atk_2", name: "快攻", desc: "攻击 +8", effect: { atk: 8 }, cost: 1 },
+            { key: "atk_3", name: "暴击强化", desc: "暴击率 +5%", effect: { crit: 5 }, cost: 2 },
+            { key: "atk_4", name: "穿甲", desc: "攻击 +12", effect: { atk: 12 }, cost: 2 },
+            { key: "atk_5", name: "斩杀", desc: "攻击 +20，暴击伤害 +25%", effect: { atk: 20, critDmg: 25 }, cost: 3 }
+        ]
+    },
+    defense: {
+        name: "防御",
+        icon: "🛡️",
+        color: "#5A8FBD",
+        tiers: [
+            { key: "def_1", name: "护甲", desc: "防御 +5", effect: { def: 5 }, cost: 1 },
+            { key: "def_2", name: "铁壁", desc: "防御 +8", effect: { def: 8 }, cost: 1 },
+            { key: "def_3", name: "闪避", desc: "闪避率 +5%", effect: { dodge: 5 }, cost: 2 },
+            { key: "def_4", name: "坚韧", desc: "防御 +12", effect: { def: 12 }, cost: 2 },
+            { key: "def_5", name: "钢铁意志", desc: "防御 +20，受伤 -10%", effect: { def: 20, dmgReduce: 10 }, cost: 3 }
+        ]
+    },
+    survival: {
+        name: "生存",
+        icon: "❤️",
+        color: "#3DD68C",
+        tiers: [
+            { key: "sur_1", name: "生命", desc: "生命 +20", effect: { hp: 20 }, cost: 1 },
+            { key: "sur_2", name: "回复", desc: "生命 +35", effect: { hp: 35 }, cost: 1 },
+            { key: "sur_3", name: "再生", desc: "每回合回复生命 +5%", effect: { regen: 5 }, cost: 2 },
+            { key: "sur_4", name: "护盾", desc: "生命 +50", effect: { hp: 50 }, cost: 2 },
+            { key: "sur_5", name: "不死之身", desc: "生命 +100，死亡时复活一次(50%HP)", effect: { hp: 100, revive: true }, cost: 3 }
+        ]
+    }
+};
+
+const TalentPointsPerLevel = 1; // 每级给1点天赋点
+const MaxTalentRank = 5; // 每系最高5层
+
+// ====================================================
+// QUEST SYSTEM
+// ====================================================
+const QuestTemplates = [
+    { key: "quest_afk", name: "挂机休息", desc: "完成1次挂机", type: "afk", target: 1, reward: { gold: 50, exp: 30 } },
+    { key: "quest_dungeon", name: "副本探索", desc: "通关任意副本1层", type: "dungeon", target: 1, reward: { gold: 80, exp: 50 } },
+    { key: "quest_equip", name: "装备强化", desc: "装备任意物品", type: "equip", target: 1, reward: { gold: 30, exp: 20 } },
+    { key: "quest_upgrade", name: "升级冲刺", desc: "提升1级", type: "levelup", target: 1, reward: { gold: 100, exp: 80 } },
+    { key: "quest_boss", name: "BOSS猎手", desc: "击败第5层以上BOSS", type: "boss", target: 1, reward: { gold: 200, exp: 150 } },
+    { key: "quest_signin", name: "每日签到", desc: "今日签到", type: "signin", target: 1, reward: { gold: 20, exp: 15 } }
+];
+
+function generateDailyQuests() {
+    const shuffled = [...QuestTemplates].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 3).map((t, i) => ({
+        key: t.key + "_" + Date.now(),
+        template: t,
+        progress: 0,
+        completed: false,
+        collected: false
+    }));
+}
+
+function checkAndRefreshQuests() {
+    const now = Date.now();
+    const dayMs = 86400000;
+    if (!gameState.dailyQuestRefresh || now - gameState.dailyQuestRefresh >= dayMs) {
+        gameState.dailyQuests = generateDailyQuests();
+        gameState.dailyQuestRefresh = now;
+        saveGame();
+    }
+}
+
+// ====================================================
+// TITLE SYSTEM
+// ====================================================
+const TitleData = [
+    { key: "first_blood", name: "初出茅庐", desc: "完成第一次战斗", condition: { type: "kills", value: 1 } },
+    { key: "slayer_10", name: "小试牛刀", desc: "累计击杀10只怪物", condition: { type: "kills", value: 10 } },
+    { key: "slayer_50", name: "怪物猎人", desc: "累计击杀50只怪物", condition: { type: "kills", value: 50 } },
+    { key: "slayer_100", name: "屠龙勇士", desc: "累计击杀100只怪物", condition: { type: "kills", value: 100 } },
+    { key: "lv_5", name: "幼儿园毕业", desc: "达到5级", condition: { type: "level", value: 5 } },
+    { key: "lv_10", name: "小学霸", desc: "达到10级", condition: { type: "level", value: 10 } },
+    { key: "lv_15", name: "初中生", desc: "达到15级", condition: { type: "level", value: 15 } },
+    { key: "lv_20", name: "大学生", desc: "达到20级", condition: { type: "level", value: 20 } },
+    { key: "lv_25", name: "博士毕业", desc: "达到25级", condition: { type: "level", value: 25 } },
+    { key: "gold_1000", name: "小有资产", desc: "累计获得1000金币", condition: { type: "gold", value: 1000 } },
+    { key: "gold_10000", name: "富甲一方", desc: "累计获得10000金币", condition: { type: "gold", value: 10000 } },
+    { key: "dungeon_cleared", name: "副本初探", desc: "通关任意副本", condition: { type: "dungeonCleared", value: 1 } },
+    { key: "boss_defeated", name: "BOSS克星", desc: "击败第5层以上BOSS", condition: { type: "bossFloor", value: 5 } },
+    { key: "signin_3", name: "习惯成自然", desc: "连续签到3天", condition: { type: "signinStreak", value: 3 } },
+    { key: "signin_7", name: "坚持不懈", desc: "连续签到7天", condition: { type: "signinStreak", value: 7 } },
+    { key: "talent_5", name: "天赋初现", desc: "点亮任意5个天赋", condition: { type: "talents", value: 5 } },
+    { key: "talent_15", name: "天赋异禀", desc: "点亮任意15个天赋", condition: { type: "talents", value: 15 } },
+    { key: "equip_gold", name: "传说加身", desc: "获得一件金色装备", condition: { type: "equipQuality", value: "gold" } },
+    { key: "playtime_60", name: "时间旅人", desc: "游戏时长超过60分钟", condition: { type: "playtime", value: 3600 } },
+    { key: "damage_1000", name: "伤害输出", desc: "累计造成1000点伤害", condition: { type: "damage", value: 1000 } },
+    { key: "damage_10000", name: "毁灭之力", desc: "累计造成10000点伤害", condition: { type: "damage", value: 10000 } }
+];
+
+function checkTitles() {
+    TitleData.forEach(t => {
+        if (gameState.titles.includes(t.key)) return;
+        let unlocked = false;
+        const c = t.condition;
+        if (c.type === "kills") unlocked = (gameState.totalKills || 0) >= c.value;
+        else if (c.type === "level") unlocked = gameState.level >= c.value;
+        else if (c.type === "gold") unlocked = (gameState.totalGoldEarned || gameState.gold) >= c.value;
+        else if (c.type === "dungeonCleared") unlocked = (gameState.dungeonProgress && Object.values(gameState.dungeonProgress).some(v => v > 0));
+        else if (c.type === "bossFloor") unlocked = (gameState.maxBossFloor || 0) >= c.value;
+        else if (c.type === "signinStreak") unlocked = (gameState.dailySignIn?.streak || 0) >= c.value;
+        else if (c.type === "talents") {
+            const total = (gameState.talentKeys ? Object.values(gameState.talentKeys).flat().length : 0);
+            unlocked = total >= c.value;
+        }
+        else if (c.type === "equipQuality") unlocked = gameState.equipment?.some(e => e.quality === c.value);
+        else if (c.type === "playtime") unlocked = (gameState.totalPlayTime || 0) >= c.value;
+        else if (c.type === "damage") unlocked = (gameState.totalDamage || 0) >= c.value;
+        if (unlocked) {
+            gameState.titles.push(t.key);
+            sendMail("🏅 获得称号", `恭喜解锁称号「${t.name}」！`, {});
+        }
+    });
+}
+
+// ====================================================
+// RUNE SYSTEM
+// ====================================================
+const RuneTypes = ["atk", "def", "hp", "crit", "dodge"];
+const RuneData = {
+    atk: { name: "攻击符文", color: "#C44536", effect: { atk: 15 }, icon: "⚔️" },
+    def: { name: "防御符文", color: "#5A8FBD", effect: { def: 15 }, icon: "🛡️" },
+    hp: { name: "生命符文", color: "#3DD68C", effect: { hp: 50 }, icon: "❤️" },
+    crit: { name: "暴击符文", color: "#B87DD4", effect: { crit: 8 }, icon: "💥" },
+    dodge: { name: "闪避符文", color: "#FFD700", effect: { dodge: 8 }, icon: "💨" }
+};
+const RuneEquipSlots = 3; // 3个符文孔位（需升级解锁）
+const RuneUnlockLevels = [1, 5, 10]; // 分别在1/5/10级解锁
+
+function getRuneBonus() {
+    let bonus = { atk: 0, def: 0, hp: 0, crit: 0, dodge: 0, critDmg: 0, dmgReduce: 0, regen: 0, revive: false };
+    const unlockCount = RuneUnlockLevels.filter(l => gameState.level >= l).length;
+    for (let i = 0; i < unlockCount; i++) {
+        const runeKey = gameState.runes["rune" + i];
+        if (runeKey && RuneData[runeKey]) {
+            const eff = RuneData[runeKey].effect;
+            Object.keys(eff).forEach(k => bonus[k] = (bonus[k] || 0) + eff[k]);
+        }
+    }
+    return bonus;
+}
+
+function getTalentBonus() {
+    let bonus = { atk: 0, def: 0, hp: 0, crit: 0, dodge: 0, critDmg: 0, dmgReduce: 0, regen: 0, revive: false };
+    Object.entries(TalentTrees).forEach(([treeKey, tree]) => {
+        const purchased = gameState.talentKeys[treeKey] || [];
+        tree.tiers.forEach(tier => {
+            if (purchased.includes(tier.key)) {
+                Object.entries(tier.effect).forEach(([k, v]) => bonus[k] = (bonus[k] || 0) + v);
+            }
+        });
+    });
+    return bonus;
+}
+
+function getTotalBonus() {
+    const rune = getRuneBonus();
+    const talent = getTalentBonus();
+    return {
+        atk: rune.atk + talent.atk,
+        def: rune.def + talent.def,
+        hp: rune.hp + talent.hp,
+        crit: Math.min(50, rune.crit + talent.crit),
+        dodge: Math.min(40, rune.dodge + talent.dodge),
+        critDmg: (rune.critDmg || 0) + (talent.critDmg || 0),
+        dmgReduce: (rune.dmgReduce || 0) + (talent.dmgReduce || 0),
+        regen: (rune.regen || 0) + (talent.regen || 0),
+        revive: rune.revive || talent.revive
+    };
+}
+
+// ====================================================
+// SIGN-IN SYSTEM
+// ====================================================
+const SignInRewards = [
+    { day: 1, gold: 20, exp: 15 },
+    { day: 2, gold: 30, exp: 25 },
+    { day: 3, gold: 50, exp: 40 },
+    { day: 4, gold: 80, exp: 60 },
+    { day: 5, gold: 120, exp: 90 },
+    { day: 6, gold: 180, exp: 130 },
+    { day: 7, gold: 300, exp: 200 }
+];
+
+// ====================================================
+// BOSS SKILLS
+// ====================================================
+const BossSkills = {
+    stun: { name: "眩晕打击", desc: "使玩家眩晕1回合", icon: "⚡" },
+    poison: { name: "剧毒之爪", desc: "每回合受到5%最大生命的中毒伤害", icon: "☠️" },
+    rage: { name: "狂暴", desc: "攻击力提升50%，持续3回合", icon: "🔥" },
+    heal: { name: "生命汲取", desc: "恢复30%最大生命", icon: "💀" }
+};
+
+const BossSkillDeck = ["stun", "poison", "rage", "heal"];
+
+// ====================================================
 // GAME STATE
 // ====================================================
 let gameState = {
@@ -2765,7 +3165,20 @@ let gameState = {
     equipmentSlots: { head: null, chest: null, weapon: null, shield: null, accessory: null },
     dungeonProgress: 0,
     mails: [],
-    createdAt: null
+    createdAt: null,
+    // 新系统
+    talents: { attack: 0, defense: 0, survival: 0 }, // 天赋点
+    talentKeys: { attack: [], defense: [], survival: [] }, // 已点天赋key
+    dailySignIn: { lastSignIn: null, streak: 0, rewards: [] }, // 签到
+    dailyQuests: [], // 每日任务
+    dailyQuestRefresh: null, // 任务刷新时间戳
+    titles: [], // 已解锁称号
+    activeTitle: null, // 当前称号
+    runes: {}, // 符文 {slotId: runeKey}
+    totalDamage: 0, // 累计伤害(成就用)
+    totalKills: 0, // 累计击杀
+    totalPlayTime: 0, // 累计游戏时长(秒)
+    floorsCleared: 0 // 通关层数
 };
 
 let quizState = { current: 0, answers: [], locked: false };
@@ -3100,8 +3513,11 @@ function selectAge(age, level, btnEl) {
 }
 
 function tryShowEnterBtn() {
+    console.log('[DEBUG] tryShowEnterBtn called', {gender: gameState.gender, ageStage: gameState.ageStage});
     if (gameState.gender && gameState.ageStage !== undefined) {
-        document.getElementById('enterGameBtn').style.display = 'inline-block';
+        const btn = document.getElementById('enterGameBtn');
+        if (btn) { btn.style.display = 'inline-block'; console.log('[DEBUG] Enter button shown!'); }
+        else { console.log('[DEBUG] enterGameBtn not found!'); }
     }
 }
 
@@ -3474,10 +3890,11 @@ function calculateStats() {
             else if (s.type === 'hp') hp += s.value;
         });
     });
-    atk += gameState.level * 2;
-    def += gameState.level * 2;
-    hp += gameState.level * 10;
-    return { atk, def, hp };
+    const bonus = getTotalBonus();
+    atk += bonus.atk + gameState.level * 2;
+    def += bonus.def + gameState.level * 2;
+    hp += bonus.hp + gameState.level * 10;
+    return { atk, def, hp, crit: bonus.crit, dodge: bonus.dodge, critDmg: bonus.critDmg, dmgReduce: bonus.dmgReduce, regen: bonus.regen, revive: bonus.revive };
 }
 
 function showLevelUp() {
@@ -3890,7 +4307,9 @@ function updateCharacterPanel() {
     document.getElementById('charAtk').textContent = stats.atk;
     document.getElementById('charDef').textContent = stats.def;
     document.getElementById('charHp').textContent = stats.hp;
-    document.getElementById('charCrit').textContent = '15%';
+    document.getElementById('charCrit').textContent = (stats.crit || 0) + '%';
+    const dodgeEl = document.getElementById('charDodge');
+    if (dodgeEl) dodgeEl.textContent = (stats.dodge || 0) + '%';
 
     // 装备预览：显示当前穿戴的装备图标
     updateEquipPreview();
@@ -3994,6 +4413,681 @@ function showShare() {
 // ====================================================
 // INIT
 // ====================================================
+
+let audioCtx = null;
+let audioEnabled = true;
+let audioMuted = false;
+
+function initAudio() {
+    try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch(e) { audioCtx = null; }
+}
+
+function playSound(type) {
+    if (!audioEnabled || audioMuted || !audioCtx) return;
+    try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        if (type === 'hit') {
+            osc.frequency.setValueAtTime(80, now);
+            osc.frequency.exponentialRampToValueAtTime(40, now + 0.1);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+            osc.start(now); osc.stop(now + 0.1);
+        } else if (type === 'crit') {
+            osc.frequency.setValueAtTime(200, now);
+            osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
+            gain.gain.setValueAtTime(0.4, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+            osc.start(now); osc.stop(now + 0.15);
+        } else if (type === 'heal') {
+            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.exponentialRampToValueAtTime(800, now + 0.2);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+            osc.start(now); osc.stop(now + 0.2);
+        } else if (type === 'equip') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(523, now);
+            osc.frequency.setValueAtTime(659, now + 0.1);
+            osc.frequency.setValueAtTime(784, now + 0.2);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+            osc.start(now); osc.stop(now + 0.3);
+        } else if (type === 'levelup') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523, now);
+            osc.frequency.setValueAtTime(659, now + 0.1);
+            osc.frequency.setValueAtTime(784, now + 0.2);
+            osc.frequency.setValueAtTime(1047, now + 0.3);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+            osc.start(now); osc.stop(now + 0.5);
+        } else if (type === 'quest') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523, now);
+            osc.frequency.setValueAtTime(659, now + 0.15);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+            osc.start(now); osc.stop(now + 0.25);
+        }
+    } catch(e) {}
+}
+
+function toggleAudioMute() {
+    audioMuted = !audioMuted;
+    const btn = document.getElementById('audioToggle');
+    if (btn) btn.classList.toggle('muted', audioMuted);
+    if (!audioMuted && audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+// ====================================================
+// TALENT FUNCTIONS
+// ====================================================
+function getTalentPointsTotal() {
+    // 每级给1点天赋点
+    return gameState.level - 1;
+}
+
+function getTalentPointsUsed() {
+    let total = 0;
+    Object.values(gameState.talentKeys).forEach(keys => { total += keys.length; });
+    return total;
+}
+
+function getTalentPointsAvailable() {
+    return getTalentPointsTotal() - getTalentPointsUsed();
+}
+
+function renderTalentScreen() {
+    const available = getTalentPointsAvailable();
+    document.getElementById('talentPointsAvail').textContent = available;
+    const container = document.getElementById('talentTrees');
+    container.innerHTML = '';
+    Object.entries(TalentTrees).forEach(([treeKey, tree]) => {
+        const purchased = gameState.talentKeys[treeKey] || [];
+        const treeDiv = document.createElement('div');
+        treeDiv.className = 'talent-tree';
+        const header = document.createElement('div');
+        header.className = 'talent-tree-header';
+        header.style.color = tree.color;
+        header.innerHTML = `<span>${tree.icon}</span><span>${tree.name}</span>`;
+        treeDiv.appendChild(header);
+        const tiersDiv = document.createElement('div');
+        tiersDiv.className = 'talent-tree-tiers';
+        tree.tiers.forEach((tier, idx) => {
+            const isPurchased = purchased.includes(tier.key);
+            const isNext = idx === purchased.length;
+            const canBuy = isNext && available > 0;
+            const node = document.createElement('div');
+            node.className = 'talent-node';
+            if (isPurchased) node.classList.add('purchased');
+            else if (canBuy) node.classList.add('can-buy');
+            else node.classList.add('locked');
+            node.style.borderColor = isPurchased ? tree.color : (canBuy ? tree.color : 'var(--border)');
+            node.textContent = tree.icon;
+            const tooltip = document.createElement('div');
+            tooltip.className = 'talent-node-tooltip';
+            tooltip.innerHTML = `<div style="font-weight:700;color:${tree.color}">${tier.name}</div><div>${tier.desc}</div><div style="color:var(--gold)">消耗: ${tier.cost}点</div>`;
+            node.appendChild(tooltip);
+            node.onclick = () => { if (canBuy) buyTalent(treeKey, tier.key, tier.cost); };
+            tiersDiv.appendChild(node);
+        });
+        treeDiv.appendChild(tiersDiv);
+        container.appendChild(treeDiv);
+    });
+}
+
+function buyTalent(treeKey, tierKey, cost) {
+    if (getTalentPointsAvailable() < cost) return;
+    if (!gameState.talentKeys[treeKey]) gameState.talentKeys[treeKey] = [];
+    gameState.talentKeys[treeKey].push(tierKey);
+    playSound('equip');
+    saveGame();
+    renderTalentScreen();
+    checkTitles();
+}
+
+// ====================================================
+// QUEST FUNCTIONS
+// ====================================================
+function renderQuestScreen() {
+    checkAndRefreshQuests();
+    const list = document.getElementById('questList');
+    list.innerHTML = '';
+    gameState.dailyQuests.forEach(q => {
+        const t = q.template;
+        const item = document.createElement('div');
+        item.className = 'quest-item' + (q.completed && q.collected ? ' collected' : q.completed ? ' completed' : '');
+        item.innerHTML = `
+            <div class="quest-info">
+                <div class="quest-name">${t.name}</div>
+                <div class="quest-desc">${t.desc}</div>
+                <div class="quest-progress">${q.progress} / ${t.target}</div>
+            </div>
+            ${q.collected ? '<span style="color:var(--text-dim);font-size:12px">已领取</span>' :
+              q.completed ? '<button class="quest-reward-btn done" onclick="collectQuest(\'' + q.key + '\')">领取</button>' :
+              '<button class="quest-reward-btn pending">进行中</button>'}
+        `;
+        list.appendChild(item);
+    });
+    renderTitleList();
+}
+
+function collectQuest(key) {
+    const q = gameState.dailyQuests.find(q => q.key === key);
+    if (!q || !q.completed || q.collected) return;
+    const t = q.template;
+    q.collected = true;
+    gameState.gold += t.reward.gold;
+    gameState.exp += t.reward.exp;
+    playSound('quest');
+    saveGame();
+    renderQuestScreen();
+}
+
+function progressQuest(type, amount = 1) {
+    if (!gameState.dailyQuests) return;
+    gameState.dailyQuests.forEach(q => {
+        if (q.completed || q.collected) return;
+        if (q.template.type === type) {
+            q.progress = Math.min(q.template.target, q.progress + amount);
+            if (q.progress >= q.template.target) {
+                q.completed = true;
+                showQuestReward(q.template.name);
+            }
+        }
+    });
+    saveGame();
+}
+
+function showQuestReward(questName) {
+    const q = gameState.dailyQuests.find(q => q.template.name === questName && q.completed && !q.collected);
+    if (q) {
+        const t = q.template;
+        let rewardText = [];
+        if (t.reward.exp) { gameState.exp += t.reward.exp; rewardText.push(`经验 +${t.reward.exp}`); }
+        if (t.reward.gold) { gameState.gold += t.reward.gold; rewardText.push(`金币 +${t.reward.gold}`); }
+        if (t.reward.equip) {
+            if (gameState.equipment.length >= 10) gameState.equipment.pop();
+            gameState.equipment.unshift(t.reward.equip);
+            rewardText.push(`获得 ${t.reward.equip.name}`);
+        }
+        document.getElementById('questRewardInfo').textContent = `任务「${questName}」已完成！\n${rewardText.join(' · ')}`;
+        q.collected = true;
+        saveGame();
+        playSound('quest');
+    } else {
+        document.getElementById('questRewardInfo').textContent = `任务「${questName}」已完成！`;
+    }
+    document.getElementById('questRewardModal').classList.add('show');
+}
+
+function closeQuestReward() {
+    document.getElementById('questRewardModal').classList.remove('show');
+}
+
+function renderTitleList() {
+    const list = document.getElementById('titleList');
+    if (!list) return;
+    list.innerHTML = '';
+    TitleData.forEach(t => {
+        const unlocked = gameState.titles?.includes(t.key);
+        const active = gameState.activeTitle === t.key;
+        const item = document.createElement('div');
+        item.className = 'title-item' + (unlocked ? ' unlocked' : ' locked') + (active ? ' active' : '');
+        item.innerHTML = `<div class="title-name">${unlocked ? t.name : '???'}</div><div class="title-desc">${t.desc}</div>`;
+        if (unlocked && !active) {
+            item.style.cursor = 'pointer';
+            item.onclick = () => { gameState.activeTitle = t.key; saveGame(); renderTitleList(); };
+        }
+        list.appendChild(item);
+    });
+}
+
+// ====================================================
+// SIGN-IN FUNCTIONS
+// ====================================================
+function checkSignIn() {
+    const now = Date.now();
+    const today = new Date().toDateString();
+    const lastSign = gameState.dailySignIn?.lastSignIn;
+    if (!lastSign || new Date(lastSign).toDateString() !== today) {
+        // Check if streak continues
+        if (lastSign) {
+            const lastDate = new Date(lastSign);
+            const yesterday = new Date(now);
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (lastDate.toDateString() === yesterday.toDateString()) {
+                gameState.dailySignIn.streak = (gameState.dailySignIn.streak || 0) + 1;
+            } else {
+                gameState.dailySignIn.streak = 1;
+            }
+        } else {
+            gameState.dailySignIn.streak = 1;
+        }
+        gameState.dailySignIn.lastSignIn = now;
+        saveGame();
+        showSignInModal();
+    }
+}
+
+function showSignInModal() {
+    const streak = gameState.dailySignIn?.streak || 1;
+    const signedDays = gameState.dailySignIn?.rewards || [];
+    document.getElementById('signinStreak').textContent = streak;
+    const grid = document.getElementById('signinGrid');
+    grid.innerHTML = '';
+    const today = new Date().getDay();
+    SignInRewards.forEach(r => {
+        const day = document.createElement('div');
+        const dayOfWeek = r.day === 7 ? 0 : r.day;
+        const isToday = today === dayOfWeek;
+        const isSigned = signedDays.includes(r.day);
+        day.className = 'signin-day' + (isToday ? ' today' : '') + (isSigned ? ' signed' : '');
+        day.innerHTML = `<div class="day-label">第${r.day}天</div><div class="day-reward">💰${r.gold}</div>`;
+        grid.appendChild(day);
+    });
+    document.getElementById('signinModal').classList.add('show');
+}
+
+function closeSignIn() {
+    document.getElementById('signinModal').classList.remove('show');
+    const streak = gameState.dailySignIn?.streak || 1;
+    const dayIndex = Math.min(streak, 7);
+    const reward = SignInRewards[dayIndex - 1] || SignInRewards[6];
+    gameState.gold += reward.gold;
+    gameState.exp += reward.exp;
+    if (!gameState.dailySignIn.rewards) gameState.dailySignIn.rewards = [];
+    if (!gameState.dailySignIn.rewards.includes(dayIndex)) {
+        gameState.dailySignIn.rewards.push(dayIndex);
+    }
+    progressQuest('signin');
+    saveGame();
+    updateTopBar();
+    checkTitles();
+}
+
+// ====================================================
+// RUNE FUNCTIONS
+// ====================================================
+function renderRuneScreen() {
+    const container = document.getElementById('runeSlots');
+    container.innerHTML = '';
+    const unlockCount = RuneUnlockLevels.filter(l => gameState.level >= l).length;
+    for (let i = 0; i < RuneEquipSlots; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'rune-slot';
+        const isUnlocked = i < unlockCount;
+        if (!isUnlocked) slot.classList.add('locked');
+        const runeKey = gameState.runes['rune' + i];
+        if (runeKey && RuneData[runeKey]) {
+            slot.classList.add('filled');
+            slot.style.borderColor = RuneData[runeKey].color;
+            slot.textContent = RuneData[runeKey].icon;
+        } else {
+            slot.textContent = '?';
+        }
+        const hint = document.createElement('div');
+        hint.className = 'rune-slot-hint';
+        hint.textContent = isUnlocked ? `Lv.${RuneUnlockLevels[i]}` : `Lv.${RuneUnlockLevels[i]}解锁`;
+        slot.appendChild(hint);
+        if (isUnlocked) slot.onclick = () => openRuneSelect(i);
+        container.appendChild(slot);
+    }
+    // Rune list
+    const list = document.getElementById('runeList');
+    list.innerHTML = '';
+    RuneTypes.forEach(rk => {
+        const rd = RuneData[rk];
+        const item = document.createElement('div');
+        item.className = 'rune-item';
+        item.style.borderColor = rd.color + '60';
+        item.innerHTML = `<div class="rune-item-icon">${rd.icon}</div><div class="rune-item-name" style="color:${rd.color}">${rk.toUpperCase()}</div>`;
+        item.title = `${rd.name}: ${Object.entries(rd.effect).map(([k,v]) => `+${v}${k}`).join(',')}`;
+        item.onclick = () => { playSound('equip'); };
+        list.appendChild(item);
+    });
+}
+
+function openRuneSelect(slotIdx) {
+    const current = gameState.runes['rune' + slotIdx];
+    // Simple: just cycle to next rune type or clear
+    const types = RuneTypes;
+    const currentIdx = current ? types.indexOf(current) : -1;
+    const nextIdx = (currentIdx + 1) % (types.length + 1);
+    if (nextIdx === types.length) {
+        delete gameState.runes['rune' + slotIdx];
+    } else {
+        gameState.runes['rune' + slotIdx] = types[nextIdx];
+    }
+    playSound('equip');
+    saveGame();
+    renderRuneScreen();
+    updateIdleUI();
+}
+
+// ====================================================
+// ENHANCED BATTLE
+// ====================================================
+let battleBuffs = { stun: 0, poison: 0, rage: 0 };
+
+function startDungeonFloor() {
+    const baseHp = 50 + dungeonState.floor * 20;
+    const baseAtk = 5 + dungeonState.floor * 5;
+    dungeonState.enemyHp = baseHp;
+    dungeonState.enemyMaxHp = baseHp;
+    dungeonState.enemyAtk = baseAtk;
+    dungeonState.playerHp = calculateStats().hp;
+    dungeonState.playerMaxHp = dungeonState.playerHp;
+    specialCooldown = 0;
+    battleBuffs = { stun: 0, poison: 0, rage: 0 };
+
+    document.getElementById('dungeonFloorTitle').textContent = `${DungeonData[dungeonState.dungeonId].name.split(' ').slice(1).join(' ')} · 第${dungeonState.floor}层`;
+    document.getElementById('enemyName').textContent = EnemyNames[Math.min(dungeonState.floor - 1, EnemyNames.length - 1)];
+    document.getElementById('battleLog').innerHTML = '';
+    document.getElementById('battleActions').classList.remove('hidden');
+    document.getElementById('battleEndArea').classList.add('hidden');
+
+    updateDungeonHp();
+    updateDungeonUI();
+    updateBattleButtons();
+}
+
+function updateBattleButtons() {
+    const attackBtn = document.querySelector('.battle-btn.attack');
+    const healBtn = document.querySelector('.battle-btn.heal');
+    const specialBtn = document.querySelector('.battle-btn.special');
+    if (attackBtn) {
+        if (battleBuffs.stun > 0) {
+            attackBtn.classList.add('stunned');
+        } else {
+            attackBtn.classList.remove('stunned');
+        }
+    }
+}
+
+function playerAttackEnemy() {
+    if (battleBuffs.stun > 0) {
+        battleBuffs.stun--;
+        addBattleLog('⚡ 眩晕中！无法行动！', 'miss');
+        updateBattleButtons();
+        setTimeout(() => enemyAttackPlayer(), 600);
+        return;
+    }
+    const stats = calculateStats();
+    const critRate = (stats.crit || 15) / 100;
+    const crit = Math.random() < critRate;
+    const critDmgMult = 1 + (stats.critDmg || 0) / 100;
+    const floorBonus = 1 + dungeonState.floor * 0.05;
+    const damage = crit ? Math.floor(stats.atk * 2 * critDmgMult * floorBonus) : Math.floor(stats.atk * floorBonus);
+    dungeonState.enemyHp -= damage;
+    gameState.totalDamage = (gameState.totalDamage || 0) + damage;
+    if (crit) {
+        addBattleLog(`⚔️ 暴击！造成 ${damage} 点伤害`, 'crit');
+        showDamageText(document.getElementById('battleEnemyImg'), `${damage}!`, 'crit');
+        showCritStars(document.getElementById('battleEnemyImg'));
+        playSound('crit');
+    } else {
+        addBattleLog(`⚔️ 攻击造成 ${damage} 点伤害`, '');
+        showDamageText(document.getElementById('battleEnemyImg'), `${damage}`, 'normal');
+        playSound('hit');
+    }
+    shakeElement('battleEnemyImg', 'shake-h');
+
+    // Process poison
+    if (battleBuffs.poison > 0) {
+        const poisonDmg = Math.floor(dungeonState.playerMaxHp * 0.05);
+        dungeonState.enemyHp -= poisonDmg;
+        addBattleLog(`☠️ 中毒！敌人受到 ${poisonDmg} 伤害`, 'miss');
+        battleBuffs.poison--;
+    }
+
+    // Process regen
+    const regen = stats.regen || 0;
+    if (regen > 0) {
+        const healAmt = Math.floor(dungeonState.playerMaxHp * regen / 100);
+        dungeonState.playerHp = Math.min(dungeonState.playerMaxHp, dungeonState.playerHp + healAmt);
+        if (healAmt > 0) {
+            addBattleLog(`💚 再生！恢复 ${healAmt} 生命`, 'heal');
+            showDamageText(document.getElementById('battlePlayerImg'), `+${healAmt}`, 'heal');
+        }
+    }
+
+    updateDungeonHp();
+    if (dungeonState.enemyHp <= 0) {
+        enemyDefeated();
+    } else {
+        setTimeout(() => enemyAttackPlayer(), 800);
+    }
+}
+
+function enemyAttackPlayer() {
+    // Boss special skills every 3 turns (only on floors 3+)
+    const isBoss = dungeonState.floor >= 3 && dungeonState.floor % 3 === 0;
+    let enemyAtk = dungeonState.enemyAtk;
+    if (battleBuffs.rage > 0) {
+        enemyAtk = Math.floor(enemyAtk * 1.5);
+        battleBuffs.rage--;
+        addBattleLog('🔥 敌人处于狂暴状态！', 'miss');
+    }
+    if (isBoss && Math.random() < 0.4) {
+        const skillKey = BossSkillDeck[Math.floor(Math.random() * BossSkillDeck.length)];
+        const skill = BossSkills[skillKey];
+        addBattleLog(`${skill.icon} BOSS技能：${skill.name}！`, '');
+        const skillBanner = document.createElement('div');
+        skillBanner.className = 'enemy-skill-banner';
+        skillBanner.textContent = `${skill.icon} ${skill.name} — ${skill.desc}`;
+        document.getElementById('battleLog').appendChild(skillBanner);
+        document.getElementById('battleLog').scrollTop = document.getElementById('battleLog').scrollHeight;
+        if (skillKey === 'stun') {
+            battleBuffs.stun = 1;
+        } else if (skillKey === 'poison') {
+            battleBuffs.poison = 3;
+        } else if (skillKey === 'rage') {
+            battleBuffs.rage = 3;
+        } else if (skillKey === 'heal') {
+            const healAmt = Math.floor(dungeonState.enemyMaxHp * 0.3);
+            dungeonState.enemyHp = Math.min(dungeonState.enemyMaxHp, dungeonState.enemyHp + healAmt);
+            addBattleLog(`💀 BOSS恢复 ${healAmt} 生命`, '');
+        }
+        playSound('crit');
+    }
+    updateBattleButtons();
+    updateDungeonHp();
+
+    const stats = calculateStats();
+    const dodgeRate = (stats.dodge || 0) / 100;
+    const dodge = Math.random() < dodgeRate;
+    if (dodge) {
+        addBattleLog('💨 闪避了攻击！', 'miss');
+        showDamageText(document.getElementById('battlePlayerImg'), '闪避', 'miss');
+    } else {
+        let damage = Math.max(1, enemyAtk - Math.floor(stats.def * (1 - (stats.dmgReduce || 0) / 100)));
+        dungeonState.playerHp -= damage;
+        addBattleLog(`👹 敌人攻击造成 ${damage} 点伤害`, '');
+        showDamageText(document.getElementById('battlePlayerImg'), `-${damage}`, 'normal');
+        shakeElement('battlePlayerImg', 'shake-v');
+        playSound('hit');
+    }
+    updateDungeonHp();
+    if (dungeonState.playerHp <= 0) {
+        // Check revive talent
+        if (stats.revive && !dungeonState.reviveUsed) {
+            dungeonState.playerHp = Math.floor(dungeonState.playerMaxHp * 0.5);
+            dungeonState.reviveUsed = true;
+            addBattleLog('💫 不死之身触发！以50%生命复活！', 'crit');
+            showDamageText(document.getElementById('battlePlayerImg'), '复活!', 'crit');
+            playSound('levelup');
+        } else {
+            dungeonFail();
+        }
+    }
+}
+
+function enemyDefeated() {
+    gameState.totalKills = (gameState.totalKills || 0) + 1;
+    const goldReward = 20 + dungeonState.floor * 10;
+    const expReward = dungeonState.floor * 15;
+    gameState.gold += goldReward;
+    gameState.exp += expReward;
+    gameState.dungeonProgress[dungeonState.dungeonId] = Math.max(gameState.dungeonProgress[dungeonState.dungeonId] || 0, dungeonState.floor);
+    if (!gameState.maxBossFloor || dungeonState.floor > gameState.maxBossFloor) {
+        gameState.maxBossFloor = dungeonState.floor;
+    }
+    addBattleLog(`🎉 击败敌人！+${goldReward}金币 +${expReward}经验`, 'crit');
+    progressQuest('dungeon');
+    if (dungeonState.floor >= 5) progressQuest('boss');
+    if (dungeonState.floor >= dungeonState.maxFloor) {
+        const totalExp = dungeonState.maxFloor * 30;
+        gameState.exp += totalExp;
+        addBattleLog(`🏆 副本通关！+${totalExp}经验`, 'crit');
+        sendMail('🏆 副本通关', `${DungeonData[dungeonState.dungeonId].name} 已通关！`, { exp: totalExp, gold: goldReward });
+        saveGame();
+        checkTitles();
+        showDungeonResult(true);
+    } else {
+        progressQuest('dungeon');
+        showDungeonResult(false);
+    }
+    playSound('crit');
+    checkTitles();
+    saveGame();
+}
+
+function dungeonFail() {
+    dungeonState.reviveUsed = false;
+    addBattleLog('💀 你战败了...', '');
+    document.getElementById('battleActions').classList.add('hidden');
+    document.getElementById('battleEndArea').classList.remove('hidden');
+    document.getElementById('battleEndText').textContent = '💀 战败...';
+    document.getElementById('battleEndText').style.color = 'var(--dps)';
+    document.getElementById('battleNextBtn').style.display = 'none';
+}
+
+function dungeonNextFloor() {
+    dungeonState.reviveUsed = false;
+    if (dungeonState.floor >= dungeonState.maxFloor) {
+        exitDungeon();
+        return;
+    }
+    dungeonState.floor++;
+    dungeonState.reviveUsed = false;
+    startDungeonFloor();
+}
+
+function dungeonHeal() {
+    if (battleBuffs.stun > 0) {
+        battleBuffs.stun--;
+        addBattleLog('⚡ 眩晕中无法治疗！', 'miss');
+        updateBattleButtons();
+        setTimeout(() => enemyAttackPlayer(), 600);
+        return;
+    }
+    const stats = calculateStats();
+    const healAmount = Math.floor(stats.hp * 0.3);
+    dungeonState.playerHp = Math.min(dungeonState.playerMaxHp, dungeonState.playerHp + healAmount);
+    addBattleLog(`💚 恢复 ${healAmount} 生命`, 'heal');
+    showDamageText(document.getElementById('battlePlayerImg'), `+${healAmount}`, 'heal');
+    playSound('heal');
+    updateDungeonHp();
+    setTimeout(() => enemyAttackPlayer(), 600);
+}
+
+function useSpecialSkill() {
+    if (battleBuffs.stun > 0) {
+        battleBuffs.stun--;
+        addBattleLog('⚡ 眩晕中无法行动！', 'miss');
+        updateBattleButtons();
+        setTimeout(() => enemyAttackPlayer(), 600);
+        return;
+    }
+    if (specialCooldown > 0) {
+        addBattleLog(`⏳ 技能冷却中 (${specialCooldown}秒)`, 'miss');
+        return;
+    }
+    const stats = calculateStats();
+    const damage = Math.floor(stats.atk * 3);
+    dungeonState.enemyHp -= damage;
+    gameState.totalDamage = (gameState.totalDamage || 0) + damage;
+    specialCooldown = 3;
+    addBattleLog(`✨ 必杀技！造成 ${damage} 点伤害！`, 'crit');
+    showDamageText(document.getElementById('battleEnemyImg'), `${damage}!`, 'crit');
+    showCritStars(document.getElementById('battleEnemyImg'));
+    playSound('crit');
+    updateDungeonHp();
+    if (dungeonState.enemyHp <= 0) {
+        enemyDefeated();
+    } else {
+        setTimeout(() => enemyAttackPlayer(), 1000);
+    }
+}
+
+// ====================================================
+// UPDATED showPanel
+// ====================================================
+const origShowPanel = showPanel;
+showPanel = function(panel) {
+    origShowPanel(panel);
+    if (panel === 'character') updateCharacterPanel();
+    if (panel === 'equipment') updateEquipmentUI();
+    if (panel === 'talent') renderTalentScreen();
+    if (panel === 'quest') renderQuestScreen();
+    if (panel === 'rune') renderRuneScreen();
+};
+
+// Add audio toggle button to body on init
+function initAudioToggle() {
+    const btn = document.createElement('div');
+    btn.id = 'audioToggle';
+    btn.className = 'audio-toggle';
+    btn.textContent = '🔊';
+    btn.onclick = toggleAudioMute;
+    btn.title = '音效开关';
+    document.body.appendChild(btn);
+}
+
+// ====================================================
+// UPDATED finishWait
+// ====================================================
+const origFinishWait = finishWait;
+finishWait = function() {
+    origFinishWait();
+    progressQuest('afk');
+    checkTitles();
+};
+
+// ====================================================
+// UPDATED startGame
+// ====================================================
+const origStartGame = startGame;
+startGame = function() {
+    origStartGame();
+    checkAndRefreshQuests();
+    checkSignIn();
+    checkTitles();
+    initAudio();
+    initAudioToggle();
+};
+
+// ====================================================
+// UPDATED loadGame (migration + init)
+// ====================================================
+const origLoadGame = loadGame;
+loadGame = function() {
+    origLoadGame();
+    checkAndRefreshQuests();
+    checkSignIn();
+    checkTitles();
+    if (!audioCtx) initAudio();
+    if (!document.getElementById('audioToggle')) initAudioToggle();
+};
+
 function init() {
     initStarField();
     renderTitleSavePreview();
@@ -4009,14 +5103,6 @@ function init() {
         } catch(e) {}
     }
 }
-
-// Listen for nav changes to update character panel
-const origShowPanel = showPanel;
-showPanel = function(panel) {
-    origShowPanel(panel);
-    if (panel === 'character') updateCharacterPanel();
-    if (panel === 'equipment') updateEquipmentUI();
-};
 
 init();
 </script>
