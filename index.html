@@ -1337,39 +1337,159 @@
         padding: 16px;
         text-align: center;
     }
+    /* ========== EQUIP LEFT - WoW-style paper doll ========== */
+    .paper-doll-frame {
+        position: relative;
+        background: linear-gradient(160deg, #1a1520 0%, #0d0b10 50%, #1a1520 100%);
+        border: 3px solid #c9a84c;
+        border-radius: 12px;
+        padding: 20px 24px 16px;
+        box-shadow:
+            inset 0 0 30px rgba(0,0,0,0.8),
+            inset 0 1px 0 rgba(255,220,150,0.1),
+            0 4px 20px rgba(0,0,0,0.6);
+        overflow: hidden;
+    }
+    .paper-doll-frame::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: radial-gradient(ellipse at center top, rgba(201,168,76,0.08) 0%, transparent 60%);
+        pointer-events: none;
+    }
+    .paper-doll-corner {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-color: #e8c66a;
+        border-style: solid;
+    }
+    .paper-doll-corner.tl { top: 4px; left: 4px; border-width: 2px 0 0 2px; border-radius: 4px 0 0 0; }
+    .paper-doll-corner.tr { top: 4px; right: 4px; border-width: 2px 2px 0 0; border-radius: 0 4px 0 0; }
+    .paper-doll-corner.bl { bottom: 4px; left: 4px; border-width: 0 0 2px 2px; border-radius: 0 0 0 4px; }
+    .paper-doll-corner.br { bottom: 4px; right: 4px; border-width: 0 2px 2px 0; border-radius: 0 0 4px 0; }
+    .paper-doll-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
     .paper-doll {
-        width: 120px;
-        height: 160px;
-        margin: 0 auto 12px;
+        width: 140px;
+        height: 200px;
         position: relative;
     }
     .paper-doll-char {
         width: 100%;
         height: 100%;
-        object-fit: cover;
-        border-radius: 8px;
-        border: 2px solid var(--gold-dim);
+        object-fit: contain;
+        object-position: center;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
     }
+    .char-info {
+        text-align: center;
+        padding-top: 6px;
+        border-top: 1px solid rgba(201,168,76,0.3);
+        width: 100%;
+    }
+    .char-name {
+        font-family: 'Orbitron', 'Microsoft YaHei', monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: #e8c66a;
+        text-shadow: 0 0 10px rgba(232,198,106,0.4);
+        letter-spacing: 1px;
+    }
+    .char-level {
+        font-size: 11px;
+        color: #a89070;
+        margin-top: 2px;
+        letter-spacing: 0.5px;
+    }
+    /* ========== Equipment slots - bronze metallic look ========== */
     .equip-slot {
         position: absolute;
-        width: 36px; height: 36px;
-        background: var(--bg-void);
-        border: 2px solid var(--border);
-        border-radius: 6px;
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(145deg, #2a2535, #1a1520);
+        border: 2px solid #6b5a3e;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
         cursor: pointer;
         transition: all 0.2s;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.08),
+            inset 0 -1px 0 rgba(0,0,0,0.4),
+            0 2px 6px rgba(0,0,0,0.5);
     }
-    .equip-slot:hover { border-color: var(--gold-dim); }
-    .equip-slot.filled { border-color: var(--gold-dim); }
-    .equip-slot.slot-head { top: -4px; left: 50%; transform: translateX(-50%); }
-    .equip-slot.slot-chest { top: 40px; left: 50%; transform: translateX(-50%); }
-    .equip-slot.slot-weapon { top: 50%; right: -8px; transform: translateY(-50%); }
-    .equip-slot.slot-shield { top: 50%; left: -8px; transform: translateY(-50%); }
-    .equip-slot.slot-accessory { bottom: -4px; left: 50%; transform: translateX(-50%); }
+    .equip-slot::before {
+        content: '';
+        position: absolute;
+        inset: 2px;
+        border-radius: 5px;
+        border: 1px solid rgba(255,255,255,0.05);
+        pointer-events: none;
+    }
+    .equip-slot:hover {
+        border-color: #c9a84c;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.1),
+            inset 0 -1px 0 rgba(0,0,0,0.4),
+            0 0 12px rgba(201,168,76,0.4),
+            0 2px 6px rgba(0,0,0,0.5);
+    }
+    .equip-slot.filled {
+        background: linear-gradient(145deg, #2a2535, #1a1520);
+    }
+    .slot-icon {
+        font-size: 20px;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+        pointer-events: none;
+    }
+    .slot-tooltip {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(15,12,20,0.98);
+        border: 1px solid #c9a84c;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 12px;
+        color: #e8c66a;
+        white-space: nowrap;
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        pointer-events: none;
+    }
+    .slot-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: #c9a84c;
+    }
+    .equip-slot:hover .slot-tooltip {
+        display: block;
+    }
+    /* Slot positions - around the character, clear visual affordance */
+    .slot-head { top: -10px; left: 50%; transform: translateX(-50%); }
+    .slot-chest { top: 70px; left: 50%; transform: translateX(-50%); }
+    .slot-weapon { top: 100px; right: -14px; transform: translateY(-50%); }
+    .slot-shield { top: 100px; left: -14px; transform: translateY(-50%); }
+    .slot-accessory { bottom: -10px; left: 50%; transform: translateX(-50%); }
+    .equip-hint {
+        font-size: 11px;
+        color: #6b5a3e;
+        margin-top: 10px;
+        letter-spacing: 0.5px;
+    }
+    /* ========== Stats panel - WoW style ========== */
     .equip-right {
         flex: 1;
         display: flex;
@@ -1377,23 +1497,47 @@
         gap: 8px;
     }
     .stat-row {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 8px 12px;
+        background: linear-gradient(90deg, rgba(42,37,53,0.9), rgba(26,21,32,0.9));
+        border: 1px solid #6b5a3e;
+        border-left: 3px solid #c9a84c;
+        border-radius: 6px;
+        padding: 10px 14px;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        transition: all 0.2s;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.04),
+            0 2px 4px rgba(0,0,0,0.3);
     }
-    .stat-label { font-size: 12px; color: var(--text-dim); }
+    .stat-row:hover {
+        border-color: #c9a84c;
+        background: linear-gradient(90deg, rgba(52,47,63,0.9), rgba(36,31,42,0.9));
+    }
+    .stat-label {
+        font-size: 13px;
+        color: #a89070;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .stat-label::before {
+        content: '';
+        width: 4px;
+        height: 4px;
+        background: #c9a84c;
+        border-radius: 50%;
+        opacity: 0.6;
+    }
     .stat-val {
         font-family: 'Orbitron', monospace;
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 700;
-        color: var(--gold);
+        color: #e8c66a;
+        text-shadow: 0 0 8px rgba(232,198,106,0.3);
     }
-    .stat-val.positive { color: var(--heal); }
-    .stat-val.negative { color: var(--dps); }
+    .stat-val.positive { color: #7eff7e; text-shadow: 0 0 8px rgba(126,255,126,0.3); }
+    .stat-val.negative { color: #ff7e7e; text-shadow: 0 0 8px rgba(255,126,126,0.3); }
     .bag-section {
         margin-top: 16px;
     }
@@ -1614,350 +1758,507 @@
     }
 
     /* ====================================================
-       CHARACTER SCREEN — 热血特效版
+       CHARACTER SCREEN — Premium Game UI Redesign
     ==================================================== */
     .char-screen {
-        padding-top: 10px;
+        padding-top: 0;
         position: relative;
+        min-height: 100vh;
+        background: linear-gradient(180deg, 
+            rgba(8,8,15,0.95) 0%, 
+            rgba(15,15,25,0.98) 50%,
+            rgba(8,8,15,0.95) 100%);
     }
-    .char-wrapper {
+    
+    /* ---- Character Display Area ---- */
+    .char-display-area {
         position: relative;
+        width: 100%;
+        height: 420px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        animation: char-breathe 3.5s ease-in-out infinite;
-    }
-
-    /* ---- 职业色背景 ---- */
-    .char-bg-glow {
-        position: absolute;
-        top: 0; left: 50%;
-        transform: translateX(-50%);
-        width: 280px; height: 320px;
-        background: radial-gradient(ellipse at 50% 60%,
-            var(--job-color) 0%,
-            rgba(var(--job-color-rgb), 0.25) 35%,
-            transparent 70%);
-        filter: blur(20px);
-        opacity: 0.7;
-        pointer-events: none;
-        z-index: 0;
-        animation: bg-pulse 3.5s ease-in-out infinite;
-    }
-    .char-bg-glow::before,
-    .char-bg-glow::after {
-        content: '';
-        position: absolute;
-        border-radius: 50%;
-        background: var(--job-color);
-        opacity: 0.15;
-    }
-    .char-bg-glow::before {
-        width: 80px; height: 80px;
-        top: 20px; left: -20px;
-        filter: blur(15px);
-        animation: orb-drift-a 5s ease-in-out infinite;
-    }
-    .char-bg-glow::after {
-        width: 60px; height: 60px;
-        bottom: 30px; right: -10px;
-        filter: blur(12px);
-        animation: orb-drift-b 4s ease-in-out infinite 1s;
-    }
-
-    /* ---- 职业光环 ---- */
-    .char-aura {
-        position: absolute;
-        top: 10px; left: 50%;
-        transform: translateX(-50%);
-        width: 200px; height: 240px;
-        border-radius: 50%;
-        border: calc(1px + var(--equip-glow, 0) * 0.4px) solid rgba(var(--job-color-rgb), calc(0.2 + var(--equip-glow, 0) * 0.12));
-        box-shadow:
-            0 0 calc(15px + var(--equip-glow, 0) * 8px) rgba(var(--job-color-rgb), calc(0.2 + var(--equip-glow, 0) * 0.1)),
-            inset 0 0 calc(15px + var(--equip-glow, 0) * 8px) rgba(var(--job-color-rgb), calc(0.08 + var(--equip-glow, 0) * 0.05));
-        animation: aura-breathe calc(2.5s - var(--equip-glow, 0) * 0.2s) ease-in-out infinite;
-        pointer-events: none;
-        z-index: 1;
-    }
-    .char-aura::before {
-        content: '';
-        position: absolute;
-        inset: -8px;
-        border-radius: 50%;
-        border: 1px solid rgba(var(--job-color-rgb), calc(0.1 + var(--equip-glow, 0) * 0.05));
-        animation: aura-rotate calc(8s - var(--equip-glow, 0) * 0.5s) linear infinite;
-    }
-
-    /* ---- 粒子系统 ---- */
-    .char-particles {
-        position: absolute;
-        top: 10px; left: 50%;
-        transform: translateX(-50%);
-        width: 220px; height: 260px;
-        pointer-events: none;
-        z-index: 2;
-        opacity: calc(0.3 + var(--equip-glow, 0) * 0.14);
-    }
-    .char-particle {
-        position: absolute;
-        width: calc(4px + var(--equip-glow, 0) * 0.8px);
-        height: calc(4px + var(--equip-glow, 0) * 0.8px);
-        border-radius: 50%;
-        background: var(--job-color);
-        box-shadow: 0 0 calc(4px + var(--equip-glow, 0) * 2px) var(--job-color), 0 0 calc(8px + var(--equip-glow, 0) * 4px) rgba(var(--job-color-rgb), 0.5);
-        animation: particle-orbit var(--orbit-dur, 6s) linear infinite;
-        animation-delay: var(--orbit-delay, 0s);
-    }
-    .char-particle:nth-child(1) { --orbit-dur: 5s; --orbit-delay: 0s; width: 7px; height: 7px; }
-    .char-particle:nth-child(2) { --orbit-dur: 7s; --orbit-delay: -2.3s; width: 5px; height: 5px; opacity: 0.7; }
-    .char-particle:nth-child(3) { --orbit-dur: 6s; --orbit-delay: -4s; width: 4px; height: 4px; opacity: 0.5; }
-    .char-particle:nth-child(4) { --orbit-dur: 8s; --orbit-delay: -1.5s; width: 6px; height: 6px; }
-    .char-particle:nth-child(5) { --orbit-dur: 5.5s; --orbit-delay: -3s; width: 5px; height: 5px; opacity: 0.6; }
-    .char-particle:nth-child(6) { --orbit-dur: 7.5s; --orbit-delay: -5s; width: 4px; height: 4px; opacity: 0.4; }
-
-    /* ---- 全身立绘卡片 ---- */
-    .char-card {
-        position: relative;
-        z-index: 3;
-        background: linear-gradient(160deg,
-            rgba(19,19,31,0.92) 0%,
-            rgba(8,8,15,0.95) 100%);
-        border: 1px solid rgba(var(--job-color-rgb), 0.3);
-        border-radius: 18px;
-        padding: 24px 20px 20px;
-        text-align: center;
-        width: 100%;
-        max-width: 300px;
-        box-shadow:
-            0 0 calc(20px + var(--equip-glow, 0) * 10px) rgba(var(--job-color-rgb), calc(0.1 + var(--equip-glow, 0) * 0.05)),
-            0 8px 32px rgba(0,0,0,0.5),
-            inset 0 1px 0 rgba(255,255,255,0.05);
+        justify-content: center;
         overflow: hidden;
     }
-    .char-card::before {
+    
+    /* Full-width job-colored gradient background */
+    .char-bg-gradient {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            180deg,
+            rgba(var(--job-color-rgb), 0.15) 0%,
+            rgba(var(--job-color-rgb), 0.05) 40%,
+            transparent 70%
+        );
+        pointer-events: none;
+        z-index: 0;
+    }
+    
+    /* Job-colored glow that breathes behind character */
+    .char-glow-breathe {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        height: 350px;
+        background: radial-gradient(ellipse at center,
+            rgba(var(--job-color-rgb), 0.4) 0%,
+            rgba(var(--job-color-rgb), 0.15) 40%,
+            transparent 70%
+        );
+        filter: blur(30px);
+        pointer-events: none;
+        z-index: 1;
+        animation: glow-breathe 3.5s ease-in-out infinite;
+    }
+    
+    /* ---- Animated Aura/Energy Ring ---- */
+    .char-aura-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 280px;
+        height: 280px;
+        pointer-events: none;
+        z-index: 2;
+    }
+    
+    .aura-ring-inner {
+        position: absolute;
+        inset: 20px;
+        border-radius: 50%;
+        border: 2px solid rgba(var(--job-color-rgb), 0.4);
+        box-shadow: 
+            0 0 20px rgba(var(--job-color-rgb), 0.3),
+            inset 0 0 20px rgba(var(--job-color-rgb), 0.15);
+        animation: aura-pulse 2s ease-in-out infinite alternate;
+    }
+    
+    .aura-ring-outer {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 1px solid rgba(var(--job-color-rgb), 0.2);
+        box-shadow: 
+            0 0 30px rgba(var(--job-color-rgb), 0.2),
+            inset 0 0 30px rgba(var(--job-color-rgb), 0.1);
+        animation: aura-pulse 2s ease-in-out infinite alternate-reverse;
+    }
+    
+    .aura-ring-inner::before {
         content: '';
         position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 2px;
-        background: linear-gradient(90deg,
-            transparent 0%,
-            var(--job-color) 30%,
-            var(--job-color) 70%,
-            transparent 100%);
-        animation: level-bar-glow 2s ease-in-out infinite;
+        inset: -15px;
+        border-radius: 50%;
+        border: 1px dashed rgba(var(--job-color-rgb), 0.25);
+        animation: aura-rotate 12s linear infinite;
     }
-
-    /* ---- 全身立绘 ---- */
-    .char-portrait-wrap {
+    
+    /* ---- Floating Particles ---- */
+    .char-particles {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 320px;
+        height: 320px;
+        pointer-events: none;
+        z-index: 3;
+    }
+    
+    .char-particle {
+        position: absolute;
+        border-radius: 50%;
+        background: var(--job-color);
+        box-shadow: 
+            0 0 6px var(--job-color),
+            0 0 12px rgba(var(--job-color-rgb), 0.5);
+        animation: particle-float 3s ease-in-out infinite;
+    }
+    
+    .char-particle:nth-child(1) { width: 8px; height: 8px; top: 15%; left: 20%; animation-delay: 0s; }
+    .char-particle:nth-child(2) { width: 5px; height: 5px; top: 25%; left: 75%; animation-delay: 0.4s; }
+    .char-particle:nth-child(3) { width: 6px; height: 6px; top: 65%; left: 10%; animation-delay: 0.8s; }
+    .char-particle:nth-child(4) { width: 4px; height: 4px; top: 70%; left: 85%; animation-delay: 1.2s; }
+    .char-particle:nth-child(5) { width: 7px; height: 7px; top: 40%; left: 5%; animation-delay: 1.6s; }
+    .char-particle:nth-child(6) { width: 5px; height: 5px; top: 50%; left: 90%; animation-delay: 2s; }
+    .char-particle:nth-child(7) { width: 6px; height: 6px; top: 10%; left: 50%; animation-delay: 0.2s; }
+    .char-particle:nth-child(8) { width: 4px; height: 4px; top: 80%; left: 45%; animation-delay: 1s; }
+    
+    /* ---- Character Portrait Container ---- */
+    .char-portrait-container {
         position: relative;
+        z-index: 10;
         display: flex;
-        justify-content: center;
-        margin-bottom: 16px;
+        flex-direction: column;
+        align-items: center;
     }
+    
     .char-portrait {
-        width: 180px;
-        height: 270px;
+        width: 200px;
+        height: 300px;
         object-fit: cover;
         object-position: center top;
         border-radius: 12px;
-        border: 2px solid rgba(var(--job-color-rgb), 0.5);
+        border: 3px solid rgba(var(--job-color-rgb), 0.6);
         box-shadow:
-            0 0 20px rgba(var(--job-color-rgb), 0.25),
-            0 4px 16px rgba(0,0,0,0.4);
-        animation: portrait-breathe 3.5s ease-in-out infinite;
+            0 0 30px rgba(var(--job-color-rgb), 0.35),
+            0 8px 24px rgba(0,0,0,0.5);
+        animation: char-breathe 3.5s ease-in-out infinite;
+        transform-origin: center bottom;
     }
-    .char-portrait-glow {
+    
+    .char-portrait-reflection {
         position: absolute;
-        bottom: -5px; left: 50%;
-        transform: translateX(-50%);
-        width: 160px; height: 30px;
-        background: radial-gradient(ellipse,
-            rgba(var(--job-color-rgb), 0.4) 0%,
-            transparent 70%);
+        bottom: -60px;
+        left: 50%;
+        transform: translateX(-50%) scaleY(-1);
+        width: 200px;
+        height: 60px;
+        background: linear-gradient(to bottom,
+            rgba(var(--job-color-rgb), 0.15) 0%,
+            transparent 100%
+        );
         filter: blur(8px);
-        animation: glow-flicker 3s ease-in-out infinite;
+        opacity: 0.5;
+        border-radius: 0 0 12px 12px;
+        pointer-events: none;
     }
-
-    /* ---- 等级光效 ---- */
-    .char-level-badge {
+    
+    /* ---- Info Panel (glass-morphism) ---- */
+    .char-info-panel {
         position: relative;
-        display: inline-block;
-        margin-bottom: 6px;
+        z-index: 20;
+        margin: -20px 12px 0;
+        padding: 20px;
+        background: rgba(8,8,15,0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(var(--job-color-rgb), 0.25);
+        border-radius: 16px;
+        box-shadow:
+            0 0 20px rgba(var(--job-color-rgb), 0.1),
+            0 8px 32px rgba(0,0,0,0.4),
+            inset 0 1px 0 rgba(255,255,255,0.05);
     }
-    .char-level-badge::before {
-        content: '';
-        position: absolute;
-        inset: -4px -8px;
-        border-radius: 8px;
-        background: rgba(var(--job-color-rgb), 0.12);
-        border: 1px solid rgba(var(--job-color-rgb), 0.3);
-        animation: level-badge-pulse 2s ease-in-out infinite;
+    
+    .char-info-header {
+        text-align: center;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(var(--job-color-rgb), 0.15);
     }
+    
     .char-name {
-        font-size: 22px;
+        font-size: 26px;
         font-weight: 700;
-        margin-bottom: 4px;
-        text-shadow: 0 0 12px rgba(var(--job-color-rgb), 0.4);
+        color: var(--gold);
+        text-shadow: 0 0 16px rgba(201,162,39,0.4);
+        margin-bottom: 6px;
+        letter-spacing: 1px;
     }
+    
+    .char-title-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    
     .char-job-label {
         font-size: 14px;
-        margin-bottom: 6px;
         font-weight: 600;
+        color: var(--job-color);
+        padding: 4px 12px;
+        background: rgba(var(--job-color-rgb), 0.12);
+        border: 1px solid rgba(var(--job-color-rgb), 0.3);
+        border-radius: 20px;
     }
+    
     .char-mbti {
         font-family: 'Orbitron', monospace;
         font-size: 11px;
         color: var(--gold-dim);
-        margin-bottom: 14px;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
     }
-
-    /* ---- 装备预览行 ---- */
-    .equip-preview-row {
+    
+    /* ---- Horizontal Stats Row ---- */
+    .char-stats-row {
         display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin-bottom: 14px;
+        justify-content: space-around;
+        align-items: center;
+        gap: 4px;
         flex-wrap: wrap;
     }
-    .equip-preview-slot {
-        width: 40px;
-        height: 40px;
-        border-radius: 8px;
-        border: 2px solid var(--card-border);
-        background: var(--card);
+    
+    .stat-item {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        cursor: pointer;
-        transition: all 0.2s;
-        opacity: 0.3;
+        padding: 8px 6px;
+        min-width: 52px;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(var(--job-color-rgb), 0.15);
+        border-radius: 10px;
+        transition: all 0.2s ease;
     }
-    .equip-preview-slot.has-item {
-        opacity: 1;
-        border-color: var(--gold);
-        box-shadow: 0 0 8px rgba(201,162,39,0.3);
+    
+    .stat-item:hover {
+        border-color: rgba(var(--job-color-rgb), 0.4);
+        box-shadow: 0 0 10px rgba(var(--job-color-rgb), 0.15);
+        transform: translateY(-2px);
     }
-    .equip-preview-slot:hover {
-        transform: scale(1.1);
+    
+    .stat-icon {
+        font-size: 16px;
+        margin-bottom: 2px;
     }
-
-    /* ---- 属性网格 ---- */
-    .char-stats-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        text-align: left;
-        margin-bottom: 14px;
+    
+    .stat-label {
+        font-size: 10px;
+        color: var(--text-dim);
+        margin-bottom: 2px;
     }
-    .char-stat-item {
-        background: rgba(8,8,15,0.7);
-        border: 1px solid rgba(var(--job-color-rgb), 0.2);
-        border-radius: 8px;
-        padding: 10px 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .char-stat-item:hover {
-        border-color: rgba(var(--job-color-rgb), 0.5);
-        box-shadow: 0 0 8px rgba(var(--job-color-rgb), 0.15);
-    }
-    .char-stat-name { font-size: 12px; color: var(--text-dim); }
-    .char-stat-num {
+    
+    .stat-val {
         font-family: 'Orbitron', monospace;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 700;
         color: var(--job-color);
     }
-
-    /* ---- 改名按钮 ---- */
+    
+    /* ---- Equipment Bar (WoW-style) ---- */
+    .equip-bar {
+        position: relative;
+        z-index: 20;
+        margin: 12px;
+        padding: 14px;
+        background: rgba(8,8,15,0.9);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(var(--job-color-rgb), 0.2);
+        border-radius: 14px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    
+    .equip-bar-label {
+        font-size: 12px;
+        color: var(--text-dim);
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    
+    .equip-bar-slots {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .equip-slot-wow {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        border: 2px solid rgba(var(--job-color-rgb), 0.3);
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .equip-slot-wow::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg,
+            rgba(var(--job-color-rgb), 0.1) 0%,
+            transparent 50%);
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+    
+    .equip-slot-wow:hover::before {
+        opacity: 1;
+    }
+    
+    .equip-slot-wow:hover {
+        transform: translateY(-3px) scale(1.05);
+        border-color: rgba(var(--job-color-rgb), 0.6);
+        box-shadow: 0 4px 12px rgba(var(--job-color-rgb), 0.25);
+    }
+    
+    .equip-slot-wow.has-item {
+        border-color: var(--gold);
+        box-shadow: 
+            0 0 10px rgba(201,162,39,0.3),
+            inset 0 0 10px rgba(201,162,39,0.1);
+    }
+    
+    .equip-slot-wow.has-item::after {
+        content: '';
+        position: absolute;
+        inset: 2px;
+        border-radius: 4px;
+        border: 1px solid rgba(201,162,39,0.3);
+        pointer-events: none;
+    }
+    
+    /* Quality-based glow colors */
+    .equip-slot-wow[data-quality="common"] { border-color: #9d9d9d; }
+    .equip-slot-wow[data-quality="uncommon"] { border-color: #1eff00; box-shadow: 0 0 10px rgba(30,255,0,0.3); }
+    .equip-slot-wow[data-quality="rare"] { border-color: #0070dd; box-shadow: 0 0 10px rgba(0,112,221,0.3); }
+    .equip-slot-wow[data-quality="epic"] { border-color: #a335ee; box-shadow: 0 0 10px rgba(163,53,238,0.3); }
+    .equip-slot-wow[data-quality="legendary"] { border-color: #ff8000; box-shadow: 0 0 15px rgba(255,128,0,0.4); }
+    
+    .slot-empty-icon {
+        font-size: 20px;
+        opacity: 0.35;
+    }
+    
+    .equip-slot-wow .item-icon {
+        font-size: 22px;
+        filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
+    }
+    
+    /* ---- Customize Button ---- */
     .customize-btn {
         width: 100%;
         padding: 12px;
-        background: rgba(var(--job-color-rgb), 0.08);
-        border: 1px solid rgba(var(--job-color-rgb), 0.3);
-        border-radius: 8px;
+        background: linear-gradient(135deg,
+            rgba(var(--job-color-rgb), 0.15) 0%,
+            rgba(var(--job-color-rgb), 0.08) 100%);
+        border: 1px solid rgba(var(--job-color-rgb), 0.35);
+        border-radius: 10px;
         color: var(--text);
-        font-size: 13px;
+        font-size: 14px;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: all 0.25s ease;
+        text-align: center;
     }
+    
     .customize-btn:hover {
+        background: linear-gradient(135deg,
+            rgba(var(--job-color-rgb), 0.25) 0%,
+            rgba(var(--job-color-rgb), 0.15) 100%);
         border-color: rgba(var(--job-color-rgb), 0.7);
         color: var(--job-color);
+        box-shadow: 0 0 20px rgba(var(--job-color-rgb), 0.25);
+        transform: translateY(-1px);
+    }
+    
+    /* ---- Extra Action Buttons ---- */
+    .char-extra-btns {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin: 12px;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 20;
+    }
+    
+    .char-extra-btn {
+        flex: 1;
+        min-width: 70px;
+        max-width: 90px;
+        padding: 10px 8px;
+        background: rgba(8,8,15,0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(var(--job-color-rgb), 0.2);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+    }
+    
+    .char-extra-btn:hover {
         background: rgba(var(--job-color-rgb), 0.15);
-        box-shadow: 0 0 12px rgba(var(--job-color-rgb), 0.2);
+        border-color: rgba(var(--job-color-rgb), 0.5);
+        color: var(--job-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(var(--job-color-rgb), 0.2);
     }
-
-    /* ---- 关键帧 ---- */
+    
+    /* ---- Keyframes ---- */
     @keyframes char-breathe {
-        0%, 100% { transform: scale(1) translateY(0); }
-        50% { transform: scale(1.025) translateY(-8px); }
+        0%, 100% { 
+            transform: scale(1) translateY(0); 
+            filter: brightness(1);
+        }
+        50% { 
+            transform: scale(1.03) translateY(-5px); 
+            filter: brightness(1.05);
+        }
     }
-    @keyframes bg-pulse {
-        0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
-        50% { opacity: 0.85; transform: translateX(-50%) scale(1.08); }
+    
+    @keyframes aura-pulse {
+        0% { 
+            opacity: 0.3; 
+            transform: scale(0.95);
+            box-shadow: 0 0 15px rgba(var(--job-color-rgb), 0.2), inset 0 0 15px rgba(var(--job-color-rgb), 0.08);
+        }
+        100% { 
+            opacity: 0.7; 
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(var(--job-color-rgb), 0.4), inset 0 0 25px rgba(var(--job-color-rgb), 0.2);
+        }
     }
-    @keyframes orb-drift-a {
-        0%, 100% { transform: translate(0, 0); }
-        50% { transform: translate(15px, -10px); }
-    }
-    @keyframes orb-drift-b {
-        0%, 100% { transform: translate(0, 0); }
-        50% { transform: translate(-12px, 8px); }
-    }
-    @keyframes aura-breathe {
-        0%, 100% {
+    
+    @keyframes particle-float {
+        0%, 100% { 
+            transform: translateY(0) translateX(0); 
             opacity: 0.5;
-            transform: translateX(-50%) scale(1);
-            box-shadow: 0 0 20px rgba(var(--job-color-rgb), 0.3), inset 0 0 20px rgba(var(--job-color-rgb), 0.1);
         }
-        50% {
-            opacity: 0.9;
-            transform: translateX(-50%) scale(1.06);
-            box-shadow: 0 0 40px rgba(var(--job-color-rgb), 0.5), inset 0 0 30px rgba(var(--job-color-rgb), 0.2);
+        25% {
+            opacity: 0.8;
+        }
+        50% { 
+            transform: translateY(-15px) translateX(5px); 
+            opacity: 1;
+        }
+        75% {
+            opacity: 0.7;
         }
     }
+    
+    @keyframes glow-breathe {
+        0%, 100% { 
+            opacity: 0.4; 
+            transform: translate(-50%, -50%) scale(1);
+        }
+        50% { 
+            opacity: 0.7; 
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+    }
+    
     @keyframes aura-rotate {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
     }
-    @keyframes particle-orbit {
-        0% { transform: rotate(0deg) translateX(var(--rx, 90px)) rotate(0deg); opacity: var(--op, 0.9); }
-        25% { opacity: calc(var(--op, 0.9) * 0.6); }
-        50% { transform: rotate(180deg) translateX(var(--rx, 90px)) rotate(-180deg); opacity: var(--op, 0.9); }
-        75% { opacity: calc(var(--op, 0.9) * 0.6); }
-        100% { transform: rotate(360deg) translateX(var(--rx, 90px)) rotate(-360deg); opacity: var(--op, 0.9); }
-    }
-    .char-particle:nth-child(1) { --rx: 95px; --ry: 110px; --op: 0.9; top: calc(50% - 3px); left: calc(50% - 3px); }
-    .char-particle:nth-child(2) { --rx: 80px; --ry: 100px; --op: 0.7; top: calc(50% - 2.5px); left: calc(50% - 2.5px); }
-    .char-particle:nth-child(3) { --rx: 105px; --ry: 120px; --op: 0.5; top: calc(50% - 2px); left: calc(50% - 2px); }
-    .char-particle:nth-child(4) { --rx: 75px; --ry: 95px; --op: 0.8; top: calc(50% - 3px); left: calc(50% - 3px); }
-    .char-particle:nth-child(5) { --rx: 100px; --ry: 115px; --op: 0.6; top: calc(50% - 2.5px); left: calc(50% - 2.5px); }
-    .char-particle:nth-child(6) { --rx: 90px; --ry: 108px; --op: 0.4; top: calc(50% - 2px); left: calc(50% - 2px); }
-    @keyframes portrait-breathe {
-        0%, 100% { transform: scale(1); filter: brightness(1); }
-        50% { transform: scale(1.03); filter: brightness(1.08); }
-    }
-    @keyframes glow-flicker {
-        0%, 100% { opacity: 0.6; transform: translateX(-50%) scaleX(1); }
-        33% { opacity: 0.8; transform: translateX(-50%) scaleX(1.1); }
-        66% { opacity: 0.5; transform: translateX(-50%) scaleX(0.95); }
-    }
-    @keyframes level-bar-glow {
-        0%, 100% { opacity: 0.7; }
-        50% { opacity: 1; }
-    }
+    
     @keyframes level-badge-pulse {
         0%, 100% { opacity: 0.5; transform: scale(1); }
         50% { opacity: 1; transform: scale(1.05); }
     }
-
-    /* ---- 职业色变量映射 ---- */
+    
+    /* ---- Job Color Variables ---- */
     .char-screen[data-job="tank"]  { --job-color: #C9A227; --job-color-rgb: 201,162,39; }
     .char-screen[data-job="healer"] { --job-color: #7EB8E6; --job-color-rgb: 126,184,230; }
     .char-screen[data-job="rogue"]  { --job-color: #8B5CF6; --job-color-rgb: 139,92,246; }
@@ -2483,15 +2784,28 @@
         <div class="equip-screen">
             <div class="equip-layout">
                 <div class="equip-left">
-                    <div class="paper-doll">
-                        <img class="paper-doll-char" id="paperDollChar" src="job_tank_new.png" alt="character" />
-                        <div class="equip-slot slot-head" id="slot-head" onclick="clickSlot('head')"></div>
-                        <div class="equip-slot slot-chest" id="slot-chest" onclick="clickSlot('chest')"></div>
-                        <div class="equip-slot slot-weapon" id="slot-weapon" onclick="clickSlot('weapon')"></div>
-                        <div class="equip-slot slot-shield" id="slot-shield" onclick="clickSlot('shield')"></div>
-                        <div class="equip-slot slot-accessory" id="slot-accessory" onclick="clickSlot('accessory')"></div>
+                    <div class="paper-doll-frame">
+                        <div class="paper-doll-inner">
+                            <div class="paper-doll">
+                                <img class="paper-doll-char" id="paperDollChar" src="job_tank_new.png" alt="character" />
+                                <!-- Slots positioned around the character, NOT overlapping -->
+                                <div class="equip-slot slot-head" id="slot-head" onclick="clickSlot('head')"><span class="slot-icon">🪖</span><span class="slot-tooltip"></span></div>
+                                <div class="equip-slot slot-chest" id="slot-chest" onclick="clickSlot('chest')"><span class="slot-icon">🎽</span><span class="slot-tooltip"></span></div>
+                                <div class="equip-slot slot-weapon" id="slot-weapon" onclick="clickSlot('weapon')"><span class="slot-icon">⚔️</span><span class="slot-tooltip"></span></div>
+                                <div class="equip-slot slot-shield" id="slot-shield" onclick="clickSlot('shield')"><span class="slot-icon">🛡️</span><span class="slot-tooltip"></span></div>
+                                <div class="equip-slot slot-accessory" id="slot-accessory" onclick="clickSlot('accessory')"><span class="slot-icon">💍</span><span class="slot-tooltip"></span></div>
+                            </div>
+                            <div class="char-info">
+                                <div class="char-name" id="paperDollName">冒险者</div>
+                                <div class="char-level">等级 <span id="paperDollLevel">1</span></div>
+                            </div>
+                        </div>
+                        <div class="paper-doll-corner tl"></div>
+                        <div class="paper-doll-corner tr"></div>
+                        <div class="paper-doll-corner bl"></div>
+                        <div class="paper-doll-corner br"></div>
                     </div>
-                    <div style="font-size:11px;color:var(--text-dim);">点击装备槽选择装备</div>
+                    <div class="equip-hint">点击装备槽选择装备</div>
                 </div>
                 <div class="equip-right">
                     <div class="stat-row">
@@ -2523,48 +2837,111 @@
     <div class="screen" id="charScreen" data-job="tank">
         <div class="char-screen" data-job="tank">
             <div class="char-wrapper">
-                <div class="char-bg-glow"></div>
-                <div class="char-aura"></div>
-                <div class="char-particles">
-                    <div class="char-particle"></div>
-                    <div class="char-particle"></div>
-                    <div class="char-particle"></div>
-                    <div class="char-particle"></div>
-                    <div class="char-particle"></div>
-                    <div class="char-particle"></div>
-                </div>
-                <div class="char-card">
-                    <div class="char-portrait-wrap">
+                <!-- Character Display Area -->
+                <div class="char-display-area">
+                    <!-- Full-width job-colored gradient background -->
+                    <div class="char-bg-gradient"></div>
+                    
+                    <!-- Job-colored glow that breathes behind character -->
+                    <div class="char-glow-breathe"></div>
+                    
+                    <!-- Animated aura/energy ring -->
+                    <div class="char-aura-ring">
+                        <div class="aura-ring-inner"></div>
+                        <div class="aura-ring-outer"></div>
+                    </div>
+                    
+                    <!-- Floating particles container -->
+                    <div class="char-particles">
+                        <div class="char-particle"></div>
+                        <div class="char-particle"></div>
+                        <div class="char-particle"></div>
+                        <div class="char-particle"></div>
+                        <div class="char-particle"></div>
+                        <div class="char-particle"></div>
+                        <div class="char-particle"></div>
+                        <div class="char-particle"></div>
+                    </div>
+                    
+                    <!-- Large character portrait with breathing animation -->
+                    <div class="char-portrait-container">
                         <img class="char-portrait" id="charPortrait" src="assets/characters/tank_full.png" alt="character" />
-                        <div class="char-portrait-glow"></div>
+                        <div class="char-portrait-reflection"></div>
                     </div>
-                    <div class="char-level-badge">
+                </div>
+                
+                <!-- Info Panel (bottom section, glass-morphism) -->
+                <div class="char-info-panel">
+                    <div class="char-info-header">
                         <div class="char-name" id="charName">冒险者</div>
-                        <div class="char-job-label" id="charJobLabel">坦克 · Lv.1</div>
-                        <div class="char-mbti" id="charMbti">INTJ · 建筑师</div>
+                        <div class="char-title-row">
+                            <span class="char-job-label" id="charJobLabel">坦克 · Lv.1</span>
+                            <span class="char-mbti" id="charMbti">INTJ · 建筑师</span>
+                        </div>
                     </div>
-                    <div class="char-stats-grid">
-                        <div class="char-stat-item"><span class="char-stat-name">攻击</span><span class="char-stat-num" id="charAtk">10</span></div>
-                        <div class="char-stat-item"><span class="char-stat-name">防御</span><span class="char-stat-num" id="charDef">10</span></div>
-                        <div class="char-stat-item"><span class="char-stat-name">生命</span><span class="char-stat-num" id="charHp">100</span></div>
-                        <div class="char-stat-item"><span class="char-stat-name">暴击</span><span class="char-stat-num" id="charCrit">15%</span></div>
-                        <div class="char-stat-item"><span class="char-stat-name">闪避</span><span class="char-stat-num" id="charDodge">0%</span></div>
+                    
+                    <!-- Horizontal stats row with icons -->
+                    <div class="char-stats-row">
+                        <div class="stat-item">
+                            <span class="stat-icon">⚔️</span>
+                            <span class="stat-label">攻击</span>
+                            <span class="stat-val" id="charAtk">10</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">🛡️</span>
+                            <span class="stat-label">防御</span>
+                            <span class="stat-val" id="charDef">10</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">❤️</span>
+                            <span class="stat-label">生命</span>
+                            <span class="stat-val" id="charHp">100</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">💥</span>
+                            <span class="stat-label">暴击</span>
+                            <span class="stat-val" id="charCrit">15%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">💨</span>
+                            <span class="stat-label">闪避</span>
+                            <span class="stat-val" id="charDodge">0%</span>
+                        </div>
                     </div>
-                    <div class="equip-preview-row" id="equipPreviewRow">
-                        <div class="equip-preview-slot" id="equipPreview_weapon" title="武器">?</div>
-                        <div class="equip-preview-slot" id="equipPreview_shield" title="护盾">?</div>
-                        <div class="equip-preview-slot" id="equipPreview_head" title="头盔">?</div>
-                        <div class="equip-preview-slot" id="equipPreview_chest" title="胸甲">?</div>
-                        <div class="equip-preview-slot" id="equipPreview_accessory" title="饰品">?</div>
-                        <div class="equip-preview-slot" id="equipPreview_pants" title="护腿">?</div>
+                </div>
+                
+                <!-- Equipment Preview Row (WoW-style quick-equip strip) -->
+                <div class="equip-bar">
+                    <div class="equip-bar-label">📦 装备</div>
+                    <div class="equip-bar-slots">
+                        <div class="equip-slot-wow" id="equipPreview_weapon" onclick="clickSlot('weapon')" title="武器">
+                            <span class="slot-empty-icon">⚔️</span>
+                        </div>
+                        <div class="equip-slot-wow" id="equipPreview_shield" onclick="clickSlot('shield')" title="护盾">
+                            <span class="slot-empty-icon">🛡️</span>
+                        </div>
+                        <div class="equip-slot-wow" id="equipPreview_head" onclick="clickSlot('head')" title="头盔">
+                            <span class="slot-empty-icon">⛑️</span>
+                        </div>
+                        <div class="equip-slot-wow" id="equipPreview_chest" onclick="clickSlot('chest')" title="胸甲">
+                            <span class="slot-empty-icon">🎽</span>
+                        </div>
+                        <div class="equip-slot-wow" id="equipPreview_accessory" onclick="clickSlot('accessory')" title="饰品">
+                            <span class="slot-empty-icon">💍</span>
+                        </div>
+                        <div class="equip-slot-wow" id="equipPreview_pants" onclick="clickSlot('pants')" title="护腿">
+                            <span class="slot-empty-icon">👖</span>
+                        </div>
                     </div>
                     <button class="customize-btn" onclick="openCustomize()">✏️ 换装 / 改名</button>
-                    <div class="char-extra-btns">
-                        <button class="char-extra-btn" onclick="showPanel('talent')">🌟 天赋</button>
-                        <button class="char-extra-btn" onclick="showPanel('quest')">📜 任务</button>
-                        <button class="char-extra-btn" onclick="showPanel('rune')">🔮 符文</button>
-                        <button class="char-extra-btn" onclick="showSignInModal()">📅 签到</button>
-                    </div>
+                </div>
+                
+                <!-- Extra action buttons -->
+                <div class="char-extra-btns">
+                    <button class="char-extra-btn" onclick="showPanel('talent')">🌟 天赋</button>
+                    <button class="char-extra-btn" onclick="showPanel('quest')">📜 任务</button>
+                    <button class="char-extra-btn" onclick="showPanel('rune')">🔮 符文</button>
+                    <button class="char-extra-btn" onclick="showSignInModal()">📅 签到</button>
                 </div>
             </div>
         </div>
