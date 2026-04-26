@@ -5121,9 +5121,10 @@ function showDungeonResult(won) {
         nextBtn.style.display = '';
         nextBtn.textContent = dungeonState.floor >= dungeonState.maxFloor ? '领取奖励' : '下一层';
     } else {
-        endText.textContent = '💀 战败...';
-        endText.style.color = '#FF4444';
-        nextBtn.style.display = 'none';
+        endText.textContent = '🎉 击败敌人！';
+        endText.style.color = '#3DD68C';
+        nextBtn.style.display = '';
+        nextBtn.textContent = dungeonState.floor >= dungeonState.maxFloor ? '领取奖励' : '下一层';
     }
 }
 
