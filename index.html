@@ -102,6 +102,20 @@
         50% { filter: brightness(2); }
         100% { filter: brightness(1); }
     }
+    @keyframes hit-flash {
+        0% { opacity: 0.7; transform: scale(1.05); }
+        100% { opacity: 0; transform: scale(1); }
+    }
+    @keyframes screen-shake {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-4px) rotate(-0.5deg); }
+        40% { transform: translateX(4px) rotate(0.5deg); }
+        60% { transform: translateX(-3px) rotate(-0.3deg); }
+        80% { transform: translateX(3px) rotate(0.3deg); }
+    }
+    .screen-shake {
+        animation: screen-shake 0.3s ease-out;
+    }
     @keyframes mail-pop {
         from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
         to { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -1208,6 +1222,8 @@
     .battle-log-entry.crit { color: var(--gold-bright); }
     .battle-log-entry.heal { color: var(--heal); }
     .battle-log-entry.miss { color: var(--text-dark); }
+    .battle-log-entry.player { color: var(--mage); }
+    .battle-log-entry.enemy { color: var(--dps); }
     .battle-actions {
         display: flex;
         gap: 8px;
@@ -4465,6 +4481,21 @@ function shakeElement(id, cls) {
     setTimeout(() => el.classList.remove(cls), 400);
 }
 
+function flashHit(targetEl) {
+    if (!targetEl) return;
+    const rect = targetEl.getBoundingClientRect();
+    const flash = document.createElement('div');
+    flash.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px;background:rgba(255,255,255,0.6);pointer-events:none;z-index:998;animation:hit-flash 0.3s ease-out forwards;border-radius:8px;`;
+    document.body.appendChild(flash);
+    setTimeout(() => flash.remove(), 300);
+}
+
+function screenShake() {
+    const gameArea = document.getElementById('gameContainer') || document.body;
+    gameArea.classList.add('screen-shake');
+    setTimeout(() => gameArea.classList.remove('screen-shake'), 300);
+}
+
 // ====================================================
 // MAIL
 // ====================================================
@@ -5215,10 +5246,13 @@ function playerAttackEnemy() {
         addBattleLog(`⚔️ 暴击！造成 ${damage} 点伤害`, 'crit');
         showDamageText(document.getElementById('battleEnemyImg'), `${damage}!`, 'crit');
         showCritStars(document.getElementById('battleEnemyImg'));
+        flashHit(document.getElementById('battleEnemyImg'));
+        screenShake();
         playSound('crit');
     } else {
-        addBattleLog(`⚔️ 攻击造成 ${damage} 点伤害`, '');
+        addBattleLog(`⚔️ 攻击造成 ${damage} 点伤害`, 'player');
         showDamageText(document.getElementById('battleEnemyImg'), `${damage}`, 'normal');
+        flashHit(document.getElementById('battleEnemyImg'));
         playSound('hit');
     }
     shakeElement('battleEnemyImg', 'shake-h');
@@ -5293,8 +5327,10 @@ function enemyAttackPlayer() {
     } else {
         let damage = Math.max(1, enemyAtk - Math.floor(stats.def * (1 - (stats.dmgReduce || 0) / 100)));
         dungeonState.playerHp -= damage;
-        addBattleLog(`👹 敌人攻击造成 ${damage} 点伤害`, '');
+        addBattleLog(`👹 敌人攻击造成 ${damage} 点伤害`, 'enemy');
         showDamageText(document.getElementById('battlePlayerImg'), `-${damage}`, 'normal');
+        flashHit(document.getElementById('battlePlayerImg'));
+        screenShake();
         shakeElement('battlePlayerImg', 'shake-v');
         playSound('hit');
     }
