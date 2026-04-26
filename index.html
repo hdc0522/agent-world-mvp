@@ -5040,6 +5040,17 @@ function openRuneSelect(slotIdx) {
 // ====================================================
 let battleBuffs = { stun: 0, poison: 0, rage: 0 };
 
+function startDungeon(id) {
+    dungeonState.dungeonId = id;
+    dungeonState.floor = 1;
+    dungeonState.active = true;
+    const stats = calculateStats();
+    dungeonState.playerHp = stats.hp;
+    dungeonState.playerMaxHp = stats.hp;
+    startDungeonFloor();
+    showScreen('dungeonBattleScreen');
+}
+
 function startDungeonFloor() {
     const baseHp = 50 + dungeonState.floor * 20;
     const baseAtk = 5 + dungeonState.floor * 5;
