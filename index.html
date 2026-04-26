@@ -3473,10 +3473,23 @@ function finishQuiz() {
     gameState.createdAt = Date.now();
 
     // 跳转到职业选择页（推荐职业已确定）
-    showCharacterSelect();
+    // 直接DOM操作，不依赖showScreen，防止跳转失效
+    try {
+        document.getElementById('quizScreen').classList.remove('active');
+    } catch(e) {}
+    try {
+        document.getElementById('charSelectScreen').classList.add('active');
+    } catch(e) {}
+    setTimeout(() => showCharacterSelect(), 50);
 }
 
 function showCharacterSelect() {
+    try {
+        document.getElementById('quizScreen').classList.remove('active');
+    } catch(e) {}
+    try {
+        document.getElementById('charSelectScreen').classList.add('active');
+    } catch(e) {}
     // Render three job cards
     const container = document.getElementById('charSelectCards');
     container.innerHTML = '';
