@@ -4689,6 +4689,24 @@ function updateBattleButtons() {
     }
 }
 
+function updateDungeonHp() {
+    if (!dungeonState.active) return;
+    const enemyHpFill = document.getElementById('enemyHpFill');
+    const enemyHpText = document.getElementById('enemyHpText');
+    const playerHpFill = document.getElementById('playerHpFill');
+    const playerHpText = document.getElementById('playerHpText');
+    if (enemyHpFill && dungeonState.enemyMaxHp > 0) {
+        const pct = Math.max(0, dungeonState.enemyHp / dungeonState.enemyMaxHp * 100);
+        enemyHpFill.style.width = pct + '%';
+    }
+    if (enemyHpText) enemyHpText.textContent = Math.max(0, dungeonState.enemyHp) + ' / ' + dungeonState.enemyMaxHp;
+    if (playerHpFill && dungeonState.playerMaxHp > 0) {
+        const pct = Math.max(0, dungeonState.playerHp / dungeonState.playerMaxHp * 100);
+        playerHpFill.style.width = pct + '%';
+    }
+    if (playerHpText) playerHpText.textContent = Math.max(0, dungeonState.playerHp) + ' / ' + dungeonState.playerMaxHp;
+}
+
 function playerAttackEnemy() {
     if (battleBuffs.stun > 0) {
         battleBuffs.stun--;
