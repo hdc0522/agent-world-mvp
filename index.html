@@ -3273,7 +3273,7 @@ function showScreen(screenId) {
 }
 
 function showPanel(panel) {
-    if (panel === 'idle') showScreen('idleScreen');
+    if (panel === 'idle') { showScreen('idleScreen'); updateIdleUI(); }
     else if (panel === 'character') showScreen('charScreen');
     else if (panel === 'equipment') { showScreen('equipScreen'); updateEquipmentUI(); }
     else if (panel === 'dungeon') { showScreen('dungeonListScreen'); renderDungeonList(); }
@@ -4663,6 +4663,10 @@ function startDungeonFloor() {
 
     document.getElementById('dungeonFloorTitle').textContent = `${DungeonData[dungeonState.dungeonId].name.split(' ').slice(1).join(' ')} · 第${dungeonState.floor}层`;
     document.getElementById('enemyName').textContent = EnemyNames[Math.min(dungeonState.floor - 1, EnemyNames.length - 1)];
+    // Set enemy image based on floor tier
+    const enemyEmojis = ['🟢', '👺', '💀', '🏹', '🌋', '🐉', '👾'];
+    const emoji = enemyEmojis[Math.min(dungeonState.floor - 1, enemyEmojis.length - 1)];
+    document.getElementById('battleEnemyImg').src = `https://pollinations.ai/api/image?q=${encodeURIComponent(emoji + ' pixel art icon')}&width=128&height=128&seed=${dungeonState.floor * 17}`;
     document.getElementById('battleLog').innerHTML = '';
     document.getElementById('battleActions').classList.remove('hidden');
     document.getElementById('battleEndArea').classList.add('hidden');
