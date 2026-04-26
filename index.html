@@ -3651,7 +3651,7 @@ function showScreen(screenId) {
 
 function showPanel(panel) {
     if (panel === 'idle') { showScreen('idleScreen'); updateIdleUI(); }
-    else if (panel === 'character') showScreen('charScreen');
+    else if (panel === 'character') { showScreen('charScreen'); updateCharacterUI(); }
     else if (panel === 'equipment') { showScreen('equipScreen'); updateEquipmentUI(); }
     else if (panel === 'dungeon') { showScreen('dungeonListScreen'); renderDungeonList(); }
     else if (panel === 'rank') { showScreen('rankScreen'); renderRankList(); }
@@ -4170,6 +4170,56 @@ function generateEquipment() {
         quality,
         stats: [{ type: statType, value: baseValue }]
     };
+}
+
+function updateCharacterUI() {
+    const stats = calculateStats();
+    const stage = getStage(gameState.level);
+    const jobInfo = JobInfo[gameState.job] || JobInfo.tank;
+    const mbtiInfo = MBTINames[gameState.mbti] || { name: gameState.mbti, desc: '' };
+
+    // Update character portrait
+    const portrait = document.getElementById('charPortrait');
+    if (portrait) {
+        portrait.src = getCharImage(gameState.mbti, gameState.gender, gameState.level);
+        portrait.onerror = function() { this.src = jobInfo.image; this.onerror = null; };
+    }
+
+    // Update name and labels
+    const nameEl = document.getElementById('charName');
+    if (nameEl) nameEl.textContent = gameState.name || '冒险者';
+    const jobLabel = document.getElementById('charJobLabel');
+    if (jobLabel) jobLabel.textContent = `${jobInfo.name} · Lv.${gameState.level}`;
+    const mbtiEl = document.getElementById('charMbti');
+    if (mbtiEl) mbtiEl.textContent = `${gameState.mbti} · ${mbtiInfo.name}`;
+
+    // Update stats
+    const atkEl = document.getElementById('charAtk');
+    if (atkEl) atkEl.textContent = stats.atk;
+    const defEl = document.getElementById('charDef');
+    if (defEl) defEl.textContent = stats.def;
+    const hpEl = document.getElementById('charHp');
+    if (hpEl) hpEl.textContent = stats.hp;
+    const critEl = document.getElementById('charCrit');
+    if (critEl) critEl.textContent = (stats.crit || 0) + '%';
+    const dodgeEl = document.getElementById('charDodge');
+    if (dodgeEl) dodgeEl.textContent = (stats.dodge || 0) + '%';
+
+    // Update equipment preview bar slots
+    ['weapon', 'shield', 'head', 'chest', 'accessory', 'pants'].forEach(type => {
+        const slot = document.getElementById('equipPreview_' + type);
+        if (!slot) return;
+        const equipped = gameState.equipmentSlots[type];
+        if (equipped) {
+            slot.textContent = EquipIcons[type] || '📦';
+            slot.classList.add('filled');
+            slot.style.borderColor = QualityConfig[equipped.quality].color;
+        } else {
+            slot.textContent = EquipIcons[type] || '📦';
+            slot.classList.remove('filled');
+            slot.style.borderColor = '';
+        }
+    });
 }
 
 function updateEquipmentUI() {
