@@ -5227,6 +5227,7 @@ function updateDungeonHp() {
 }
 
 function playerAttackEnemy() {
+    if (dungeonState.enemyHp <= 0 || dungeonState.playerHp <= 0) return;
     if (battleBuffs.stun > 0) {
         battleBuffs.stun--;
         addBattleLog('⚡ 眩晕中！无法行动！', 'miss');
