@@ -2930,6 +2930,25 @@ const EquipmentTypes = ["head", "chest", "weapon", "shield", "accessory"];
 const EquipTypeNames = { head: "头盔", chest: "胸甲", weapon: "武器", shield: "护盾", accessory: "饰品" };
 const EquipIcons = { head: "🪖", chest: "🎽", weapon: "⚔️", shield: "🛡️", accessory: "💍" };
 
+// Dungeon list was here — inserted below to replace lost function
+function renderDungeonList() {
+    const list = document.getElementById('dungeonList');
+    if (!list) return;
+    list.innerHTML = '';
+    DungeonData.forEach(d => {
+        const locked = gameState.level < d.minLevel;
+        const card = document.createElement('div');
+        card.className = 'dungeon-card' + (locked ? ' locked' : '');
+        const progress = gameState.dungeonProgress && gameState.dungeonProgress[d.id] ? gameState.dungeonProgress[d.id] : 0;
+        const progressText = progress > 0 ? `进度: ${progress}/${d.maxFloor}层` : `推荐 Lv.${d.minLevel}`;
+        card.innerHTML = `<div class="dungeon-name">${d.name}</div>
+            <div class="dungeon-desc">${d.desc}</div>
+            <div class="dungeon-progress">${progressText}</div>`;
+        if (!locked) card.onclick = () => startDungeon(d.id);
+        list.appendChild(card);
+    });
+}
+
 const DungeonData = [
     { id: 0, name: "🌿 森林废墟", minLevel: 1, maxFloor: 5, desc: "初入冒险的起点" },
     { id: 1, name: "⛪ 废弃教堂", minLevel: 3, maxFloor: 8, desc: "亡者安息的禁地" },
@@ -4080,7 +4099,7 @@ function updateCharacterPanel() {
     const charScreen = document.getElementById('charScreen');
     const charScreenInner = charScreen ? charScreen.querySelector('.char-screen') : null;
     charScreen.style.setProperty('--equip-glow', qualityScore);
-    if (charScreenInner) charScreenInner.setProperty('--equip-glow', qualityScore);
+    if (charScreenInner) charScreenInner.style.setProperty('--equip-glow', qualityScore);
     charScreen.setAttribute('data-job', gameState.job);
     if (charScreenInner) charScreenInner.setAttribute('data-job', gameState.job);
 
