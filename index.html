@@ -31,6 +31,9 @@
         --blue: #4A9EFF;
         --purple: #B87DD4;
         --gold-qual: #FFD700;
+        /* 职业颜色（动态更新） */
+        --job-color: #5A8FBD;
+        --job-color-rgb: 90, 143, 189;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -792,10 +795,99 @@
         object-fit: cover;
         border-radius: 14px;
         border: 3px solid var(--border-light);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-        animation: breathe 3.5s ease-in-out infinite;
+        box-shadow:
+            0 8px 32px rgba(0,0,0,0.5),
+            0 0 0 1px rgba(255,255,255,0.1) inset,
+            -4px -4px 12px rgba(0,0,0,0.4),
+            4px 4px 8px rgba(255,255,255,0.05);
+        animation: char-idle-bounce 2s ease-in-out infinite;
         margin: 0 auto 12px;
+        position: relative;
     }
+    /* 脚下立体阴影 */
+    .idle-char-img::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 16px;
+        background: radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%);
+        border-radius: 50%;
+        filter: blur(4px);
+    }
+    /* 角色顶部高光 */
+    .idle-char-img::before {
+        content: '';
+        position: absolute;
+        top: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 20px;
+        background: radial-gradient(ellipse, rgba(255,255,255,0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    @keyframes char-idle-bounce {
+        0%, 100% {
+            transform: scale(1) translateY(0);
+            filter: brightness(1);
+        }
+        20% {
+            transform: scale(1.02, 0.98) translateY(2px);
+            filter: brightness(1.02);
+        }
+        40% {
+            transform: scale(0.98, 1.02) translateY(-4px);
+            filter: brightness(1.08);
+        }
+        60% {
+            transform: scale(1.01, 0.99) translateY(-2px);
+            filter: brightness(1.05);
+        }
+        80% {
+            transform: scale(1.0) translateY(1px);
+            filter: brightness(1.02);
+        }
+    }
+    /* ---- 挂机中呼吸特效 ---- */
+    .idle-char-img.idle-active {
+        animation: char-idle-bounce 2s ease-in-out infinite, char-glow-pulse 3s ease-in-out infinite;
+    }
+    @keyframes char-glow-pulse {
+        0%, 100% { filter: brightness(1) drop-shadow(0 0 8px rgba(var(--job-color-rgb), 0.3)); }
+        50% { filter: brightness(1.1) drop-shadow(0 0 20px rgba(var(--job-color-rgb), 0.7)); }
+    }
+    /* ---- 战斗震动 ---- */
+    @keyframes char-shake {
+        0% { transform: translateX(0); }
+        15% { transform: translateX(-6px) rotate(-2deg); }
+        30% { transform: translateX(6px) rotate(2deg); }
+        45% { transform: translateX(-4px) rotate(-1deg); }
+        60% { transform: translateX(4px) rotate(1deg); }
+        75% { transform: translateX(-2px); }
+        100% { transform: translateX(0); }
+    }
+    .char-shake { animation: char-shake 0.4s ease-in-out; }
+    /* ---- 暴击特效 ---- */
+    @keyframes char-critical {
+        0% { transform: scale(1); filter: brightness(1); }
+        20% { transform: scale(1.25); filter: brightness(1.8) saturate(1.5); }
+        40% { transform: scale(0.95); filter: brightness(0.7); }
+        60% { transform: scale(1.1); filter: brightness(1.3); }
+        80% { transform: scale(1.02); filter: brightness(1.1); }
+        100% { transform: scale(1); filter: brightness(1); }
+    }
+    .char-critical { animation: char-critical 0.6s ease-out; }
+    /* ---- 受击闪白 ---- */
+    @keyframes char-hit-flash {
+        0%, 100% { filter: brightness(1) sepia(0); }
+        25% { filter: brightness(2.5) sepia(1) hue-rotate(-20deg); }
+        50% { filter: brightness(0.5); }
+    }
+    .char-hit { animation: char-hit-flash 0.3s ease-out; }
     .idle-level {
         font-family: 'Orbitron', monospace;
         font-size: 32px;
@@ -1101,6 +1193,58 @@
         padding: 14px;
         margin-top: 8px;
     }
+    .offline-eq-item {
+        font-size: 13px;
+        font-weight: 600;
+        padding: 3px 0;
+        text-align: left;
+    }
+    .auto-loop-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin: 8px 0;
+    }
+    .toggle-label {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 22px;
+    }
+    .toggle-label input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: var(--bg-void);
+        border: 1px solid var(--text-dark);
+        border-radius: 22px;
+        transition: 0.3s;
+    }
+    .toggle-slider::before {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background: var(--text-dim);
+        border-radius: 50%;
+        transition: 0.3s;
+    }
+    .toggle-label input:checked + .toggle-slider {
+        background: var(--gold);
+        border-color: var(--gold);
+    }
+    .toggle-label input:checked + .toggle-slider::before {
+        transform: translateX(18px);
+        background: var(--bg-primary);
+    }
+    .toggle-text {
+        font-size: 12px;
+        color: var(--text-dim);
+    }
 
     /* ====================================================
        LEVEL UP MODAL
@@ -1166,14 +1310,35 @@
         border-radius: 10px;
         border: 2px solid var(--border);
         margin: 0 auto 8px;
+        position: relative;
     }
     .battle-unit.enemy .battle-char-img {
         border-color: var(--dps);
         animation: float 2s ease-in-out infinite;
     }
     .battle-unit.player .battle-char-img {
-        border-color: var(--heal);
+        border-color: var(--job-color, var(--heal));
+        animation: player-idle-pulse 2s ease-in-out infinite;
+        box-shadow: 0 0 12px rgba(var(--job-color-rgb), 0.4), 0 4px 12px rgba(0,0,0,0.4);
     }
+    @keyframes player-idle-pulse {
+        0%, 100% { transform: scale(1) translateY(0); filter: brightness(1); }
+        50% { transform: scale(1.03) translateY(-3px); filter: brightness(1.08); }
+    }
+    @keyframes player-attack-lunge {
+        0% { transform: translateX(0) scale(1); }
+        30% { transform: translateX(40px) scale(1.1); }
+        60% { transform: translateX(35px) scale(1.05); }
+        100% { transform: translateX(0) scale(1); }
+    }
+    @keyframes enemy-attack-lunge {
+        0% { transform: translateX(0) scale(1); }
+        30% { transform: translateX(-40px) scale(1.1); }
+        60% { transform: translateX(-35px) scale(1.05); }
+        100% { transform: translateX(0) scale(1); }
+    }
+    .char-attack-anim { animation: player-attack-lunge 0.4s ease-out !important; }
+    .char-hit-anim { animation: enemy-attack-lunge 0.35s ease-out !important; }
     .battle-hp-bar {
         max-width: 100px;
         margin: 0 auto;
@@ -1916,7 +2081,7 @@
         flex-direction: column;
         align-items: center;
     }
-    
+
     .char-portrait {
         width: 200px;
         height: 300px;
@@ -1926,11 +2091,167 @@
         border: 3px solid rgba(var(--job-color-rgb), 0.6);
         box-shadow:
             0 0 30px rgba(var(--job-color-rgb), 0.35),
-            0 8px 24px rgba(0,0,0,0.5);
-        animation: char-breathe 3.5s ease-in-out infinite;
+            0 0 0 1px rgba(255,255,255,0.1) inset,
+            -6px -6px 20px rgba(0,0,0,0.5),
+            6px 6px 12px rgba(255,255,255,0.05);
+        animation: char-portrait-breathe 2.5s ease-in-out infinite;
         transform-origin: center bottom;
+        position: relative;
     }
-    
+    /* 脚下阴影 */
+    .char-portrait-container::after {
+        content: '';
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140px;
+        height: 24px;
+        background: radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%);
+        border-radius: 50%;
+        filter: blur(6px);
+    }
+    /* 顶部高光 */
+    .char-portrait::before {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 28px;
+        background: radial-gradient(ellipse, rgba(255,255,255,0.2) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    @keyframes char-portrait-breathe {
+        0%, 100% {
+            transform: scale(1) translateY(0);
+            filter: brightness(1) drop-shadow(0 0 10px rgba(var(--job-color-rgb), 0.3));
+        }
+        30% {
+            transform: scale(1.02, 0.98) translateY(3px);
+            filter: brightness(1.05) drop-shadow(0 0 15px rgba(var(--job-color-rgb), 0.4));
+        }
+        60% {
+            transform: scale(0.98, 1.03) translateY(-6px);
+            filter: brightness(1.12) drop-shadow(0 0 25px rgba(var(--job-color-rgb), 0.6));
+        }
+        80% {
+            transform: scale(1.01, 0.99) translateY(-3px);
+            filter: brightness(1.06) drop-shadow(0 0 18px rgba(var(--job-color-rgb), 0.5));
+        }
+    }
+
+    /* ====================================================
+       3D CHARACTER DISPLAY PLATFORM
+       鼠标移动 → 角色随视角倾斜，产生立体旋转感
+    ==================================================== */
+    .char-3d-stage {
+        perspective: 900px;
+        perspective-origin: center center;
+    }
+    .char-3d-inner {
+        transform-style: preserve-3d;
+        transition: transform 0.15s ease-out;
+    }
+    .char-portrait-container.char-3d-stage {
+        cursor: grab;
+    }
+    .char-portrait-container.char-3d-stage:active {
+        cursor: grabbing;
+    }
+    /* 底部展示台 */
+    .char-platform {
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 220px;
+        height: 40px;
+        background: radial-gradient(ellipse at center,
+            rgba(var(--job-color-rgb), 0.35) 0%,
+            rgba(var(--job-color-rgb), 0.1) 50%,
+            transparent 75%
+        );
+        filter: blur(8px);
+        border-radius: 50%;
+        animation: platform-pulse 2s ease-in-out infinite alternate;
+    }
+    /* 展示台高光边 */
+    .char-platform::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: 10%;
+        right: 10%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(var(--job-color-rgb), 0.6), transparent);
+        border-radius: 50%;
+    }
+    /* 旋转指示器点 */
+    .char-rotate-hint {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        font-size: 11px;
+        color: rgba(255,255,255,0.35);
+        pointer-events: none;
+        animation: hint-pulse 2s ease-in-out infinite;
+    }
+    @keyframes platform-pulse {
+        from { opacity: 0.6; transform: translateX(-50%) scaleX(0.9); }
+        to { opacity: 1; transform: translateX(-50%) scaleX(1.05); }
+    }
+    @keyframes hint-pulse {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.7; }
+    }
+    /* 侧边光效：跟随角色旋转 */
+    .char-side-glow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 60px;
+        height: 200px;
+        pointer-events: none;
+        opacity: 0.5;
+        filter: blur(20px);
+        transition: opacity 0.15s, left 0.15s, right 0.15s;
+        z-index: 5;
+    }
+    .char-side-glow.left {
+        left: -30px;
+        background: linear-gradient(to right, rgba(var(--job-color-rgb), 0.8), transparent);
+    }
+    .char-side-glow.right {
+        right: -30px;
+        background: linear-gradient(to left, rgba(var(--job-color-rgb), 0.8), transparent);
+    }
+    .char-portrait-container:hover .char-side-glow.left { opacity: 0.8; }
+    .char-portrait-container:hover .char-side-glow.right { opacity: 0.8; }
+
+    /* 星星装饰环绕 */
+    .char-stars {
+        position: absolute;
+        inset: -60px;
+        pointer-events: none;
+        z-index: 3;
+    }
+    .char-star {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: rgba(255,255,255,0.8);
+        border-radius: 50%;
+        box-shadow: 0 0 6px rgba(255,255,255,0.6);
+        animation: star-twinkle 2s ease-in-out infinite;
+    }
+    @keyframes star-twinkle {
+        0%, 100% { opacity: 0.2; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.5); }
+    }
+
     .char-portrait-reflection {
         position: absolute;
         bottom: -60px;
@@ -1946,6 +2267,31 @@
         opacity: 0.5;
         border-radius: 0 0 12px 12px;
         pointer-events: none;
+    }
+    /* 职业光环旋转 */
+    .char-aura-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 240px;
+        height: 240px;
+        border: 2px solid rgba(var(--job-color-rgb), 0.2);
+        border-radius: 50%;
+        animation: aura-rotate 8s linear infinite;
+        pointer-events: none;
+    }
+    .char-aura-ring::before {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 8px;
+        height: 8px;
+        background: var(--job-color);
+        border-radius: 50%;
+        box-shadow: 0 0 12px var(--job-color);
     }
     
     /* ---- Info Panel (glass-morphism) ---- */
@@ -2737,6 +3083,13 @@
             <div id="countdownArea" class="hidden">
                 <div class="idle-countdown" id="countdownDisplay">30</div>
                 <div class="idle-countdown-label">等待中...</div>
+                <div class="auto-loop-toggle">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="autoLoopToggle" onchange="toggleAutoLoop()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-text" id="autoLoopText">自动循环</span>
+                </div>
                 <div class="idle-action-btns">
                     <button class="idle-action-btn" onclick="cancelWait()">取消挂机</button>
                 </div>
@@ -2879,10 +3232,29 @@
                         <div class="char-particle"></div>
                     </div>
                     
-                    <!-- Large character portrait with breathing animation -->
-                    <div class="char-portrait-container">
-                        <img class="char-portrait" id="charPortrait" src="assets/characters/tank_full.png" alt="character" />
-                        <div class="char-portrait-reflection"></div>
+                    <!-- 3D旋转台舞台 -->
+                    <div class="char-portrait-container char-3d-stage" id="charPortraitContainer"
+                         onmousemove="handleCharTilt(event)" onmouseleave="resetCharTilt()">
+                        <!-- 侧边光效 -->
+                        <div class="char-side-glow left"></div>
+                        <div class="char-side-glow right"></div>
+                        <!-- 星星装饰 -->
+                        <div class="char-stars">
+                            <div class="char-star" style="top:8%;left:15%;animation-delay:0.1s"></div>
+                            <div class="char-star" style="top:20%;left:85%;animation-delay:0.5s"></div>
+                            <div class="char-star" style="top:70%;left:10%;animation-delay:1.2s"></div>
+                            <div class="char-star" style="top:85%;left:80%;animation-delay:0.7s"></div>
+                            <div class="char-star" style="top:5%;left:60%;animation-delay:1.8s"></div>
+                        </div>
+                        <div class="char-3d-inner" id="char3DInner">
+                            <div class="char-aura-ring"></div>
+                            <img class="char-portrait" id="charPortrait" src="assets/characters/tank_full.png" alt="character" />
+                            <div class="char-portrait-reflection"></div>
+                        </div>
+                        <!-- 底部展示台 -->
+                        <div class="char-platform"></div>
+                        <!-- 旋转提示 -->
+                        <div class="char-rotate-hint">✦ 拖动旋转 ✦</div>
                     </div>
                 </div>
                 
@@ -3059,7 +3431,7 @@
         <div class="signin-title">📅 每日签到</div>
         <div class="signin-streak">连续签到 <span id="signinStreak" class="gold-text">0</span> 天</div>
         <div class="signin-grid" id="signinGrid"></div>
-        <button class="fantasy-btn primary" onclick="closeSignin()">收下奖励</button>
+        <button class="fantasy-btn primary" onclick="closeSignIn()">收下奖励</button>
     </div>
 </div>
 
@@ -3069,6 +3441,31 @@
         <div class="quest-reward-title">🎯 任务完成！</div>
         <div class="quest-reward-info" id="questRewardInfo"></div>
         <button class="fantasy-btn primary" onclick="closeQuestReward()">领取</button>
+    </div>
+</div>
+
+<!-- Offline Reward Modal -->
+<div class="reward-modal" id="offlineModal">
+    <div class="reward-content">
+        <div class="reward-title">🌙 离线收益</div>
+        <div class="reward-title" style="font-size:14px;font-weight:normal;margin-top:4px;color:var(--gold)" id="offlineTime">离线 0秒</div>
+        <div class="reward-items">
+            <div class="reward-item">
+                <span class="reward-icon-big">✨</span>
+                <span class="reward-val" id="offlineExp">+0</span>
+                <span class="reward-label">经验</span>
+            </div>
+            <div class="reward-item">
+                <span class="reward-icon-big">💰</span>
+                <span class="reward-val" id="offlineGold">+0</span>
+                <span class="reward-label">金币</span>
+            </div>
+        </div>
+        <div class="reward-equip" id="offlineEquipSection" style="display:none;">
+            <div style="font-size:11px;color:var(--text-dim);margin-bottom:4px;">离线期间获得：</div>
+            <div id="offlineEquipList"></div>
+        </div>
+        <button class="fantasy-btn primary reward-ok-btn" onclick="closeOfflineReward()">收下</button>
     </div>
 </div>
 
@@ -3609,11 +4006,13 @@ let gameState = {
     totalDamage: 0, // 累计伤害(成就用)
     totalKills: 0, // 累计击杀
     totalPlayTime: 0, // 累计游戏时长(秒)
-    floorsCleared: 0 // 通关层数
+    floorsCleared: 0, // 通关层数
+    lastSaveTime: null, // 上次存档时间戳（离线收益用）
+    idleStartTime: null  // 本次挂机开始时间戳
 };
 
 let quizState = { current: 0, answers: [], locked: false };
-let waitState = { timer: null, duration: 0, remaining: 0 };
+let waitState = { timer: null, duration: 0, remaining: 0, autoLoop: false, lastDuration: 0 };
 let dungeonState = { active: false, floor: 1, enemyHp: 0, enemyMaxHp: 0, enemyAtk: 0, playerHp: 0, playerMaxHp: 0, dungeonId: 0, maxFloor: 5 };
 let specialCooldown = 0;
 let mailPopupTimer = null;
@@ -3633,17 +4032,26 @@ function getStageInfo(level) { return getStage(level); }
 function getAgeStage(level) { return getStage(level).name; }
 
 function getCharImage(mbti, gender, level) {
-    const ages = [0, 1, 2, 3, 4, 5];
-    let age = 0;
-    if (level > 70) age = 5;
-    else if (level > 50) age = 4;
-    else if (level > 30) age = 3;
-    else if (level > 15) age = 2;
-    else if (level > 5) age = 1;
-    const genderMap = { "男": "boy", "女": "girl" };
-    const g = genderMap[gender] || "boy";
-    const base = `characters/${mbti.toLowerCase()}_${g}_age${age}.png`;
-    return base;
+    // 热血Q版角色图：职业 + 年龄阶段
+    // 有效图片 → assets/characters/char_{job}_{ageIdx}_{ageName}.png
+    // 兜底 → job_full.png（Tank/Healer/DPS各职业都有完整图）
+    const job = gameState.job || 'tank';
+    const ageIdx = level > 70 ? 5 : level > 50 ? 4 : level > 30 ? 3 : level > 15 ? 2 : level > 5 ? 1 : 0;
+    const ageNames = ['kidney', 'primary', 'middle', 'college', 'phd', 'max'];
+    const ageName = ageNames[ageIdx];
+    // 优先用职业+年龄的专属图
+    return `assets/characters/char_${job}_${ageIdx}_${ageName}.png`;
+}
+
+function getCharImageFallback(job) {
+    // 兜底：职业完整立绘图
+    // assets/characters/ 里实际有: tank_full.png, healer_full.png, rogue_full.png
+    const fallbackMap = {
+        'tank': 'assets/characters/tank_full.png',
+        'heal':  'assets/characters/healer_full.png',
+        'dps':   'assets/characters/rogue_full.png'
+    };
+    return fallbackMap[job] || 'assets/characters/tank_full.png';
 }
 
 function getRandomMBTI() {
@@ -3654,6 +4062,28 @@ function getRandomMBTI() {
 
 function getRandomGender() {
     return Math.random() < 0.5 ? "男" : "女";
+}
+
+// ====================================================
+// 3D CHARACTER DISPLAY — Mouse tilt effect
+// ====================================================
+function handleCharTilt(e) {
+    const container = document.getElementById('charPortraitContainer');
+    const inner = document.getElementById('char3DInner');
+    if (!container || !inner) return;
+    const rect = container.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width / 2);  // -1 to 1
+    const dy = (e.clientY - cy) / (rect.height / 2);  // -1 to 1
+    const rotateY = dx * 12;   // max ±12deg horizontal tilt
+    const rotateX = -dy * 8;   // max ±8deg vertical tilt
+    inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+}
+
+function resetCharTilt() {
+    const inner = document.getElementById('char3DInner');
+    if (inner) inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
 }
 
 // ====================================================
@@ -3953,7 +4383,7 @@ function selectJobAndContinue(jobKey) {
     const charImg = getCharImage(gameState.mbti, gameState.gender, gameState.level);
     const resultIcon = document.getElementById('resultIcon');
     resultIcon.src = charImg;
-    resultIcon.onerror = function() { this.src = info.image; this.onerror = null; };
+    resultIcon.onerror = function() { this.src = getCharImageFallback(gameState.job); this.onerror = null; };
 
     // Reset gender selection UI
     document.getElementById('genderBtnBoy').classList.remove('selected');
@@ -4016,6 +4446,7 @@ function tryShowEnterBtn() {
 function startGame() {
     saveGame();
     updateIdleUI();
+    updateJobColor();
     document.getElementById('topBar').style.display = 'flex';
     document.getElementById('bottomNav').style.display = 'flex';
     showPanel('idle');
@@ -4026,6 +4457,7 @@ function startGame() {
 // SAVE / LOAD
 // ====================================================
 function saveGame() {
+    gameState.lastSaveTime = Date.now();
     localStorage.setItem('agentWorldSave', JSON.stringify(gameState));
 }
 
@@ -4035,12 +4467,110 @@ function loadGame() {
     try {
         const data = JSON.parse(saved);
         gameState = { ...gameState, ...data };
+
+        // 离线挂机收益
+        if (gameState.lastSaveTime) {
+            const offlineMs = Date.now() - gameState.lastSaveTime;
+            const MAX_OFFLINE = 24 * 60 * 60 * 1000; // 最多24小时
+            const cappedMs = Math.min(offlineMs, MAX_OFFLINE);
+            const offlineSeconds = Math.floor(cappedMs / 1000);
+
+            // 仅离线超过30秒才弹窗
+            if (offlineSeconds >= 30) {
+                const offline = calculateOfflineRewards(offlineSeconds);
+                applyOfflineRewards(offline);
+                showOfflineRewardModal(offline, offlineSeconds);
+            }
+        }
+
         updateIdleUI();
+        updateJobColor();
         document.getElementById('topBar').style.display = 'flex';
         document.getElementById('bottomNav').style.display = 'flex';
         showPanel('idle');
         updateTopBar();
     } catch(e) { startQuiz(); }
+}
+
+// ====================================================
+// OFFLINE REWARDS
+// ====================================================
+// 每秒基础产出（参照5分钟挂机的单位时间产出）
+function getOfflineRewardRate() {
+    const level = gameState.level;
+    return {
+        expPerSec: (100 + level * 15) / 300,   // 5分钟=300秒 => 每秒经验
+        goldPerSec: (10 + level * 2) / 300 * 0.6  // 金币60%比例
+    };
+}
+
+function calculateOfflineRewards(offlineSeconds) {
+    const rate = getOfflineRewardRate();
+    // 离线超过1小时收益衰减至70%，超过6小时衰减至50%
+    let efficiency = 1.0;
+    if (offlineSeconds > 3600) efficiency = 0.7;
+    if (offlineSeconds > 21600) efficiency = 0.5;
+
+    const exp = Math.floor(rate.expPerSec * offlineSeconds * efficiency);
+    const gold = Math.floor(rate.goldPerSec * offlineSeconds * efficiency);
+
+    // 离线期间额外装备掉落（按离线时长，每5分钟1件，上限5件）
+    const equipCount = Math.min(Math.floor(offlineSeconds / 300), 5);
+    const equipments = [];
+    for (let i = 0; i < equipCount; i++) {
+        equipments.push(generateEquipment());
+    }
+
+    return { exp, gold, equipments, efficiency };
+}
+
+function applyOfflineRewards(offline) {
+    gameState.exp += offline.exp;
+    gameState.gold += offline.gold;
+    offline.equipments.forEach(eq => {
+        if (gameState.equipment.length >= 10) gameState.equipment.pop();
+        gameState.equipment.unshift(eq);
+    });
+
+    let leveledUp = false;
+    while (gameState.exp >= gameState.level * 100) {
+        gameState.exp -= gameState.level * 100;
+        gameState.level++;
+        leveledUp = true;
+    }
+    saveGame();
+    return leveledUp;
+}
+
+function showOfflineRewardModal(offline, offlineSeconds) {
+    const hours = Math.floor(offlineSeconds / 3600);
+    const mins = Math.floor((offlineSeconds % 3600) / 60);
+    const secs = offlineSeconds % 60;
+    let timeStr = '';
+    if (hours > 0) timeStr += `${hours}小时`;
+    if (mins > 0) timeStr += `${mins}分`;
+    if (secs > 0 && hours === 0) timeStr += `${secs}秒`;
+
+    document.getElementById('offlineTime').textContent = `离线 ${timeStr}`;
+    document.getElementById('offlineExp').textContent = `+${offline.exp}`;
+    document.getElementById('offlineGold').textContent = `+${offline.gold}`;
+
+    const equipList = document.getElementById('offlineEquipList');
+    if (offline.equipments.length > 0) {
+        equipList.innerHTML = offline.equipments.map(eq =>
+            `<div class="offline-eq-item" style="color:${QualityConfig[eq.quality].color}">${eq.name}</div>`
+        ).join('');
+        document.getElementById('offlineEquipSection').style.display = 'block';
+    } else {
+        document.getElementById('offlineEquipSection').style.display = 'none';
+    }
+
+    document.getElementById('offlineModal').classList.add('show');
+    saveGame();
+}
+
+function closeOfflineReward() {
+    document.getElementById('offlineModal').classList.remove('show');
 }
 
 function resetGame() {
@@ -4050,9 +4580,25 @@ function resetGame() {
 }
 
 // ====================================================
+// JOB COLOR SYSTEM (热血职业颜色)
+// ====================================================
+function updateJobColor() {
+    const job = gameState.job || 'tank';
+    const colorMap = {
+        'tank':  { hex: '#5A8FBD', rgb: '90, 143, 189' },
+        'rogue': { hex: '#C4A43A', rgb: '196, 164, 58' },
+        'mage':  { hex: '#5B8ED6', rgb: '91, 142, 214' },
+    };
+    const c = colorMap[job] || colorMap['tank'];
+    document.documentElement.style.setProperty('--job-color', c.hex);
+    document.documentElement.style.setProperty('--job-color-rgb', c.rgb);
+}
+
+// ====================================================
 // IDLE SCREEN UI
 // ====================================================
 function updateIdleUI() {
+    updateJobColor();
     const stage = getStage(gameState.level);
     const expNeeded = gameState.level * 100;
     const expPercent = Math.min((gameState.exp / expNeeded) * 100, 100);
@@ -4066,7 +4612,7 @@ function updateIdleUI() {
     const charImg = getCharImage(gameState.mbti, gameState.gender, gameState.level);
     document.getElementById('idleIcon').src = charImg;
     document.getElementById('idleIcon').onerror = function() {
-        this.src = (JobInfo[gameState.job] || JobInfo.tank).image;
+        this.src = getCharImageFallback(gameState.job);
         this.onerror = null;
     };
 
@@ -4090,9 +4636,15 @@ function updateIdleUI() {
 function startWait(seconds) {
     waitState.duration = seconds;
     waitState.remaining = seconds;
+    waitState.lastDuration = seconds;
+    gameState.idleStartTime = Date.now();
     document.getElementById('waitArea').classList.add('hidden');
     document.getElementById('countdownArea').classList.remove('hidden');
+    // Restore auto-loop toggle state
+    document.getElementById('autoLoopToggle').checked = waitState.autoLoop;
+    updateAutoLoopText();
     updateCountdown();
+    saveGame();
     waitState.timer = setInterval(() => {
         waitState.remaining--;
         updateCountdown();
@@ -4103,13 +4655,31 @@ function startWait(seconds) {
     }, 1000);
 }
 
+function toggleAutoLoop() {
+    waitState.autoLoop = document.getElementById('autoLoopToggle').checked;
+    updateAutoLoopText();
+    saveGame();
+}
+
+function updateAutoLoopText() {
+    const text = document.getElementById('autoLoopText');
+    text.textContent = waitState.autoLoop ? '🔄 自动循环中' : '自动循环';
+    text.style.color = waitState.autoLoop ? 'var(--gold)' : 'var(--text-dim)';
+}
+
 function updateCountdown() {
-    document.getElementById('countdownDisplay').textContent = waitState.remaining;
+    const mins = Math.floor(waitState.remaining / 60);
+    const secs = waitState.remaining % 60;
+    document.getElementById('countdownDisplay').textContent =
+        mins > 0 ? `${mins}:${secs.toString().padStart(2, '0')}` : secs;
 }
 
 function cancelWait() {
     if (waitState.timer) clearInterval(waitState.timer);
     waitState.timer = null;
+    waitState.autoLoop = false;
+    document.getElementById('autoLoopToggle').checked = false;
+    updateAutoLoopText();
     document.getElementById('countdownArea').classList.add('hidden');
     document.getElementById('waitArea').classList.remove('hidden');
 }
@@ -4137,6 +4707,13 @@ function finishWait() {
     saveGame();
     sendMail('🎁 挂机奖励', `挂机${waitState.duration}秒归来`, { exp: baseExp, gold: baseGold, equip: equipment });
 
+    if (waitState.autoLoop) {
+        // 自动循环：静默发放奖励，立即开始下一轮
+        document.getElementById('countdownArea').classList.remove('hidden');
+        startWait(waitState.lastDuration);
+        return;
+    }
+
     document.getElementById('rewardExp').textContent = `+${baseExp}`;
     document.getElementById('rewardGold').textContent = `+${baseGold}`;
     document.getElementById('rewardEquipName').textContent = equipment.name;
@@ -4160,6 +4737,10 @@ function closeReward() {
     updateIdleUI();
     updateTopBar();
     showScreen('idleScreen');
+    // If auto-loop was turned on during the reward modal, start next cycle
+    if (waitState.autoLoop && waitState.lastDuration > 0) {
+        startWait(waitState.lastDuration);
+    }
 }
 
 // ====================================================
@@ -4198,7 +4779,10 @@ function updateCharacterUI() {
     const portrait = document.getElementById('charPortrait');
     if (portrait) {
         portrait.src = getCharImage(gameState.mbti, gameState.gender, gameState.level);
-        portrait.onerror = function() { this.src = jobInfo.image; this.onerror = null; };
+        portrait.onerror = function() {
+            this.src = getCharImageFallback(gameState.job);
+            this.onerror = null;
+        };
     }
 
     // Update name and labels
@@ -4249,7 +4833,7 @@ function updateEquipmentUI() {
     const charImg = getCharImage(gameState.mbti, gameState.gender, gameState.level);
     document.getElementById('paperDollChar').src = charImg;
     document.getElementById('paperDollChar').onerror = function() {
-        this.src = (JobInfo[gameState.job] || JobInfo.tank).image;
+        this.src = getCharImageFallback(gameState.job);
         this.onerror = null;
     };
 
@@ -5041,20 +5625,35 @@ function showSignInModal() {
 }
 
 function closeSignIn() {
-    document.getElementById('signinModal').classList.remove('show');
-    const streak = gameState.dailySignIn?.streak || 1;
-    const dayIndex = Math.min(streak, 7);
-    const reward = SignInRewards[dayIndex - 1] || SignInRewards[6];
-    gameState.gold += reward.gold;
-    gameState.exp += reward.exp;
-    if (!gameState.dailySignIn.rewards) gameState.dailySignIn.rewards = [];
-    if (!gameState.dailySignIn.rewards.includes(dayIndex)) {
-        gameState.dailySignIn.rewards.push(dayIndex);
-    }
-    progressQuest('signin');
-    saveGame();
-    updateTopBar();
-    checkTitles();
+    // 安全关闭：先隐藏弹窗
+    const modal = document.getElementById('signinModal');
+    if (modal) modal.classList.remove('show');
+
+    // 延迟执行奖励逻辑，等弹窗动画完
+    setTimeout(() => {
+        try {
+            const streak = (gameState.dailySignIn && gameState.dailySignIn.streak) || 1;
+            const dayIndex = Math.min(streak, 7);
+            const reward = (typeof SignInRewards !== 'undefined' && SignInRewards[dayIndex - 1]) || { gold: 20, exp: 15 };
+            gameState.gold = (gameState.gold || 0) + reward.gold;
+            gameState.exp = (gameState.exp || 0) + reward.exp;
+
+            if (!gameState.dailySignIn) {
+                gameState.dailySignIn = { lastSignIn: null, streak: 1, rewards: [] };
+            }
+            if (!gameState.dailySignIn.rewards) gameState.dailySignIn.rewards = [];
+            if (!gameState.dailySignIn.rewards.includes(dayIndex)) {
+                gameState.dailySignIn.rewards.push(dayIndex);
+            }
+
+            if (typeof progressQuest === 'function') progressQuest('signin');
+            if (typeof checkTitles === 'function') checkTitles();
+            if (typeof saveGame === 'function') saveGame();
+            if (typeof updateTopBar === 'function') updateTopBar();
+        } catch (e) {
+            console.error('closeSignIn error:', e);
+        }
+    }, 50);
 }
 
 // ====================================================
@@ -5181,6 +5780,16 @@ function startDungeonFloor() {
     specialCooldown = 0;
     battleBuffs = { stun: 0, poison: 0, rage: 0 };
 
+    // 设置战斗场景角色图
+    const battleImg = document.getElementById('battlePlayerImg');
+    if (battleImg) {
+        battleImg.src = getCharImage(gameState.mbti, gameState.gender, gameState.level);
+        battleImg.onerror = function() {
+            this.src = getCharImageFallback(gameState.job);
+            this.onerror = null;
+        };
+    }
+
     document.getElementById('dungeonFloorTitle').textContent = `${DungeonData[dungeonState.dungeonId].name.split(' ').slice(1).join(' ')} · 第${dungeonState.floor}层`;
     document.getElementById('enemyName').textContent = EnemyNames[Math.min(dungeonState.floor - 1, EnemyNames.length - 1)];
     // Set enemy image based on floor tier
@@ -5243,6 +5852,13 @@ function playerAttackEnemy() {
     const damage = crit ? Math.floor(stats.atk * 2 * critDmgMult * floorBonus) : Math.floor(stats.atk * floorBonus);
     dungeonState.enemyHp -= damage;
     gameState.totalDamage = (gameState.totalDamage || 0) + damage;
+    // 玩家攻击冲锋动画
+    const playerImg = document.getElementById('battlePlayerImg');
+    playerImg.classList.remove('char-attack-anim');
+    void playerImg.offsetWidth;
+    playerImg.classList.add('char-attack-anim');
+    setTimeout(() => playerImg.classList.remove('char-attack-anim'), 400);
+
     if (crit) {
         addBattleLog(`⚔️ 暴击！造成 ${damage} 点伤害`, 'crit');
         showDamageText(document.getElementById('battleEnemyImg'), `${damage}!`, 'crit');
@@ -5318,6 +5934,13 @@ function enemyAttackPlayer() {
     }
     updateBattleButtons();
     updateDungeonHp();
+
+    // 敌人冲锋动画
+    const enemyImg = document.getElementById('battleEnemyImg');
+    enemyImg.classList.remove('char-hit-anim');
+    void enemyImg.offsetWidth;
+    enemyImg.classList.add('char-hit-anim');
+    setTimeout(() => enemyImg.classList.remove('char-hit-anim'), 350);
 
     const stats = calculateStats();
     const dodgeRate = (stats.dodge || 0) / 100;
