@@ -3455,7 +3455,7 @@
                         </div>
                         <div class="char-3d-inner" id="char3DInner">
                             <div class="char-aura-ring"></div>
-                            <img class="char-portrait" id="charPortrait" src="assets/characters/tank_full.png" alt="character" />
+                            <img class="char-portrait" id="charPortrait" src="assets/characters/tank_hotblood.png" alt="character" />
                             <div class="char-portrait-reflection"></div>
                         </div>
                         <!-- 底部展示台 -->
@@ -3554,7 +3554,7 @@
     <div class="screen" id="shareScreen">
         <div class="title-screen" style="padding-top:20px;">
             <div class="share-card">
-                <img class="share-char-img" id="shareCharImg" src="assets/characters/tank_full.png" alt="character" />
+                <img class="share-char-img" id="shareCharImg" src="assets/characters/tank_hotblood.png" alt="character" />
                 <div class="share-job" id="shareJobName" style="color:var(--tank)">坦克</div>
                 <div class="share-level" id="shareLevel">Lv.1 · 幼儿园</div>
                 <div class="share-mbti" id="shareMbti">MBTI: INTJ</div>
@@ -4251,14 +4251,14 @@ function getCharImage(mbti, gender, level) {
 }
 
 function getCharImageFallback(job) {
-    // 兜底：职业完整立绘图
-    // assets/characters/ 里实际有: tank_full.png, healer_full.png, rogue_full.png
+    // 热血风角色立绘图
     const fallbackMap = {
-        'tank': 'assets/characters/tank_full.png',
-        'heal':  'assets/characters/healer_full.png',
-        'dps':   'assets/characters/rogue_full.png'
+        'tank': 'assets/characters/tank_hotblood.png',
+        'heal':  'assets/characters/healer_hotblood.png',
+        'dps':   'assets/characters/dps_hotblood.png',
+        'hunter':'assets/characters/hunter_hotblood.png'
     };
-    return fallbackMap[job] || 'assets/characters/tank_full.png';
+    return fallbackMap[job] || 'assets/characters/tank_hotblood.png';
 }
 
 function getRandomMBTI() {
@@ -5546,7 +5546,7 @@ function updateCharacterPanel() {
     const portrait = document.getElementById('charPortrait');
     portrait.src = charImg;
     portrait.onerror = function() {
-        this.src = `assets/characters/${gameState.job}_full.png`;
+        this.src = `assets/characters/${gameState.job}_hotblood.png`;
         this.onerror = null;
     };
 
@@ -5662,8 +5662,8 @@ function renderRankList() {
 // ====================================================
 function showShare() {
     const info = JobInfo[gameState.job];
-    document.getElementById('shareCharImg').src = `assets/characters/${gameState.job}_full.png`;
-    document.getElementById('shareCharImg').onerror = function() { this.src = 'assets/characters/tank_full.png'; this.onerror = null; };
+    document.getElementById('shareCharImg').src = `assets/characters/${gameState.job}_hotblood.png`;
+    document.getElementById('shareCharImg').onerror = function() { this.src = 'assets/characters/tank_hotblood.png'; this.onerror = null; };
     document.getElementById('shareJobName').textContent = info.name;
     document.getElementById('shareJobName').style.color = info.color;
     document.getElementById('shareLevel').textContent = `Lv.${gameState.level} · ${getStage(gameState.level).name}`;
