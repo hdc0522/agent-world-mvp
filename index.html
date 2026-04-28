@@ -3447,53 +3447,19 @@
             <div class="char-wrapper">
                 <!-- Character Display Area -->
                 <div class="char-display-area">
-                    <!-- Full-width job-colored gradient background -->
+                    <!-- Job-colored gradient background -->
                     <div class="char-bg-gradient"></div>
-                    
-                    <!-- Job-colored glow that breathes behind character -->
-                    <div class="char-glow-breathe"></div>
-                    
-                    <!-- Animated aura/energy ring -->
-                    <div class="char-aura-ring">
-                        <div class="aura-ring-inner"></div>
-                        <div class="aura-ring-outer"></div>
-                    </div>
-                    
-                    <!-- Floating particles container -->
-                    <div class="char-particles">
-                        <div class="char-particle"></div>
-                        <div class="char-particle"></div>
-                        <div class="char-particle"></div>
-                        <div class="char-particle"></div>
-                        <div class="char-particle"></div>
-                        <div class="char-particle"></div>
-                        <div class="char-particle"></div>
-                        <div class="char-particle"></div>
-                    </div>
-                    
-                    <!-- 3D旋转台舞台 -->
-                    <div class="char-portrait-container char-3d-stage" id="charPortraitContainer"
-                         onmousemove="handleCharTilt(event)" onmouseleave="resetCharTilt()">
-                        <!-- 侧边光效 -->
-                        <div class="char-side-glow left"></div>
-                        <div class="char-side-glow right"></div>
-                        <!-- 星星装饰 -->
-                        <div class="char-stars">
-                            <div class="char-star" style="top:8%;left:15%;animation-delay:0.1s"></div>
-                            <div class="char-star" style="top:20%;left:85%;animation-delay:0.5s"></div>
-                            <div class="char-star" style="top:70%;left:10%;animation-delay:1.2s"></div>
-                            <div class="char-star" style="top:85%;left:80%;animation-delay:0.7s"></div>
-                            <div class="char-star" style="top:5%;left:60%;animation-delay:1.8s"></div>
-                        </div>
-                        <div class="char-3d-inner" id="char3DInner">
-                            <div class="char-aura-ring"></div>
+
+                    <!-- Subtle glow behind character (保留但降半透明) -->
+                    <div class="char-glow-breathe" style="opacity:0.4;"></div>
+
+                    <!-- Character (焦点在这里，其他都是噪音) -->
+                    <div class="char-portrait-container" id="charPortraitContainer">
+                        <div class="char-3d-inner">
                             <img class="char-portrait" id="charPortrait" src="assets/characters/tank_pixel.jpg" alt="character" />
-                            <div class="char-portrait-reflection"></div>
                         </div>
                         <!-- 底部展示台 -->
                         <div class="char-platform"></div>
-                        <!-- 旋转提示 -->
-                        <div class="char-rotate-hint">✦ 拖动旋转 ✦</div>
                     </div>
                 </div>
                 
