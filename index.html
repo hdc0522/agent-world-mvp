@@ -473,7 +473,7 @@
     .game-guide {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: 0;
         padding: 20px;
         margin: 0 auto 32px;
         max-width: 340px;
@@ -508,41 +508,48 @@
     .fantasy-btn {
         min-width: 240px;
         padding: 16px 32px;
-        border-radius: 8px;
+        /* 像素风：硬边无圆角 */
+        border-radius: 0;
         font-family: 'Noto Sans SC', sans-serif;
         font-size: 15px;
         font-weight: 700;
         cursor: pointer;
-        transition: all 0.2s;
-        border: 2px solid;
+        transition: none;
+        border: 3px solid;
         letter-spacing: 1px;
+        /* 像素风：实色无渐变 */
+        image-rendering: pixelated;
     }
     .fantasy-btn.primary {
-        background: linear-gradient(135deg, #8B7234, #C9A227, #E8C547);
+        background: var(--gold);
         border-color: var(--gold-bright);
-        color: #08080F;
-        box-shadow: 0 4px 20px rgba(201,162,39,0.3);
+        color: #1A1A2E;
+        /* 像素风：去掉阴影，加2px深色底边产生立体感 */
+        box-shadow: inset 0 -4px 0 var(--gold-dim), 0 0 0 1px #8B6000;
     }
     .fantasy-btn.primary:hover {
+        background: var(--gold-bright);
         transform: translateY(-2px);
-        box-shadow: 0 6px 30px rgba(201,162,39,0.5);
     }
     .fantasy-btn.primary:active {
-        transform: translateY(0);
+        transform: translateY(2px);
+        box-shadow: inset 0 -2px 0 var(--gold-dim), 0 0 0 1px #8B6000;
     }
     .fantasy-btn.secondary {
         background: var(--bg-card);
         border-color: var(--border);
         color: var(--text-dim);
+        box-shadow: inset 0 -3px 0 var(--bg-void), 0 0 0 1px var(--border-light);
     }
     .fantasy-btn.secondary:hover {
         border-color: var(--gold-dim);
         color: var(--text);
+        background: var(--bg-card-hover);
     }
     .save-preview {
         background: var(--bg-card);
         border: 2px solid var(--border);
-        border-radius: 12px;
+        border-radius: 0;
         padding: 14px 18px;
         margin: 0 auto 20px;
         max-width: 340px;
@@ -604,7 +611,7 @@
     .quiz-card {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 16px;
+        border-radius: 0;
         padding: 28px 24px;
         animation: fadeInUp 0.4s ease;
     }
@@ -721,7 +728,7 @@
     .char-select-card {
         background: var(--card-bg);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: 0;
         padding: 16px;
         cursor: pointer;
         transition: all 0.25s;
@@ -827,7 +834,7 @@
     .result-job-badge {
         display: inline-block;
         padding: 5px 18px;
-        border-radius: 20px;
+        border-radius: 0;
         font-size: 12px;
         font-weight: 700;
         letter-spacing: 2px;
@@ -844,7 +851,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border-radius: 12px;
+        border-radius: 0;
         border: 3px solid var(--gold);
         box-shadow: 0 0 30px rgba(201,162,39,0.4);
         animation: breathe 3.5s ease-in-out infinite;
@@ -878,7 +885,7 @@
     }
     .gender-btn {
         padding: 12px 28px;
-        border-radius: 12px;
+        border-radius: 0;
         border: 2px solid var(--card-border);
         background: var(--card);
         color: var(--text-dim);
@@ -902,7 +909,7 @@
     }
     .age-btn {
         padding: 8px 14px;
-        border-radius: 8px;
+        border-radius: 0;
         border: 1px solid var(--card-border);
         background: var(--card);
         color: var(--text-dim);
@@ -1121,31 +1128,39 @@
         min-width: 90px;
         padding: 14px 12px;
         background: var(--bg-card);
-        border: 2px solid var(--border);
-        border-radius: 10px;
+        /* 像素风：硬边 */
+        border-radius: 0;
+        border: 3px solid var(--border);
         cursor: pointer;
-        transition: all 0.2s;
+        transition: none;
         text-align: center;
-        animation: breathe 2.5s ease-in-out infinite;
+        /* 去掉breathe动画，替换为更PIXEL的闪烁边框 */
+        animation: pixel-btn-pulse 1.5s ease-in-out infinite;
+        box-shadow: inset 0 -3px 0 var(--bg-void);
+    }
+    @keyframes pixel-btn-pulse {
+        0%, 100% { border-color: var(--border); }
+        50% { border-color: var(--border-light); }
     }
     .wait-btn:hover {
         border-color: var(--gold-dim);
         background: var(--bg-card-hover);
-        transform: translateY(-2px);
         animation: none;
     }
     .wait-btn.tank-btn { border-color: var(--tank); }
-    .wait-btn.tank-btn:hover { box-shadow: 0 0 15px rgba(90,143,189,0.3); }
+    .wait-btn.tank-btn:hover { box-shadow: inset 0 -3px 0 var(--bg-void), 0 0 0 1px var(--tank); }
     .wait-btn.heal-btn { border-color: var(--heal); }
-    .wait-btn.heal-btn:hover { box-shadow: 0 0 15px rgba(61,214,140,0.3); }
+    .wait-btn.heal-btn:hover { box-shadow: inset 0 -3px 0 var(--bg-void), 0 0 0 1px var(--heal); }
     .wait-btn.dps-btn { border-color: var(--dps); }
-    .wait-btn.dps-btn:hover { box-shadow: 0 0 15px rgba(196,69,54,0.3); }
+    .wait-btn.dps-btn:hover { box-shadow: inset 0 -3px 0 var(--bg-void), 0 0 0 1px var(--dps); }
     .wait-btn-time {
-        font-family: 'Orbitron', monospace;
+        /* 像素风：等宽字体 */
+        font-family: 'Courier New', monospace;
         font-size: 18px;
-        font-weight: 600;
+        font-weight: 700;
         color: var(--text);
         display: block;
+        letter-spacing: 2px;
     }
     .wait-btn-label {
         font-size: 10px;
@@ -1171,7 +1186,7 @@
         color: var(--text-dim);
         background: var(--bg-card);
         padding: 4px 10px;
-        border-radius: 20px;
+        border-radius: 0;
         border: 1px solid var(--border);
     }
     .idle-countdown {
@@ -1200,7 +1215,7 @@
         padding: 12px 24px;
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 0;
         color: var(--text);
         font-size: 13px;
         cursor: pointer;
@@ -1271,7 +1286,7 @@
     .reward-content {
         background: var(--bg-card);
         border: 2px solid var(--gold);
-        border-radius: 16px;
+        border-radius: 0;
         padding: 28px 24px;
         width: 100%;
         max-width: 340px;
@@ -1541,7 +1556,7 @@
     .battle-btn {
         flex: 1;
         padding: 12px;
-        border-radius: 8px;
+        border-radius: 0;
         font-size: 13px;
         font-weight: 700;
         cursor: pointer;
@@ -1579,7 +1594,7 @@
         margin-top: 12px;
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 0;
         color: var(--text-dim);
         font-size: 13px;
         cursor: pointer;
@@ -1598,7 +1613,7 @@
     .dungeon-card {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: 0;
         padding: 16px;
         cursor: pointer;
         transition: all 0.2s;
@@ -1659,7 +1674,7 @@
         flex: 1;
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: 0;
         padding: 16px;
         text-align: center;
     }
@@ -1668,7 +1683,7 @@
         position: relative;
         background: linear-gradient(160deg, #1a1520 0%, #0d0b10 50%, #1a1520 100%);
         border: 3px solid #c9a84c;
-        border-radius: 12px;
+        border-radius: 0;
         padding: 20px 24px 16px;
         box-shadow:
             inset 0 0 30px rgba(0,0,0,0.8),
@@ -1739,7 +1754,7 @@
         height: 44px;
         background: linear-gradient(145deg, #2a2535, #1a1520);
         border: 2px solid #6b5a3e;
-        border-radius: 8px;
+        border-radius: 0;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1882,7 +1897,7 @@
         aspect-ratio: 1;
         background: var(--bg-card);
         border: 2px solid;
-        border-radius: 8px;
+        border-radius: 0;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1916,7 +1931,7 @@
     .mail-content {
         background: var(--bg-card);
         border: 2px solid var(--border);
-        border-radius: 16px;
+        border-radius: 0;
         width: 100%;
         max-width: 380px;
         max-height: 80vh;
@@ -2000,7 +2015,7 @@
         max-width: 360px;
         background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         border: 2px solid var(--gold);
-        border-radius: 12px;
+        border-radius: 0;
         padding: 14px 16px;
         z-index: 500;
         cursor: pointer;
@@ -2028,7 +2043,7 @@
     .item-detail-content {
         background: var(--bg-card);
         border: 2px solid var(--border);
-        border-radius: 16px;
+        border-radius: 0;
         padding: 24px;
         min-width: 280px;
         max-width: 90vw;
@@ -2043,7 +2058,7 @@
         gap: 4px;
         margin-bottom: 12px;
         background: var(--bg-void);
-        border-radius: 12px;
+        border-radius: 0;
         padding: 4px;
     }
     .equip-tab {
@@ -2055,13 +2070,47 @@
         font-size: 14px;
         font-weight: 500;
         cursor: pointer;
-        border-radius: 8px;
+        border-radius: 0;
         transition: all 0.2s;
     }
     .equip-tab.active {
         background: var(--gold);
         color: #1A1A2E;
         font-weight: 700;
+    }
+
+    /* ====================================================
+       IDLE PROGRESS BAR (挂机等待时的进度条)
+    ==================================================== */
+    .idle-progress-track {
+        position: relative;
+        width: 220px;
+        height: 14px;
+        background: var(--bg-void);
+        border: 2px solid var(--border);
+        border-radius: 7px;
+        margin: 0 auto 16px;
+        overflow: hidden;
+    }
+    .idle-progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-bright));
+        border-radius: 5px;
+        transition: width 1s linear;
+    }
+    .idle-progress-glow {
+        position: absolute;
+        top: 0; left: 0;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, transparent, rgba(255,215,0,0.6), transparent);
+        border-radius: 5px;
+        animation: idle-glow-shimmer 2s ease-in-out infinite;
+    }
+    @keyframes idle-glow-shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(300%); }
     }
 
     /* ====================================================
@@ -2081,7 +2130,7 @@
     .equip-select-content {
         background: var(--bg-card);
         border: 2px solid var(--border);
-        border-radius: 16px;
+        border-radius: 0;
         width: 100%;
         max-width: 380px;
         max-height: 80vh;
@@ -2285,7 +2334,7 @@
         height: 300px;
         object-fit: cover;
         object-position: center top;
-        border-radius: 12px;
+        border-radius: 0;
         border: 3px solid rgba(var(--job-color-rgb), 0.6);
         box-shadow:
             0 0 30px rgba(var(--job-color-rgb), 0.35),
@@ -2502,7 +2551,7 @@
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(var(--job-color-rgb), 0.25);
-        border-radius: 16px;
+        border-radius: 0;
         box-shadow:
             0 0 20px rgba(var(--job-color-rgb), 0.1),
             0 8px 32px rgba(0,0,0,0.4),
@@ -2540,7 +2589,7 @@
         padding: 4px 12px;
         background: rgba(var(--job-color-rgb), 0.12);
         border: 1px solid rgba(var(--job-color-rgb), 0.3);
-        border-radius: 20px;
+        border-radius: 0;
     }
     
     .char-mbti {
@@ -2626,7 +2675,7 @@
     .equip-slot-wow {
         width: 44px;
         height: 44px;
-        border-radius: 8px;
+        border-radius: 0;
         border: 2px solid rgba(var(--job-color-rgb), 0.3);
         background: rgba(0,0,0,0.5);
         display: flex;
@@ -2841,7 +2890,7 @@
     .customize-content {
         background: var(--bg-card);
         border: 2px solid var(--border);
-        border-radius: 16px;
+        border-radius: 0;
         padding: 24px;
         width: 100%;
         max-width: 320px;
@@ -2865,7 +2914,7 @@
         padding: 12px;
         background: var(--bg-void);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 0;
         color: var(--text);
         font-size: 14px;
         outline: none;
@@ -2888,7 +2937,7 @@
     .rank-card {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: 0;
         padding: 16px;
         margin-bottom: 10px;
         display: flex;
@@ -2922,7 +2971,7 @@
     .share-card {
         background: linear-gradient(135deg, #1a1a2e, #13131F);
         border: 2px solid var(--gold);
-        border-radius: 16px;
+        border-radius: 0;
         padding: 24px;
         text-align: center;
         margin-bottom: 16px;
@@ -2930,7 +2979,7 @@
     .share-char-img {
         width: 100px; height: 100px;
         object-fit: cover;
-        border-radius: 12px;
+        border-radius: 0;
         border: 3px solid var(--gold);
         margin: 0 auto 12px;
     }
@@ -3072,10 +3121,10 @@
     .talent-title { font-size: 18px; font-weight: 700; color: var(--gold); }
     .talent-points-info { font-size: 13px; color: var(--text-dim); }
     .talent-trees { display: flex; flex-direction: column; gap: 12px; }
-    .talent-tree { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+    .talent-tree { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0; padding: 12px; }
     .talent-tree-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 15px; font-weight: 600; }
     .talent-tree-tiers { display: flex; gap: 6px; flex-wrap: wrap; }
-    .talent-node { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: all 0.2s; border: 2px solid var(--border); background: var(--bg-void); position: relative; }
+    .talent-node { width: 44px; height: 44px; border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: all 0.2s; border: 2px solid var(--border); background: var(--bg-void); position: relative; }
     .talent-node.locked { opacity: 0.4; cursor: not-allowed; }
     .talent-node.purchased { background: var(--bg-elevated); }
     .talent-node.can-buy { animation: glow-pulse 1.5s infinite; cursor: pointer; }
@@ -3102,7 +3151,7 @@
     .quest-reward-btn.pending { background: var(--border); color: var(--text-dim); cursor: not-allowed; }
     .quest-divider { height: 1px; background: var(--border); margin: 16px 0; }
     .title-list { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
-    .title-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 12px; }
+    .title-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0; padding: 8px 12px; font-size: 12px; }
     .title-item.locked { opacity: 0.4; }
     .title-item.unlocked { border-color: var(--gold); }
     .title-item.active { background: var(--bg-elevated); }
@@ -3122,7 +3171,7 @@
     .rune-slot-hint { position: absolute; bottom: -18px; font-size: 9px; color: var(--text-dim); white-space: nowrap; }
     .rune-list-title { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
     .rune-list { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-    .rune-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: all 0.2s; }
+    .rune-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: all 0.2s; }
     .rune-item:hover { background: var(--bg-elevated); }
     .rune-item-icon { font-size: 18px; }
     .rune-item-name { font-size: 9px; color: var(--text-dim); text-align: center; }
@@ -3132,7 +3181,7 @@
     ==================================================== */
     .signin-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; }
     .signin-modal.show { display: flex; }
-    .signin-content { background: var(--bg-card); border: 1px solid var(--gold); border-radius: 16px; padding: 24px; width: 90%; max-width: 360px; text-align: center; }
+    .signin-content { background: var(--bg-card); border: 1px solid var(--gold); border-radius: 0; padding: 24px; width: 90%; max-width: 360px; text-align: center; }
     .signin-title { font-size: 18px; font-weight: 700; color: var(--gold); margin-bottom: 4px; }
     .signin-streak { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; }
     .signin-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 16px; }
@@ -3147,20 +3196,20 @@
     ==================================================== */
     .quest-reward-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; }
     .quest-reward-modal.show { display: flex; }
-    .quest-reward-content { background: var(--bg-card); border: 1px solid var(--heal); border-radius: 16px; padding: 24px; width: 80%; max-width: 320px; text-align: center; }
+    .quest-reward-content { background: var(--bg-card); border: 1px solid var(--heal); border-radius: 0; padding: 24px; width: 80%; max-width: 320px; text-align: center; }
     .quest-reward-title { font-size: 18px; font-weight: 700; color: var(--heal); margin-bottom: 12px; }
     .quest-reward-info { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
 
     /* ====================================================
        ENHANCED BATTLE
     ==================================================== */
-    .battle-btn { min-height: 48px; font-size: 14px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; }
+    .battle-btn { min-height: 48px; font-size: 14px; font-weight: 600; border-radius: 0; border: none; cursor: pointer; transition: all 0.15s; }
     .battle-btn:active { transform: scale(0.95); }
     .battle-btn.attack { background: linear-gradient(135deg, #C44536, #8B2500); color: #fff; }
     .battle-btn.heal { background: linear-gradient(135deg, #3DD68C, #1a7a4a); color: #fff; }
     .battle-btn.special { background: linear-gradient(135deg, #B87DD4, #7B2D9E); color: #fff; }
     .battle-btn.stunned { background: var(--border) !important; color: var(--text-dim) !important; cursor: not-allowed; animation: none !important; }
-    .enemy-skill-banner { background: rgba(220,53,69,0.15); border: 1px solid rgba(220,53,69,0.4); border-radius: 8px; padding: 8px 12px; margin: 4px 0; font-size: 13px; color: #ff6b6b; text-align: center; animation: fadeIn 0.3s; }
+    .enemy-skill-banner { background: rgba(220,53,69,0.15); border: 1px solid rgba(220,53,69,0.4); border-radius: 0; padding: 8px 12px; margin: 4px 0; font-size: 13px; color: #ff6b6b; text-align: center; animation: fadeIn 0.3s; }
     .poison-effect { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,128,0,0.2); border-radius: inherit; pointer-events: none; animation: poison-pulse 1s infinite; }
     @keyframes poison-pulse { 0%,100%{opacity:0.3} 50%{opacity:0.7} }
     .rage-effect { animation: rage-glow 0.5s infinite alternate; }
@@ -3182,7 +3231,7 @@
        CHARACTER EXTRA BUTTONS
     ==================================================== */
     .char-extra-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
-    .char-extra-btn { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 4px; font-size: 11px; cursor: pointer; color: var(--text); transition: all 0.2s; text-align: center; }
+    .char-extra-btn { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0; padding: 8px 4px; font-size: 11px; cursor: pointer; color: var(--text); transition: all 0.2s; text-align: center; }
     .char-extra-btn:hover { background: var(--bg-elevated); border-color: var(--gold); color: var(--gold); }
 
      </style>
@@ -3349,6 +3398,11 @@
             </div>
 
             <div id="countdownArea" class="hidden">
+                <!-- Progress bar: fills left→right as time passes -->
+                <div class="idle-progress-track">
+                    <div class="idle-progress-fill" id="idleProgressFill"></div>
+                    <div class="idle-progress-glow" id="idleProgressGlow"></div>
+                </div>
                 <div class="idle-countdown" id="countdownDisplay">30</div>
                 <div class="idle-countdown-label">等待中...</div>
                 <div class="auto-loop-toggle">
@@ -4882,9 +4936,11 @@ function startWait(seconds) {
     gameState.idleStartTime = Date.now();
     document.getElementById('waitArea').classList.add('hidden');
     document.getElementById('countdownArea').classList.remove('hidden');
-    // Restore auto-loop toggle state
     document.getElementById('autoLoopToggle').checked = waitState.autoLoop;
     updateAutoLoopText();
+    // Init progress bar
+    document.getElementById('idleProgressFill').style.width = '0%';
+    document.getElementById('idleProgressGlow').style.width = '30%';
     updateCountdown();
     saveGame();
     waitState.timer = setInterval(() => {
@@ -4914,6 +4970,10 @@ function updateCountdown() {
     const secs = waitState.remaining % 60;
     document.getElementById('countdownDisplay').textContent =
         mins > 0 ? `${mins}:${secs.toString().padStart(2, '0')}` : secs;
+    // Drive progress bar: elapsed / total
+    const elapsed = waitState.duration - waitState.remaining;
+    const pct = Math.min(100, (elapsed / waitState.duration) * 100);
+    document.getElementById('idleProgressFill').style.width = pct + '%';
 }
 
 function cancelWait() {
@@ -5788,6 +5848,26 @@ function showShare() {
 let audioCtx = null;
 let audioEnabled = true;
 let audioMuted = false;
+let bgmOscillators = [];
+let bgmGainNode = null;
+let bgmIntervalId = null;
+let bgmNoteIndex = 0;
+
+// 8-bit chiptune melody (16 notes, C major + A minor feel, upbeat RPG vibe)
+const BGM_MELODY = [
+    262, 330, 392, 523,  // C4 E4 G4 C5
+    494, 440, 392, 330,  // B4 A4 G4 E4
+    392, 440, 494, 523,  // G4 A4 B4 C5
+    523, 494, 440, 392,  // C5 B4 A4 G4
+];
+const BGM_BASS = [
+    131, 131, 165, 165,  // C3 C3 E3 E3
+    147, 147, 165, 165,  // F3 F3 G3 G3
+    131, 131, 147, 147,  // C3 C3 F3 F3
+    110, 110, 131, 131,  // A2 A2 C3 C3
+];
+const BPM = 140;
+const NOTE_DURATION = 60 / BPM; // seconds per beat
 
 function initAudio() {
     try {
@@ -5795,6 +5875,75 @@ function initAudio() {
     } catch(e) { audioCtx = null; }
 }
 
+// Start looping chiptune BGM
+function startBGM() {
+    if (!audioCtx || bgmIntervalId) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    bgmGainNode = audioCtx.createGain();
+    bgmGainNode.gain.setValueAtTime(audioMuted ? 0 : 0.12, audioCtx.currentTime);
+    bgmGainNode.connect(audioCtx.destination);
+
+    bgmNoteIndex = 0;
+
+    function playNote() {
+        if (!audioCtx || audioMuted) return;
+        const now = audioCtx.currentTime;
+
+        // Melody (square wave - classic 8-bit sound)
+        const mel = audioCtx.createOscillator();
+        const melGain = audioCtx.createGain();
+        mel.type = 'square';
+        mel.frequency.setValueAtTime(BGM_MELODY[bgmNoteIndex % BGM_MELODY.length], now);
+        melGain.gain.setValueAtTime(0.08, now);
+        melGain.gain.exponentialRampToValueAtTime(0.001, now + NOTE_DURATION * 0.85);
+        mel.connect(melGain);
+        melGain.connect(bgmGainNode);
+        mel.start(now);
+        mel.stop(now + NOTE_DURATION);
+
+        // Bass (triangle wave - warm low end)
+        const bass = audioCtx.createOscillator();
+        const bassGain = audioCtx.createGain();
+        bass.type = 'triangle';
+        bass.frequency.setValueAtTime(BGM_BASS[bgmNoteIndex % BGM_BASS.length], now);
+        bassGain.gain.setValueAtTime(0.1, now);
+        bassGain.gain.exponentialRampToValueAtTime(0.001, now + NOTE_DURATION * 0.9);
+        bass.connect(bassGain);
+        bassGain.connect(bgmGainNode);
+        bass.start(now);
+        bass.stop(now + NOTE_DURATION);
+
+        // Arpeggio accent every 4th note
+        if (bgmNoteIndex % 4 === 0) {
+            const arp = audioCtx.createOscillator();
+            const arpGain = audioCtx.createGain();
+            arp.type = 'square';
+            arp.frequency.setValueAtTime(BGM_MELODY[bgmNoteIndex % BGM_MELODY.length] * 2, now);
+            arpGain.gain.setValueAtTime(0.04, now);
+            arpGain.gain.exponentialRampToValueAtTime(0.001, now + NOTE_DURATION * 0.3);
+            arp.connect(arpGain);
+            arpGain.connect(bgmGainNode);
+            arp.start(now);
+            arp.stop(now + NOTE_DURATION * 0.3);
+        }
+
+        bgmNoteIndex++;
+    }
+
+    playNote();
+    bgmIntervalId = setInterval(playNote, NOTE_DURATION * 1000);
+}
+
+function stopBGM() {
+    if (bgmIntervalId) {
+        clearInterval(bgmIntervalId);
+        bgmIntervalId = null;
+    }
+    bgmNoteIndex = 0;
+}
+
+// SFX (hit/crit/levelup/coin) - short bursts
 function playSound(type) {
     if (!audioEnabled || audioMuted || !audioCtx) return;
     try {
@@ -5816,36 +5965,26 @@ function playSound(type) {
             gain.gain.setValueAtTime(0.4, now);
             gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
             osc.start(now); osc.stop(now + 0.15);
-        } else if (type === 'heal') {
-            osc.frequency.setValueAtTime(400, now);
-            osc.frequency.exponentialRampToValueAtTime(800, now + 0.2);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-            osc.start(now); osc.stop(now + 0.2);
-        } else if (type === 'equip') {
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(523, now);
-            osc.frequency.setValueAtTime(659, now + 0.1);
-            osc.frequency.setValueAtTime(784, now + 0.2);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-            osc.start(now); osc.stop(now + 0.3);
+        } else if (type === 'coin') {
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(988, now);
+            osc.frequency.setValueAtTime(1319, now + 0.06);
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+            osc.start(now); osc.stop(now + 0.12);
         } else if (type === 'levelup') {
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(523, now);
-            osc.frequency.setValueAtTime(659, now + 0.1);
-            osc.frequency.setValueAtTime(784, now + 0.2);
-            osc.frequency.setValueAtTime(1047, now + 0.3);
-            gain.gain.setValueAtTime(0.3, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-            osc.start(now); osc.stop(now + 0.5);
-        } else if (type === 'quest') {
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(523, now);
-            osc.frequency.setValueAtTime(659, now + 0.15);
-            gain.gain.setValueAtTime(0.25, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-            osc.start(now); osc.stop(now + 0.25);
+            // Rising arpeggio
+            [523, 659, 784, 1047].forEach((f, i) => {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
+                o.type = 'square';
+                o.frequency.setValueAtTime(f, now + i * 0.08);
+                g.gain.setValueAtTime(0.2, now + i * 0.08);
+                g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.15);
+                o.start(now + i * 0.08);
+                o.stop(now + i * 0.08 + 0.15);
+            });
         }
     } catch(e) {}
 }
@@ -5853,8 +5992,15 @@ function playSound(type) {
 function toggleAudioMute() {
     audioMuted = !audioMuted;
     const btn = document.getElementById('audioToggle');
-    if (btn) btn.classList.toggle('muted', audioMuted);
+    if (btn) {
+        btn.textContent = audioMuted ? '🔇' : '🔊';
+        btn.classList.toggle('muted', audioMuted);
+    }
+    if (bgmGainNode) {
+        bgmGainNode.gain.setValueAtTime(audioMuted ? 0 : 0.12, audioCtx.currentTime);
+    }
     if (!audioMuted && audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    if (!audioMuted && !bgmIntervalId && audioCtx) startBGM();
 }
 
 // ====================================================
@@ -6580,6 +6726,7 @@ loadGame = function() {
     checkTitles();
     if (!audioCtx) initAudio();
     if (!document.getElementById('audioToggle')) initAudioToggle();
+    startBGM();
 };
 
 function init() {
