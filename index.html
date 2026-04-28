@@ -2036,6 +2036,35 @@
     }
 
     /* ====================================================
+       EQUIP TAB BAR
+    ==================================================== */
+    .equip-tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 12px;
+        background: var(--bg-void);
+        border-radius: 12px;
+        padding: 4px;
+    }
+    .equip-tab {
+        flex: 1;
+        padding: 10px 16px;
+        border: none;
+        background: transparent;
+        color: var(--text-dim);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+    .equip-tab.active {
+        background: var(--gold);
+        color: #1A1A2E;
+        font-weight: 700;
+    }
+
+    /* ====================================================
        EQUIP SELECT MODAL
     ==================================================== */
     .equip-select-modal {
@@ -3390,53 +3419,66 @@
     <!-- ========== BACKPACK / EQUIPMENT SCREEN ========== -->
     <div class="screen" id="equipScreen">
         <div class="equip-screen">
-            <div class="equip-layout">
-                <div class="equip-left">
-                    <div class="paper-doll-frame">
-                        <div class="paper-doll-inner">
-                            <div class="paper-doll">
-                                <img class="paper-doll-char" id="paperDollChar" src="assets/characters/tank_pixel.jpg" alt="character" />
-                                <!-- Slots positioned around the character, NOT overlapping -->
-                                <div class="equip-slot slot-head" id="slot-head" onclick="clickSlot('head')"><span class="slot-icon">🪖</span><span class="slot-tooltip"></span></div>
-                                <div class="equip-slot slot-chest" id="slot-chest" onclick="clickSlot('chest')"><span class="slot-icon">🎽</span><span class="slot-tooltip"></span></div>
-                                <div class="equip-slot slot-weapon" id="slot-weapon" onclick="clickSlot('weapon')"><span class="slot-icon">⚔️</span><span class="slot-tooltip"></span></div>
-                                <div class="equip-slot slot-shield" id="slot-shield" onclick="clickSlot('shield')"><span class="slot-icon">🛡️</span><span class="slot-tooltip"></span></div>
-                                <div class="equip-slot slot-accessory" id="slot-accessory" onclick="clickSlot('accessory')"><span class="slot-icon">💍</span><span class="slot-tooltip"></span></div>
-                            </div>
-                            <div class="char-info">
-                                <div class="char-name" id="paperDollName">冒险者</div>
-                                <div class="char-level">等级 <span id="paperDollLevel">1</span></div>
-                            </div>
-                        </div>
-                        <div class="paper-doll-corner tl"></div>
-                        <div class="paper-doll-corner tr"></div>
-                        <div class="paper-doll-corner bl"></div>
-                        <div class="paper-doll-corner br"></div>
-                    </div>
-                    <div class="equip-hint">点击装备槽选择装备</div>
-                </div>
-                <div class="equip-right">
-                    <div class="stat-row">
-                        <span class="stat-label">⚔️ 攻击</span>
-                        <span class="stat-val" id="statAtk">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">🛡️ 防御</span>
-                        <span class="stat-val" id="statDef">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">❤️ 生命</span>
-                        <span class="stat-val" id="statHp">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">💰 金币</span>
-                        <span class="stat-val" id="statGold">0</span>
-                    </div>
-                </div>
+            <!-- Tab bar: 装备 / 背包 -->
+            <div class="equip-tabs">
+                <button class="equip-tab active" id="tabEquip" onclick="switchEquipTab('equip')">⚔️ 装备</button>
+                <button class="equip-tab" id="tabBag" onclick="switchEquipTab('bag')">🎒 背包</button>
             </div>
-            <div class="bag-section">
-                <div class="bag-title">🎒 背包 · <span id="bagCount">0</span> / 10</div>
-                <div class="bag-grid" id="bagGrid"></div>
+
+            <div class="equip-layout">
+                <!-- 装备 Tab -->
+                <div class="equip-view" id="equipView">
+                    <div class="equip-left">
+                        <div class="paper-doll-frame">
+                            <div class="paper-doll-inner">
+                                <div class="paper-doll">
+                                    <img class="paper-doll-char" id="paperDollChar" src="assets/characters/tank_pixel.jpg" alt="character" />
+                                    <!-- Slots positioned around the character, NOT overlapping -->
+                                    <div class="equip-slot slot-head" id="slot-head" onclick="clickSlot('head')"><span class="slot-icon">🪖</span><span class="slot-tooltip"></span></div>
+                                    <div class="equip-slot slot-chest" id="slot-chest" onclick="clickSlot('chest')"><span class="slot-icon">🎽</span><span class="slot-tooltip"></span></div>
+                                    <div class="equip-slot slot-weapon" id="slot-weapon" onclick="clickSlot('weapon')"><span class="slot-icon">⚔️</span><span class="slot-tooltip"></span></div>
+                                    <div class="equip-slot slot-shield" id="slot-shield" onclick="clickSlot('shield')"><span class="slot-icon">🛡️</span><span class="slot-tooltip"></span></div>
+                                    <div class="equip-slot slot-accessory" id="slot-accessory" onclick="clickSlot('accessory')"><span class="slot-icon">💍</span><span class="slot-tooltip"></span></div>
+                                </div>
+                                <div class="char-info">
+                                    <div class="char-name" id="paperDollName">冒险者</div>
+                                    <div class="char-level">等级 <span id="paperDollLevel">1</span></div>
+                                </div>
+                            </div>
+                            <div class="paper-doll-corner tl"></div>
+                            <div class="paper-doll-corner tr"></div>
+                            <div class="paper-doll-corner bl"></div>
+                            <div class="paper-doll-corner br"></div>
+                        </div>
+                        <div class="equip-hint">点击装备槽装配装备</div>
+                    </div>
+                    <div class="equip-right">
+                        <div class="stat-row">
+                            <span class="stat-label">⚔️ 攻击</span>
+                            <span class="stat-val" id="statAtk">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">🛡️ 防御</span>
+                            <span class="stat-val" id="statDef">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">❤️ 生命</span>
+                            <span class="stat-val" id="statHp">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">💰 金币</span>
+                            <span class="stat-val" id="statGold">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 背包 Tab -->
+                <div class="bag-view" id="bagView" style="display:none;">
+                    <div class="bag-section" style="width:100%;">
+                        <div class="bag-title">🎒 背包 · <span id="bagCount">0</span> / 10</div>
+                        <div class="bag-grid" id="bagGrid"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -5070,6 +5112,24 @@ function updateEquipmentUI() {
             item.onclick = () => showItemDetailModal(eq.id);
             grid.appendChild(item);
         });
+    }
+}
+
+function switchEquipTab(tab) {
+    const equipView = document.getElementById('equipView');
+    const bagView = document.getElementById('bagView');
+    const tabEquip = document.getElementById('tabEquip');
+    const tabBag = document.getElementById('tabBag');
+    if (tab === 'equip') {
+        equipView.style.display = '';
+        bagView.style.display = 'none';
+        tabEquip.classList.add('active');
+        tabBag.classList.remove('active');
+    } else {
+        equipView.style.display = 'none';
+        bagView.style.display = '';
+        tabEquip.classList.remove('active');
+        tabBag.classList.add('active');
     }
 }
 
