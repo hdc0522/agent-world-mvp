@@ -10,30 +10,30 @@
        CSS VARIABLES & RESET
     ==================================================== */
     :root {
-        --bg-void: #08080F;
-        --bg-card: #13131F;
-        --bg-card-hover: #1A1A2E;
-        --bg-elevated: #1E1E2E;
-        --border: #2A2A4A;
-        --border-light: #3A3A5A;
-        --gold: #C9A227;
-        --gold-bright: #E8C547;
-        --gold-dim: #8B7234;
-        --gold-glow: rgba(201, 162, 39, 0.4);
-        --heal: #3DD68C;
-        --tank: #5A8FBD;
-        --dps: #C44536;
-        --text: #E8E4D9;
-        --text-dim: #9A968A;
-        --text-dark: #5A5850;
-        --white: #B8B8B8;
-        --green: #3DD68C;
-        --blue: #4A9EFF;
-        --purple: #B87DD4;
+        --bg-void: #0D0D1A;
+        --bg-card: #1A1A2E;
+        --bg-card-hover: #252540;
+        --bg-elevated: #2A2A45;
+        --border: #3A3A5F;
+        --border-light: #5050AA;
+        --gold: #FFD700;
+        --gold-bright: #FFE44D;
+        --gold-dim: #C9A227;
+        --gold-glow: rgba(255, 215, 0, 0.5);
+        --heal: #69F0AE;
+        --tank: #4FC3F7;
+        --dps: #FF6B35;
+        --text: #F5F0E8;
+        --text-dim: #A8A498;
+        --text-dark: #686058;
+        --white: #D0D0D0;
+        --green: #69F0AE;
+        --blue: #64B5F6;
+        --purple: #CE93D8;
         --gold-qual: #FFD700;
         /* 职业颜色（动态更新） */
-        --job-color: #5A8FBD;
-        --job-color-rgb: 90, 143, 189;
+        --job-color: #4FC3F7;
+        --job-color-rgb: 79, 195, 247;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -2009,6 +2009,30 @@
     }
     #mailPopup.removing {
         animation: mail-pop-out 0.3s ease forwards;
+    }
+
+    /* ====================================================
+       ITEM DETAIL MODAL
+    ==================================================== */
+    .item-detail-modal {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 500;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    .item-detail-modal.show { display: flex; }
+    .item-detail-content {
+        background: var(--bg-card);
+        border: 2px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        min-width: 280px;
+        max-width: 90vw;
+        animation: bounce-in 0.25s ease;
     }
 
     /* ====================================================
@@ -5077,7 +5101,7 @@ function updateEquipmentUI() {
             item.style.boxShadow = `0 0 8px ${QualityConfig[eq.quality].color}40`;
             item.textContent = EquipIcons[eq.type];
             item.title = `${eq.name}\n${eq.stats.map(s => `${s.type} +${s.value}`).join(', ')}`;
-            item.onclick = () => openEquipFromBag(eq.id);
+            item.onclick = () => showItemDetailModal(eq.id);
             grid.appendChild(item);
         });
     }
@@ -5215,6 +5239,55 @@ function openEquipFromBag(eqId) {
     const eq = gameState.equipment.find(e => e.id === eqId);
     if (!eq) return;
     openEquipSelect(eq.type);
+}
+
+// 背包物品详情弹窗（不混装备选择逻辑）
+function showItemDetailModal(eqId) {
+    const eq = gameState.equipment.find(e => e.id === eqId);
+    if (!eq) return;
+    const modal = document.getElementById('itemDetailModal') || createItemDetailModal();
+    document.getElementById('itemDetailName').textContent = eq.name;
+    document.getElementById('itemDetailName').style.color = QualityConfig[eq.quality].color;
+    document.getElementById('itemDetailStats').textContent = eq.stats.map(s => `${s.type} +${s.value}`).join('  |  ');
+    document.getElementById('itemDetailQuality').textContent = QualityConfig[eq.quality].label;
+    document.getElementById('itemDetailQuality').style.color = QualityConfig[eq.quality].color;
+    document.getElementById('itemDetailDesc').textContent = eq.desc || '';
+    const equipBtn = document.getElementById('itemDetailEquipBtn');
+    // 找到对应槽位
+    const slotBtn = document.getElementById('itemDetailEquipBtn');
+    slotBtn.textContent = '📥 穿上装备';
+    slotBtn.onclick = () => { closeItemDetail(); openEquipSelect(eq.type); };
+    const useBtn = document.getElementById('itemDetailUseBtn');
+    useBtn.style.display = 'none';
+    modal.classList.add('show');
+}
+
+function closeItemDetail() {
+    const modal = document.getElementById('itemDetailModal');
+    if (modal) modal.classList.remove('show');
+}
+
+function createItemDetailModal() {
+    const modal = document.createElement('div');
+    modal.id = 'itemDetailModal';
+    modal.className = 'item-detail-modal';
+    modal.innerHTML = `
+        <div class="item-detail-content">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <span id="itemDetailName" style="font-size:20px;font-weight:700;">物品名</span>
+                <span id="itemDetailQuality" style="font-size:12px;padding:2px 8px;border-radius:8px;background:rgba(255,255,255,0.1);"></span>
+            </div>
+            <div id="itemDetailStats" style="color:#ccc;font-size:14px;margin-bottom:12px;text-align:center;"></div>
+            <div id="itemDetailDesc" style="color:#888;font-size:12px;margin-bottom:20px;text-align:center;"></div>
+            <div style="display:flex;gap:10px;justify-content:center;">
+                <button id="itemDetailEquipBtn" class="fantasy-btn primary" style="flex:1;">📥 穿上装备</button>
+                <button id="itemDetailUseBtn" class="fantasy-btn secondary" style="display:none;">使用</button>
+                <button onclick="closeItemDetail()" class="fantasy-btn secondary">关闭</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeItemDetail(); });
+    return modal;
 }
 
 function calculateStats() {
